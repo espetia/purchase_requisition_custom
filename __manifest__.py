@@ -14,6 +14,8 @@
         'security/security.xml',
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
+        'data/mail_template_data.xml',
+        'data/cron_data.xml',
         'wizard/create_po_wizard_views.xml',
         'views/requisition_views.xml',
         'views/rubro_views.xml',

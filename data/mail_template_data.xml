@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="email_template_draft_requisitions_reminder" model="mail.template">
+            <field name="name">Purchase Requisition: Draft Reminder</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="subject">Recordatorio: Requisiciones de Compra Pendientes</field>
+            <field name="email_to">{{ object.email_formatted }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="background-color: #F3F4F6; padding: 40px; font-family: Arial, sans-serif; text-align: center;">
+                    <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: left;">
+                        <h2 style="color: #333333; font-size: 20px; margin-top: 0; display: flex; align-items: center;">
+                            <span style="color: #E53935; font-size: 24px; margin-right: 8px;">🔴</span> ¡Requisiciones Pendientes de Validación!
+                        </h2>
+                        <p style="color: #555555; font-size: 15px; line-height: 1.5; margin-top: 15px;">
+                            Hola <strong><t t-out="object.name or ''"/></strong>,<br/><br/>
+                            Le informamos que actualmente tiene <strong><t t-out="len(ctx.get('draft_requisitions', []))"/></strong> requisiciones de compra en estado de borrador esperando por su revisión en el sistema.
+                        </p>
+                        
+                        <div style="background-color: #F9FAFB; padding: 15px; border-radius: 6px; margin: 20px 0; border: 1px solid #E5E7EB;">
+                            <ul style="margin: 0; padding-left: 20px; color: #444444; font-size: 14px;">
+                                <t t-foreach="ctx.get('draft_requisitions')" t-as="req">
+                                    <li style="margin-bottom: 5px;">
+                                        <strong><t t-out="req.name"/></strong> - Solicitante: <t t-out="req.requester_id.name"/>
+                                    </li>
+                                </t>
+                            </ul>
+                        </div>
+
+                        <div style="margin: 30px 0;">
+                            <a href="/web"
+                                style="background-color: #6366F1; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 15px; display: inline-block;">
+                                Ver Requisiciones
+                            </a>
+                        </div>
+                        
+                        <p style="color: #777777; font-size: 13px; margin-bottom: 0; border-top: 1px solid #E5E7EB; padding-top: 15px;">
+                            Saludos,<br/>
+                            <strong>San Mex</strong>
+                        </p>
+                    </div>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

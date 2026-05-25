@@ -92,3 +92,30 @@ class PurchaseRequisitionCustom(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('purchase.requisition.custom') or _('New')
         return super(PurchaseRequisitionCustom, self).create(vals)
 
+    @api.model
+    def _cron_send_draft_requisitions_reminder(self):
+        """
+        Finds all draft requisitions, groups them by manager,
+        and sends ONE email per manager with a list of their pending requisitions.
+        """
+        draft_reqs = self.search([('state', '=', 'draft')])
+        if not draft_reqs:
+            return
+
+        manager_reqs = {}
+        for req in draft_reqs:
+            if req.manager_id:
+                if req.manager_id not in manager_reqs:
+                    manager_reqs[req.manager_id] = self.env['purchase.requisition.custom']
+                manager_reqs[req.manager_id] |= req
+
+        template = self.env.ref('purchase_requisition_custom.email_template_draft_requisitions_reminder', raise_if_not_found=False)
+        if not template:
+            return
+
+        for manager, reqs in manager_reqs.items():
+            template.with_context(draft_requisitions=reqs).send_mail(
+                manager.id, 
+                force_send=False
+            )
+
