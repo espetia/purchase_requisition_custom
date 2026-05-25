@@ -38,7 +38,10 @@ class PurchaseRequisitionCustom(models.Model):
         Computes the total number of purchase orders linked to this requisition.
         """
         for rec in self:
-            rec.purchase_order_count = len(rec.purchase_order_ids)
+            if self.env.user.has_group('purchase.group_purchase_user'):
+                rec.purchase_order_count = len(rec.sudo().purchase_order_ids)
+            else:
+                rec.purchase_order_count = 0
 
     @api.model
     def _group_expand_states(self, states, domain, order):

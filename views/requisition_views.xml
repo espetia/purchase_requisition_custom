@@ -15,7 +15,7 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button name="action_view_purchase_orders" type="object" class="oe_stat_button" icon="fa-shopping-cart"
-                                    attrs="{'invisible': [('purchase_order_count', '=', 0)]}">
+                                    attrs="{'invisible': [('purchase_order_count', '=', 0)]}" groups="purchase.group_purchase_user">
                                 <field name="purchase_order_count" widget="statinfo" string="Purchase Orders"/>
                             </button>
                         </div>
@@ -44,7 +44,7 @@
                                         <field name="name"/>
                                         <field name="product_qty"/>
                                         <field name="product_uom_id" options="{'no_create': True, 'no_create_edit': True}"/>
-                                        <field name="po_line_id" readonly="1"/>
+                                        <field name="po_line_id" readonly="1" groups="purchase.group_purchase_user"/>
                                         <field name="image" widget="image" optional="hide"/>
                                     </tree>
                                 </field>
