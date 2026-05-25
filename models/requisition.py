@@ -73,6 +73,15 @@ class PurchaseRequisitionCustom(models.Model):
             if rec.rubro_id.requires_vehicle and not rec.vehicle_id:
                 raise ValidationError(_("Vehicle is mandatory when Rubro requires it."))
 
+    def write(self, vals):
+        """
+        Overrides the write method to prevent non-managers from updating the state.
+        """
+        if 'state' in vals:
+            if not self.env.user.has_group('purchase_requisition_custom.group_purchase_requisition_manager'):
+                raise ValidationError(_("Only Purchase Managers can update the status of a requisition."))
+        return super(PurchaseRequisitionCustom, self).write(vals)
+
     @api.model
     def create(self, vals):
         """

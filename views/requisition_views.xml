@@ -49,7 +49,7 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Purchase Orders">
+                            <page string="Purchase Orders" groups="purchase.group_purchase_user">
                                 <field name="purchase_order_ids" readonly="1"/>
                             </page>
                         </notebook>
@@ -150,6 +150,15 @@
                 Create a new purchase requisition
               </p>
             </field>
+        </record>
+
+        <!-- Make Purchase Root Menu visible to Requisition Users -->
+        <record id="purchase.menu_purchase_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('purchase_requisition_custom.group_purchase_requisition_user'))]"/>
+        </record>
+
+        <record id="purchase.menu_procurement_management" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4, ref('purchase.group_purchase_user'))]"/>
         </record>
 
         <!-- Menu -->
