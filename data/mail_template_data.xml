@@ -37,7 +37,7 @@
                         
                         <p style="color: #777777; font-size: 13px; margin-bottom: 0; border-top: 1px solid #E5E7EB; padding-top: 15px;">
                             Saludos,<br/>
-                            <strong>San Mex</strong>
+                            <strong><t t-out="object.company_id.name or ''"/></strong>
                         </p>
                     </div>
                 </div>
