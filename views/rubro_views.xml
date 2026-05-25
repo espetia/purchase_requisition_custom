@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_requisition_rubro_tree" model="ir.ui.view">
+        <field name="name">purchase.requisition.rubro.tree</field>
+        <field name="model">purchase.requisition.rubro</field>
+        <field name="arch" type="xml">
+            <tree string="Rubros">
+                <field name="name"/>
+                <field name="requires_vehicle"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_purchase_requisition_rubro_form" model="ir.ui.view">
+        <field name="name">purchase.requisition.rubro.form</field>
+        <field name="model">purchase.requisition.rubro</field>
+        <field name="arch" type="xml">
+            <form string="Rubro">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="requires_vehicle"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_purchase_requisition_rubro" model="ir.actions.act_window">
+        <field name="name">Rubros</field>
+        <field name="res_model">purchase.requisition.rubro</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_purchase_requisition_rubro"
+              name="Rubros"
+              parent="purchase.menu_purchase_config"
+              action="action_purchase_requisition_rubro"
+              sequence="100"/>
+</odoo>
