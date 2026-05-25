@@ -1,0 +1,26 @@
+# -*- coding: utf-8 -*-
+{
+    'name': "purchase_requisition_custom",
+    'summary': "Purchase custom module",
+    'description': """
+        Purchase custom module for san_mex
+    """,
+    'author': "Carlos Espetia",
+    'website': "http://www.carlosespetia.com",
+    'category': 'Uncategorized',
+    'version': '15.0.1.0.0',
+    'depends': ['base', 'purchase', 'mail', 'fleet'],
+    'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'data/ir_sequence_data.xml',
+        'wizard/create_po_wizard_views.xml',
+        'views/requisition_views.xml',
+        'views/rubro_views.xml',
+    ],
+    'demo': [
+    ],
+    'installable': True,
+    'application': False,
+    'license': 'LGPL-3',
+}
