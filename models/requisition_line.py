@@ -5,7 +5,7 @@ class PurchaseRequisitionLineCustom(models.Model):
     _description = 'Purchase Requisition Line Custom'
 
     requisition_id = fields.Many2one('purchase.requisition.custom', string='Requisition', ondelete='cascade')
-    product_id = fields.Many2one('product.product', string='Product')
+    product_id = fields.Many2one('product.product', string='Product', domain=[('purchase_ok', '=', True)])
     name = fields.Char(string='Description', required=True)
     image = fields.Binary(string='Image')
     product_qty = fields.Float(string='Quantity', required=True, default=1.0)

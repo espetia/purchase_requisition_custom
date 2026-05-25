@@ -11,8 +11,8 @@
                 </group>
                 <notebook>
                     <page string="Lines to Order">
-                        <field name="line_ids">
-                            <tree>
+                        <field name="line_ids" domain="[('requisition_id', '=', requisition_id), ('product_id', '!=', False), ('po_line_id', '=', False)]">
+                            <tree create="0">
                                 <field name="product_id"/>
                                 <field name="name"/>
                                 <field name="product_qty"/>
