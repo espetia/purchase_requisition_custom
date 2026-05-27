@@ -4,9 +4,15 @@
         <field name="name">create.po.wizard.form</field>
         <field name="model">create.po.wizard</field>
         <field name="arch" type="xml">
-            <form string="Create Purchase Order">
+            <form string="Create Purchase Document">
                 <group>
-                    <field name="partner_id"/>
+                    <field name="action_type" widget="radio"/>
+                    
+                    <field name="partner_id" attrs="{'invisible': [('action_type', '!=', 'create_po')], 'required': [('action_type', '=', 'create_po')]}"/>
+                    
+                    <field name="type_id" attrs="{'invisible': [('action_type', '!=', 'create_pr')], 'required': [('action_type', '=', 'create_pr')]}"/>
+                    <field name="vendor_ids" widget="many2many_tags" attrs="{'invisible': [('action_type', '!=', 'create_pr')], 'required': [('action_type', '=', 'create_pr')]}"/>
+                    
                     <field name="requisition_id" invisible="1"/>
                 </group>
                 <notebook>
@@ -22,7 +28,7 @@
                     </page>
                 </notebook>
                 <footer>
-                    <button string="Create PO" type="object" name="action_create_po" class="btn-primary"/>
+                    <button string="Create" type="object" name="action_create_po" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
@@ -30,7 +36,7 @@
     </record>
 
     <record id="action_create_po_wizard" model="ir.actions.act_window">
-        <field name="name">Create Purchase Order</field>
+        <field name="name">Create Purchase Document</field>
         <field name="res_model">create.po.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
