@@ -83,6 +83,10 @@ class PurchaseRequisitionCustom(models.Model):
         if 'state' in vals:
             if not self.env.user.has_group('purchase_requisition_custom.group_purchase_requisition_manager'):
                 raise ValidationError(_("Only Purchase Managers can update the status of a requisition."))
+            for rec in self:
+                if rec.state == 'draft' and vals['state'] != 'draft':
+                    if any(not line.product_id for line in rec.line_ids):
+                        raise ValidationError(_("You cannot change the draft state if there are lines without a product."))
         return super(PurchaseRequisitionCustom, self).write(vals)
 
     @api.model
