@@ -1,0 +1,645 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* purchase_requisition_custom
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0-20240924\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-27 03:20+0000\n"
+"PO-Revision-Date: 2026-05-27 03:20+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: purchase_requisition_custom
+#: model:mail.template,body_html:purchase_requisition_custom.email_template_draft_requisitions_reminder
+msgid ""
+"<div style=\"background-color: #F3F4F6; padding: 40px; font-family: Arial, sans-serif; text-align: center;\">\n"
+"                    <div style=\"max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: left;\">\n"
+"                        <h2 style=\"color: #333333; font-size: 20px; margin-top: 0; display: flex; align-items: center;\">\n"
+"                            <span style=\"color: #E53935; font-size: 24px; margin-right: 8px;\">🔴</span> ¡Requisiciones Pendientes de Validación!\n"
+"                        </h2>\n"
+"                        <p style=\"color: #555555; font-size: 15px; line-height: 1.5; margin-top: 15px;\">\n"
+"                            Hola <strong><t t-out=\"object.name or ''\"/></strong>,<br/><br/>\n"
+"                            Le informamos que actualmente tiene <strong><t t-out=\"len(ctx.get('draft_requisitions', []))\"/></strong> requisiciones de compra en estado de borrador esperando por su revisión en el sistema.\n"
+"                        </p>\n"
+"                        \n"
+"                        <div style=\"background-color: #F9FAFB; padding: 15px; border-radius: 6px; margin: 20px 0; border: 1px solid #E5E7EB;\">\n"
+"                            <ul style=\"margin: 0; padding-left: 20px; color: #444444; font-size: 14px;\">\n"
+"                                <t t-foreach=\"ctx.get('draft_requisitions')\" t-as=\"req\">\n"
+"                                    <li style=\"margin-bottom: 5px;\">\n"
+"                                        <strong><t t-out=\"req.name\"/></strong> - Solicitante: <t t-out=\"req.requester_id.name\"/>\n"
+"                                    </li>\n"
+"                                </t>\n"
+"                            </ul>\n"
+"                        </div>\n"
+"\n"
+"                        <div style=\"margin: 30px 0;\">\n"
+"                            <a href=\"/web\" style=\"background-color: #6366F1; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 15px; display: inline-block;\">\n"
+"                                Ver Requisiciones\n"
+"                            </a>\n"
+"                        </div>\n"
+"                        \n"
+"                        <p style=\"color: #777777; font-size: 13px; margin-bottom: 0; border-top: 1px solid #E5E7EB; padding-top: 15px;\">\n"
+"                            Saludos,<br/>\n"
+"                            <strong><t t-out=\"object.company_id.name or ''\"/></strong>\n"
+"                        </p>\n"
+"                    </div>\n"
+"                </div>\n"
+"            "
+msgstr ""
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__action_type
+msgid "Action"
+msgstr "Acción"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_needaction
+msgid "Action Needed"
+msgstr "Acción requerida"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_ids
+msgid "Activities"
+msgstr "Actividades"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Decoración de Excepción de Actividad"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_state
+msgid "Activity State"
+msgstr "Estado de la Actividad"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icono de Tipo de Actividad"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__type_id
+msgid "Agreement Type"
+msgstr "Tipo de Acuerdo"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_attachment_count
+msgid "Attachment Count"
+msgstr "Número de archivos adjuntos"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__state__authorized
+msgid "Authorized"
+msgstr "Autorizado"
+
+#. module: purchase_requisition_custom
+#: model:res.groups,name:purchase_requisition_custom.group_purchase_requisition_user
+msgid "Basic Requisition User"
+msgstr "Usuario Básico de Requisiciones"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_create_po_wizard_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_purchase_requisition_rubro
+msgid "Categories/Rubrics Catalog"
+msgstr "Catálogo de Categorías/Rubros"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__comments
+msgid "Comments"
+msgstr "Comentarios"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_create_po_wizard_form
+msgid "Create"
+msgstr "Crear"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Create PO"
+msgstr "Crear OC"
+
+#. module: purchase_requisition_custom
+#: model:ir.actions.act_window,name:purchase_requisition_custom.action_create_po_wizard
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_create_po_wizard_form
+msgid "Create Purchase Document"
+msgstr "Crear Documento de Compra"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__create_po_wizard__action_type__create_po
+msgid "Create Purchase Order"
+msgstr "Crear Orden de Compra"
+
+#. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_create_po_wizard
+msgid "Create Purchase Order Wizard"
+msgstr "Asistente para Crear Orden de Compra"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__create_po_wizard__action_type__create_pr
+msgid "Create Purchase Requisition"
+msgstr "Crear Requisición de Compra"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.actions.act_window,help:purchase_requisition_custom.action_purchase_requisition_custom
+msgid "Create a new purchase requisition"
+msgstr "Crear una nueva requisición de compra"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__create_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__create_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__create_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__create_date
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__create_date
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__create_date
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_order__custom_requisition_id
+msgid "Custom Requisition"
+msgstr "Requisición Personalizada"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__state__done
+msgid "Delivered"
+msgstr "Entregado"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__state__cancel
+msgid "Denied"
+msgstr "Denegado"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__name
+msgid "Description"
+msgstr "Descripción"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__display_name
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__display_name
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__display_name
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__display_name
+msgid "Display Name"
+msgstr "Nombre a mostrar"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__expiration_date
+msgid "Expiration Date"
+msgstr "Fecha de Expiración"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
+msgid "Expired:"
+msgstr "Expirado:"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
+msgid "Expires:"
+msgstr "Expira:"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_follower_ids
+msgid "Followers"
+msgstr "Seguidores"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Seguidores (Contactos)"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icono de Font Awesome, ej. fa-tasks"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__has_message
+msgid "Has Message"
+msgstr "Tiene mensaje"
+
+#. module: purchase_requisition_custom
+#: model:ir.module.category,description:purchase_requisition_custom.module_category_purchase_requisition
+msgid "Helps you manage purchase requisitions."
+msgstr "Ayuda a gestionar las requisiciones de compra."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__id
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__id
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__id
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__id
+msgid "ID"
+msgstr "ID"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_exception_icon
+msgid "Icon"
+msgstr "Icono"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icono para indicar una actividad de excepción."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__message_needaction
+#: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__message_unread
+msgid "If checked, new messages require your attention."
+msgstr "Si está marcado, los nuevos mensajes requieren su atención."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__message_has_error
+#: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si está marcado, algunos mensajes tienen un error de entrega."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__image
+msgid "Image"
+msgstr "Imagen"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__state__quote
+msgid "In Quotation"
+msgstr "En cotización"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_is_follower
+msgid "Is Follower"
+msgstr "Es seguidor"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard____last_update
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom____last_update
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom____last_update
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__write_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__write_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__write_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__write_date
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__write_date
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__write_date
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__line_ids
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Lines"
+msgstr "Líneas"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__line_ids
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_create_po_wizard_form
+msgid "Lines to Order"
+msgstr "Líneas a Pedir"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Archivo adjunto principal"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__manager_id
+msgid "Manager"
+msgstr "Gerente"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
+msgid "Manager:"
+msgstr "Gerente:"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_has_error
+msgid "Message Delivery error"
+msgstr "Error de entrega de mensaje"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_ids
+msgid "Messages"
+msgstr "Mensajes"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Mi fecha límite de actividad"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "New"
+msgstr "Nuevo"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Siguiente evento en el calendario de actividades"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Fecha límite de la siguiente actividad"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_summary
+msgid "Next Activity Summary"
+msgstr "Resumen de la siguiente actividad"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_type_id
+msgid "Next Activity Type"
+msgstr "Tipo de la siguiente actividad"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Número de acciones"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_has_error_counter
+msgid "Number of errors"
+msgstr "Número de errores"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr "Número de mensajes que requieren una acción"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Número de mensajes con error de entrega"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__message_unread_counter
+msgid "Number of unread messages"
+msgstr "Número de mensajes no leídos"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "Only Purchase Managers can update the status of a requisition."
+msgstr "Solo los Gerentes de Compras pueden actualizar el estado de una requisición."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__purchase_order_count
+msgid "PO Count"
+msgstr "Cantidad de OC"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__po_line_id
+msgid "PO Line"
+msgstr "Línea de OC"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__state__waiting
+msgid "PO in Process"
+msgstr "OC en Proceso"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/wizard/create_po_wizard.py:0
+#, python-format
+msgid "Please select a vendor."
+msgstr "Por favor, seleccione un proveedor."
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/wizard/create_po_wizard.py:0
+#, python-format
+msgid "Please select an agreement type."
+msgstr "Por favor, seleccione un tipo de acuerdo."
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/wizard/create_po_wizard.py:0
+#, python-format
+msgid "Please select at least one vendor."
+msgstr "Por favor, seleccione al menos un proveedor."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__product_id
+msgid "Product"
+msgstr "Producto"
+
+#. module: purchase_requisition_custom
+#: model:res.groups,name:purchase_requisition_custom.group_purchase_requisition_manager
+msgid "Purchase Manager"
+msgstr "Gerente de Compras"
+
+#. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_purchase_order
+msgid "Purchase Order"
+msgstr "Orden de compra"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__purchase_order_ids
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+#, python-format
+msgid "Purchase Orders"
+msgstr "Órdenes de Compra"
+
+#. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Purchase Requisition"
+msgstr "Requisición de Compra"
+
+#. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_purchase_requisition_line_custom
+msgid "Purchase Requisition Line Custom"
+msgstr "Línea de Requisición de Compra Personalizada"
+
+#. module: purchase_requisition_custom
+#: model:ir.actions.server,name:purchase_requisition_custom.ir_cron_draft_requisitions_reminder_ir_actions_server
+#: model:ir.cron,cron_name:purchase_requisition_custom.ir_cron_draft_requisitions_reminder
+#: model:ir.cron,name:purchase_requisition_custom.ir_cron_draft_requisitions_reminder
+#: model:mail.template,name:purchase_requisition_custom.email_template_draft_requisitions_reminder
+msgid "Purchase Requisition: Draft Reminder"
+msgstr "Requisición de Compra: Recordatorio de Borrador"
+
+#. module: purchase_requisition_custom
+#: model:ir.actions.act_window,name:purchase_requisition_custom.action_purchase_requisition_custom
+#: model:ir.module.category,name:purchase_requisition_custom.module_category_purchase_requisition
+#: model:ir.ui.menu,name:purchase_requisition_custom.menu_purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_tree
+msgid "Purchase Requisitions"
+msgstr "Requisiciones de Compra"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__product_qty
+msgid "Quantity"
+msgstr "Cantidad"
+
+#. module: purchase_requisition_custom
+#: model:mail.template,subject:purchase_requisition_custom.email_template_draft_requisitions_reminder
+msgid "Recordatorio: Requisiciones de Compra Pendientes"
+msgstr "Recordatorio: Requisiciones de Compra Pendientes"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__name
+msgid "Reference"
+msgstr "Referencia"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__state__draft
+msgid "Request"
+msgstr "Solicitud"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__requester_id
+msgid "Requester"
+msgstr "Solicitante"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
+msgid "Requester:"
+msgstr "Solicitante:"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__requires_vehicle
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__requires_vehicle
+msgid "Requires Vehicle"
+msgstr "Requiere Vehículo"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__requisition_id
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__requisition_id
+msgid "Requisition"
+msgstr "Requisición"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_user_id
+msgid "Responsible User"
+msgstr "Usuario Responsable"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__rubro_id
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_rubro_form
+msgid "Rubro"
+msgstr "Rubro"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
+msgid "Rubro:"
+msgstr "Rubro:"
+
+#. module: purchase_requisition_custom
+#: model:ir.actions.act_window,name:purchase_requisition_custom.action_purchase_requisition_rubro
+#: model:ir.ui.menu,name:purchase_requisition_custom.menu_purchase_requisition_rubro
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_rubro_tree
+msgid "Rubros"
+msgstr "Rubros"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Error de entrega de SMS"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_search
+msgid "Search Requisitions"
+msgstr "Buscar Requisiciones"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__state
+msgid "Status"
+msgstr "Estado"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Tipo de actividad de excepción registrada."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__product_uom_id
+msgid "Unit of Measure"
+msgstr "Unidad de Medida"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_unread
+msgid "Unread Messages"
+msgstr "Mensajes no leídos"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "Contador de mensajes no leídos"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__vehicle_id
+msgid "Vehicle"
+msgstr "Vehículo"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "Vehicle is mandatory when Rubro requires it."
+msgstr "El vehículo es obligatorio cuando el rubro lo requiere."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__partner_id
+msgid "Vendor"
+msgstr "Proveedor"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__vendor_ids
+msgid "Vendors"
+msgstr "Proveedores"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__website_message_ids
+msgid "Website Messages"
+msgstr "Mensajes del sitio web"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__website_message_ids
+msgid "Website communication history"
+msgstr "Historial de comunicación del sitio web"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid ""
+"You cannot change the draft state if there are lines without a product."
+msgstr "No puede cambiar el estado borrador si hay líneas sin producto."
