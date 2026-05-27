@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "purchase_requisition_custom",
+    'name': "Purchase Requisition Custom",
     'summary': "Purchase custom module",
     'description': """
         Purchase custom module for san_mex
