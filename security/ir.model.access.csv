@@ -7,3 +7,4 @@ access_purchase_requisition_line_user,purchase.requisition.line.custom.user,mode
 access_purchase_requisition_line_manager,purchase.requisition.line.custom.manager,model_purchase_requisition_line_custom,group_purchase_requisition_manager,1,1,1,1
 access_create_po_wizard_manager,create.po.wizard.manager,model_create_po_wizard,group_purchase_requisition_manager,1,1,1,1
 access_purchase_order_requisition_user,purchase.order.requisition.user,purchase.model_purchase_order,group_purchase_requisition_user,1,0,0,0
+access_purchase_order_requisition_warehouse,purchase.order.requisition.warehouse,purchase.model_purchase_order,group_purchase_requisition_warehouse,1,1,0,0

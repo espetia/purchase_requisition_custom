@@ -13,11 +13,18 @@
         <field name="category_id" ref="module_category_purchase_requisition"/>
     </record>
 
+    <!-- Warehouse Agent Group -->
+    <record id="group_purchase_requisition_warehouse" model="res.groups">
+        <field name="name">Warehouse Agent</field>
+        <field name="category_id" ref="module_category_purchase_requisition"/>
+        <field name="implied_ids" eval="[(4, ref('group_purchase_requisition_user'))]"/>
+    </record>
+
     <!-- Manager Group -->
     <record id="group_purchase_requisition_manager" model="res.groups">
         <field name="name">Purchase Manager</field>
         <field name="category_id" ref="module_category_purchase_requisition"/>
-        <field name="implied_ids" eval="[(4, ref('group_purchase_requisition_user')), (4, ref('purchase.group_purchase_manager'))]"/>
+        <field name="implied_ids" eval="[(4, ref('group_purchase_requisition_warehouse')), (4, ref('purchase.group_purchase_manager'))]"/>
     </record>
 
     <!-- Record Rules -->
