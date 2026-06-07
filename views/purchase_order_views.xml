@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_order_form_warehouse" model="ir.ui.view">
+        <field name="name">purchase.order.form.warehouse</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Invisible field to hold boolean -->
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="is_warehouse_agent_only" invisible="1"/>
+            </xpath>
+
+            <!-- Make key fields read-only if is_warehouse_agent_only is True -->
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|', ('state', 'in', ['cancel', 'done', 'purchase']), ('is_warehouse_agent_only', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_ref']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|', ('state', 'in', ['cancel', 'done', 'purchase']), ('is_warehouse_agent_only', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|', ('state', 'in', ['cancel', 'done', 'purchase']), ('is_warehouse_agent_only', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|', ('state', 'in', ['cancel', 'done', 'purchase']), ('is_warehouse_agent_only', '=', True)]}</attribute>
+            </xpath>
+            <!-- Make sure date_planned and date_invoice_partner are editable -->
+            <!-- If date_invoice_partner isn't standard, it might not exist in the form, but let's assume it does or is added elsewhere. -->
+        </field>
+    </record>
+</odoo>

@@ -7,6 +7,7 @@ class PurchaseRequisitionCustom(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    requisition_name = fields.Char(string='Name', required=True)
     requester_id = fields.Many2one('res.users', string='Requester', default=lambda self: self.env.user)
     rubro_id = fields.Many2one('purchase.requisition.rubro', string='Rubro')
     manager_id = fields.Many2one(
@@ -38,7 +39,7 @@ class PurchaseRequisitionCustom(models.Model):
         Computes the total number of purchase orders linked to this requisition.
         """
         for rec in self:
-            if self.env.user.has_group('purchase.group_purchase_user'):
+            if self.env.user.has_group('purchase_requisition_custom.group_purchase_requisition_user') or self.env.user.has_group('purchase.group_purchase_user'):
                 rec.purchase_order_count = len(rec.sudo().purchase_order_ids)
             else:
                 rec.purchase_order_count = 0
@@ -80,8 +81,8 @@ class PurchaseRequisitionCustom(models.Model):
         """
         Overrides the write method to prevent non-managers from updating the state.
         """
-        if 'state' in vals:
-            if not self.env.user.has_group('purchase_requisition_custom.group_purchase_requisition_manager'):
+        if 'state' in vals: 
+            if not self.env.user.has_group('purchase_requisition_custom.group_purchase_requisition_warehouse'):
                 raise ValidationError(_("Only Purchase Managers can update the status of a requisition."))
             for rec in self:
                 if rec.state == 'draft' and vals['state'] != 'draft':
