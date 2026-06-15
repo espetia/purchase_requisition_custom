@@ -44,7 +44,7 @@ class PurchaseOrder(models.Model):
                     if all_pos:
                         states = [po.state for po in all_pos]
                         if all(s in ('purchase', 'done') for s in states):
-                            req.state = 'authorized'
+                            req.sudo().write({'state': 'authorized'})
                         elif all(s in ('cancel', 'reject') for s in states):
-                            req.state = 'cancel'
+                            req.sudo().write({'state': 'cancel'})
         return res
