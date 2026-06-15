@@ -9,7 +9,7 @@ class PurchaseRequisitionCustom(models.Model):
     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     requisition_name = fields.Char(string='Name', required=True)
     requester_id = fields.Many2one('res.users', string='Requester', default=lambda self: self.env.user)
-    rubro_id = fields.Many2one('purchase.requisition.rubro', string='Rubro')
+    rubro_id = fields.Many2one('purchase.requisition.rubro', string='Rubro', required=True)
     manager_id = fields.Many2one(
         'res.users', 
         string='Manager', 
@@ -18,7 +18,7 @@ class PurchaseRequisitionCustom(models.Model):
     )
     requires_vehicle = fields.Boolean(related='rubro_id.requires_vehicle')
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle')
-    expiration_date = fields.Date(string='Expiration Date')
+    expiration_date = fields.Date(string='Expiration Date', required=True)
     state = fields.Selection([
         ('draft', 'Request'),
         ('quote', 'In Quotation'),
@@ -29,7 +29,7 @@ class PurchaseRequisitionCustom(models.Model):
     ], string='Status', default='draft', tracking=True, group_expand='_group_expand_states')
     
     comments = fields.Html(string='Comments')
-    line_ids = fields.One2many('purchase.requisition.line.custom', 'requisition_id', string='Lines')
+    line_ids = fields.One2many('purchase.requisition.line.custom', 'requisition_id', string='Lines', required=True)
     purchase_order_ids = fields.One2many('purchase.order', 'custom_requisition_id', string='Purchase Orders')
     purchase_order_count = fields.Integer(string='PO Count', compute='_compute_purchase_order_count')
 
@@ -96,9 +96,21 @@ class PurchaseRequisitionCustom(models.Model):
         Overrides the create method to assign a unique sequence reference 
         to the requisition name if it is still set to 'New'.
         """
+        if not vals.get('line_ids'):
+            raise ValidationError(_("You cannot create a requisition without lines."))
+
         if vals.get('name', _('New')) == _('New'):
             vals['name'] = self.env['ir.sequence'].next_by_code('purchase.requisition.custom') or _('New')
-        return super(PurchaseRequisitionCustom, self).create(vals)
+        requisition = super(PurchaseRequisitionCustom, self).create(vals)
+
+        template = self.env.ref('purchase_requisition_custom.email_template_draft_requisitions_reminder', raise_if_not_found=False)
+        if template and requisition.manager_id:
+            template.with_context(draft_requisitions=requisition).send_mail(
+                requisition.manager_id.id,
+                force_send=False
+            )
+
+        return requisition
 
     @api.model
     def _cron_send_draft_requisitions_reminder(self):
