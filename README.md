@@ -1,6 +1,6 @@
 # Purchase Requisition Custom
 
-**purchase_requisition_custom** is a custom Odoo 15 module that adds a preliminary layer before the creation of Purchase Orders (POs). It allows basic users to create "Purchase Requisitions" that the Purchasing Department later processes to generate actual POs.
+**purchase_requisition_custom** is a custom Odoo 15 module that adds a preliminary layer before the creation of Purchase Orders (POs). It allows basic users to create "Purchase Requisitions" that the Purchasing Department later processes to generate actual POs — or, alternatively, relate to a Minor Expense (petty cash) record.
 
 ## Features
 
@@ -13,7 +13,7 @@
   * Integrates with Odoo's Chatter (mail.thread, mail.activity.mixin) and an HTML Comments field.
 * **Requisition Lines:**
   * Define products, descriptions, quantities, and units of measure.
-  * Automatically loads the default unit of measure upon selecting a product.
+  * Each line tracks how it was resolved: `po_line_id` if converted into a Purchase Order line, or `expense_register_id` if related to a Minor Expense — the two are mutually exclusive.
 * **Categories / Rubros:**
   * Manage requisition categories.
   * Support for a `requires_vehicle` flag, enforcing vehicle selection in the requisition header.
@@ -29,6 +29,14 @@
 * Excludes lines that are already linked to a PO.
 * Keeps full traceability by associating the newly generated POs back to the parent Requisition.
 
+### Minor Expense Wizard
+* An alternative to the PO wizard: lets a Purchase Manager select one or more requisition lines and relate them to a single Minor Expense (`expense.register`, type "Minor Casher") from the `minor_expenses` module — e.g. for small petty-cash purchases instead of a formal vendor PO.
+* All of the expense's required fields (vendor, concept, product, amount, area, payment journal, description) are captured manually in the wizard; they are independent of the selected lines' own products.
+* Excludes lines already linked to a PO or to another Minor Expense (mutually exclusive with the PO path).
+* Relating a Minor Expense immediately moves the Requisition to `Authorized`, without waiting for the rest of the lines to be resolved. This transition is one-directional — cancelling/deleting the expense afterward does not revert the Requisition's state.
+* The "Employee" field on the created expense is always the acting Purchase Manager (not editable), and the button is only visible to managers who also hold the `minor_expenses` module's basic expense-register group — this keeps the whole flow working without ever needing to bypass access rules (`sudo()`).
+* Full traceability via a smart button and a "Minor Expenses" tab on the Requisition form, mirroring the existing Purchase Orders ones.
+
 ### Smart Automations & Status Sync
 * **Automatic Status Updates:** Intercepts PO status changes. 
   * If all child POs reach the `purchase` or `done` states, the Requisition automatically moves to `Authorized`.
@@ -36,10 +44,10 @@
 * **Cron Job (Draft Reminders):** A daily automated action groups pending draft requisitions by Manager and sends a consolidated, modern HTML email notification directly to them via the Odoo mail queue.
 
 ### Security and Access Rights
-* **Basic Requisition User:** Can create, read, and write their *own* requisitions. Cannot delete.
-* **Purchase Manager:** Has full CRUD access across *all* requisitions, and exclusive rights to update the Requisition's status and generate POs.
+* **Basic Requisition User:** Can create, read, and write their *own* requisitions. Cannot delete. Can view Minor Expenses linked to their own requisitions (read-only).
+* **Purchase Manager:** Has full CRUD access across *all* requisitions, exclusive rights to update the Requisition's status and generate POs, and can view all requisition-linked Minor Expenses. Creating a Minor Expense additionally requires the manager to hold `minor_expenses`' own basic expense-register group — this is assigned separately, not implied automatically by the Purchase Manager group.
 
 ## Technical Details
-* **Depends on:** `base`, `purchase`, `mail`, `fleet`
+* **Depends on:** `base`, `purchase`, `purchase_requisition`, `mail`, `fleet`, `minor_expenses`
 * **Version:** 15.0.1.0.0
 * **Author:** Carlos Espetia

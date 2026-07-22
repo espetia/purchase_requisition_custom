@@ -7,8 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 `purchase_requisition_custom` is a custom Odoo 15 addon (not a standalone app) that adds an internal
 "Purchase Requisition" pre-approval layer in front of Odoo's native Purchase Orders. Basic users submit
 requisitions; Purchase Managers/Warehouse Agents convert approved lines into real `purchase.order` records
-via a wizard. It depends on `base`, `purchase`, `purchase_requisition` (Odoo's native agreements module),
-`mail`, and `fleet`.
+via a wizard — or, alternatively, relate lines to a Minor Expense (petty-cash) record from the `minor_expenses`
+addon via a second wizard. It depends on `base`, `purchase`, `purchase_requisition` (Odoo's native agreements
+module), `mail`, `fleet`, and `minor_expenses`.
 
 This repo (`/home/espetia/dev/odoo15/addons/purchase_requisition_custom`) is only this one addon. The Odoo
 instance lives one level up at `/home/espetia/dev/odoo15`, which runs via `docker-compose.yml` (Postgres 13 +
@@ -43,12 +44,16 @@ kanban, PO generation wizard) after upgrading.
   force a `vehicle_id` (fleet) via `requires_vehicle` (related field + `@api.constrains`). Inherits
   `mail.thread`/`mail.activity.mixin` for chatter.
 - **`purchase.requisition.line.custom`** (`requisition_line.py`) — requisition lines. `po_line_id` links a
-  line to the `purchase.order.line` it was converted into, once generated; this is the flag used everywhere
-  to detect "already ordered" lines.
+  line to the `purchase.order.line` it was converted into, once generated; `expense_register_id` links it to
+  the `expense.register` it was resolved by instead. These two are mutually exclusive — a line is resolved by
+  *either* a PO or a Minor Expense, never both, and both wizards filter/reject lines the other has already
+  claimed.
 - **`purchase.requisition.rubro`** (`rubro.py`) — simple category catalog; `requires_vehicle` drives the
   constraint on the header.
 - **`purchase.order`** (`purchase_order.py`, `_inherit`) — adds `custom_requisition_id` back-link and syncs
   requisition state from PO state changes (see below).
+- **`expense.register`** (`models/expense_register.py`, `_inherit` of `minor_expenses`' own model) — adds
+  `custom_requisition_id` back-link, mirroring the `purchase.order` inherit above.
 
 ### State machine and permission enforcement (business logic, not just `ir.rule`)
 
@@ -65,6 +70,12 @@ in `security/security.xml` and `security/ir.model.access.csv`:
   PO is `cancel`/`reject` → requisition becomes `cancel`. This uses `sudo()` deliberately so the state
   transition isn't blocked by the same-user's own group check above — when touching this logic, keep the
   `sudo()` (see commit `190fbc5`) rather than removing it to "fix" a permission error.
+- `CreateExpenseWizard.action_create_expense()` (see below) is a **second, independent path** to
+  `authorized`: relating even one Minor Expense flips the requisition to `authorized` immediately, regardless
+  of whether other lines are still unresolved. Unlike the PO-driven sync above, this write is **not**
+  `sudo()`'d — the wizard is only reachable by a Purchase Manager, who already passes the `write()` group
+  check on their own. There is no reverse sync: cancelling/deleting the `expense.register` afterward does not
+  revert the requisition's state.
 
 When modifying access control, changes usually need to land in *three* places at once: the `res.groups` /
 `ir.rule` definitions in `security/security.xml`, the CRUD matrix in `security/ir.model.access.csv`, and the
@@ -77,6 +88,15 @@ access vs. row visibility vs. field/state-transition rules).
 (can change requisition state, limited PO field edits) ⊂ `group_purchase_requisition_manager` (implies
 native `purchase.group_purchase_manager`, full CRUD everywhere, generates POs). Record rules restrict basic
 users to `requester_id = user.id`; managers see all.
+
+Two more `ir.rule`s here govern `expense.register` (a model owned by `minor_expenses`, not this addon) for
+requisition-linked records specifically: `rule_expense_register_requisition_user` scopes basic users to
+expenses on their own requisitions (`custom_requisition_id.requester_id = user.id`), and
+`rule_expense_register_requisition_manager` lets any Purchase Manager see all requisition-linked expenses
+(`custom_requisition_id != False`) regardless of who created them — this exists because `minor_expenses`'
+own native rule restricts a record to its `user_id`, which would otherwise hide one manager's Minor Expense
+from another manager viewing the same requisition. Deliberately, `group_purchase_requisition_manager` does
+**not** imply `minor_expenses.group_expense_register_user`/`_admin` — see the wizard note above for why.
 
 ### PO generation wizard (`wizard/create_po_wizard.py`)
 
@@ -92,6 +112,37 @@ flows selected via `action_type`:
   agreement). Immediately calls `pr.action_in_progress()` to confirm the native requisition.
 
 Both flows flip the custom requisition's `state` to `waiting` once every one of its lines has a `po_line_id`.
+
+### Minor Expense wizard (`wizard/create_expense_wizard.py`)
+
+`CreateExpenseWizard` is the alternative to the PO wizard: opened the same way (contextual action reading
+`active_id`/`active_model`), it lets a Purchase Manager select one or more requisition lines (`default_get`
+excludes lines with a `po_line_id` **or** an `expense_register_id` already set) and relate them all to a
+single new `expense.register` record (`type='minor_casher'`, `apply_on='provider_invoice'`). Every field
+`expense.register` requires (vendor, concept, product, amount, area/analytic account, payment journal,
+description) is captured manually in the wizard form — it is *not* derived from the selected lines, since a
+single Minor Expense can bundle lines with different products. `action_create_expense()`:
+
+1. Re-validates server-side (not just via the view domain) that no selected line already has a `po_line_id`
+   or `expense_register_id` — raises `UserError` otherwise.
+2. Replicates `expense.register`'s own fund-lookup onchange manually (`expense.fund` search by
+   `manager_ids`), since `create()` never fires onchanges.
+3. Creates the `expense.register` with `custom_requisition_id` set, stamps `expense_register_id` back onto
+   every selected line, then writes `state='authorized'` on the requisition (see state machine notes above).
+
+The wizard's `user_id` field ("Employee") is fixed to the acting manager and not editable — this is
+deliberate, not an oversight: `minor_expenses` has its own `ir.rule`s scoped to `user_id = user.id` (and an
+equivalent rule on `expense.fund` via `manager_ids`), so keeping `user_id` as the acting user is what lets the
+whole flow work without `sudo()` anywhere. Making it editable would let a manager create a record they can no
+longer read back.
+
+The "Create Minor Expense" button on the requisition form (`views/requisition_views.xml`) is only visible
+when the computed field `can_create_minor_expense` is `True`, which requires **both**
+`purchase.group_purchase_manager` and `minor_expenses.group_expense_register_user` — the view's `groups`
+attribute can't express an AND condition, so this is a Python compute checked via `attrs`, mirroring the
+existing `is_warehouse_agent_only` compute pattern in `purchase_order.py`. Membership in the `minor_expenses`
+group is **not** granted automatically (no `implied_ids` link) — it must be assigned to a Purchase Manager
+separately by whoever administers users/groups.
 
 ### Automation (`data/`)
 
