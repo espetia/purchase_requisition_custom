@@ -8,8 +8,11 @@
             <field name="arch" type="xml">
                 <form string="Purchase Requisition">
                     <header>
-                        <button name="%(action_create_po_wizard)d" string="Create PO" type="action" class="btn-primary" 
+                        <button name="%(action_create_po_wizard)d" string="Create PO" type="action" class="btn-primary"
                                 states="quote,waiting,authorized,done" groups="purchase.group_purchase_manager"/>
+                        <button name="%(action_create_expense_wizard)d" string="Create Minor Expense" type="action" class="btn-secondary"
+                                states="quote,waiting,authorized,done" attrs="{'invisible': [('can_create_minor_expense', '=', False)]}"/>
+                        <field name="can_create_minor_expense" invisible="1"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,quote,waiting,authorized,done,cancel" options="{'clickable': '1'}"/>
                     </header>
                     <sheet>
@@ -17,6 +20,10 @@
                             <button name="action_view_purchase_orders" type="object" class="oe_stat_button" icon="fa-shopping-cart"
                                     attrs="{'invisible': [('purchase_order_count', '=', 0)]}" groups="purchase_requisition_custom.group_purchase_requisition_user">
                                 <field name="purchase_order_count" widget="statinfo" string="Purchase Orders"/>
+                            </button>
+                            <button name="action_view_expense_registers" type="object" class="oe_stat_button" icon="fa-money"
+                                    attrs="{'invisible': [('expense_register_count', '=', 0)]}" groups="purchase_requisition_custom.group_purchase_requisition_user">
+                                <field name="expense_register_count" widget="statinfo" string="Minor Expenses"/>
                             </button>
                         </div>
                         <div class="oe_title">
@@ -50,6 +57,7 @@
                                         <field name="product_qty"/>
                                         <field name="product_uom_id" options="{'no_create': True, 'no_create_edit': True}"/>
                                         <field name="po_line_id" readonly="1" groups="purchase_requisition_custom.group_purchase_requisition_user"/>
+                                        <field name="expense_register_id" readonly="1" groups="purchase_requisition_custom.group_purchase_requisition_user"/>
                                         <field name="image" widget="image" optional="hide"/>
                                     </tree>
                                 </field>
@@ -62,6 +70,19 @@
                                         <field name="date_order"/>
                                         <field name="date_planned"/>
                                         <field name="amount_total" widget="monetary"/>
+                                        <field name="state"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <button name="get_formview_action" type="object" string="Open" icon="fa-external-link" class="oe_highlight"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Minor Expenses" groups="purchase_requisition_custom.group_purchase_requisition_user">
+                                <field name="expense_register_ids" readonly="1">
+                                    <tree no_open="1" string="Minor Expenses">
+                                        <field name="date"/>
+                                        <field name="partner_id"/>
+                                        <field name="concept"/>
+                                        <field name="amount" widget="monetary"/>
                                         <field name="state"/>
                                         <field name="currency_id" invisible="1"/>
                                         <button name="get_formview_action" type="object" string="Open" icon="fa-external-link" class="oe_highlight"/>

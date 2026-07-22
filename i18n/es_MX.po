@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0-20240924\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-15 16:54+0000\n"
-"PO-Revision-Date: 2026-06-15 16:54+0000\n"
+"POT-Creation-Date: 2026-07-22 05:12+0000\n"
+"PO-Revision-Date: 2026-07-22 05:12+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -99,6 +99,16 @@ msgid "Agreement Type"
 msgstr "Tipo de Acuerdo"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__amount
+msgid "Amount"
+msgstr "Monto"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__depto_id
+msgid "Area"
+msgstr "Área"
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_attachment_count
 msgid "Attachment Count"
 msgstr "Número de archivos adjuntos"
@@ -114,6 +124,12 @@ msgid "Basic Requisition User"
 msgstr "Usuario Básico de Requisiciones"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__can_create_minor_expense
+msgid "Can Create Minor Expense"
+msgstr "Puede Crear Gastos Menores"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_create_expense_wizard_form
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_create_po_wizard_form
 msgid "Cancel"
 msgstr "Cancelar"
@@ -129,9 +145,27 @@ msgid "Comments"
 msgstr "Comentarios"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__concept
+msgid "Concept"
+msgstr "Concepto"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_create_expense_wizard_form
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_create_po_wizard_form
 msgid "Create"
 msgstr "Crear"
+
+#. module: purchase_requisition_custom
+#: model:ir.actions.act_window,name:purchase_requisition_custom.action_create_expense_wizard
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_create_expense_wizard_form
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Create Minor Expense"
+msgstr "Crear Gasto Menor"
+
+#. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_create_expense_wizard
+msgid "Create Minor Expense Wizard"
+msgstr ""
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
@@ -165,6 +199,7 @@ msgid "Create a new purchase requisition"
 msgstr "Crear una nueva requisición de compra"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__create_uid
@@ -173,6 +208,7 @@ msgid "Created by"
 msgstr "Creado por"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__create_date
@@ -181,9 +217,20 @@ msgid "Created on"
 msgstr "Creado el"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__currency_id
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_expense_register__custom_requisition_id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_order__custom_requisition_id
 msgid "Custom Requisition"
 msgstr "Requisición Personalizada"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__date
+msgid "Date"
+msgstr "Fecha"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__state__done
@@ -196,17 +243,30 @@ msgid "Denied"
 msgstr "Denegado"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__description
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__name
 msgid "Description"
 msgstr "Descripción"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__display_name
 msgid "Display Name"
 msgstr "Nombre a mostrar"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__user_id
+msgid "Employee"
+msgstr "Empleado"
+
+#. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_expense_register
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__expense_register_id
+msgid "Expense Register"
+msgstr "Registro de Gastos"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__expiration_date
@@ -239,6 +299,11 @@ msgid "Font awesome icon e.g. fa-tasks"
 msgstr "Icono de Font Awesome, ej. fa-tasks"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__fortnight
+msgid "Fortnight"
+msgstr "Quincena"
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__has_message
 msgid "Has Message"
 msgstr "Tiene mensaje"
@@ -249,6 +314,7 @@ msgid "Helps you manage purchase requisitions."
 msgstr "Ayuda a gestionar las requisiciones de compra."
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__id
@@ -299,6 +365,7 @@ msgid "Is Warehouse Agent Only"
 msgstr "Solo Agente de Almacén"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom____last_update
@@ -307,6 +374,7 @@ msgid "Last Modified on"
 msgstr "Última modificación el"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__write_uid
@@ -315,6 +383,7 @@ msgid "Last Updated by"
 msgstr "Última actualización por"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__write_date
@@ -323,10 +392,22 @@ msgid "Last Updated on"
 msgstr "Última actualización el"
 
 #. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/wizard/create_expense_wizard.py:0
+#, python-format
+msgid "Line \"%s\" is already resolved by a Purchase Order or Minor Expense."
+msgstr ""
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__line_ids
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid "Lines"
 msgstr "Líneas"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__line_ids
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_create_expense_wizard_form
+msgid "Lines to Expense"
+msgstr "Lieneas"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__line_ids
@@ -360,6 +441,19 @@ msgid "Messages"
 msgstr "Mensajes"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__expense_register_count
+msgid "Minor Expense Count"
+msgstr ""
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__expense_register_ids
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+#, python-format
+msgid "Minor Expenses"
+msgstr ""
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__my_activity_date_deadline
 msgid "My Activity Deadline"
 msgstr "Mi fecha límite de actividad"
@@ -378,11 +472,6 @@ msgstr "Nombre"
 #, python-format
 msgid "New"
 msgstr ""
-
-#. module: purchase_requisition_custom
-#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr "Siguiente evento en el calendario de actividades"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_date_deadline
@@ -452,6 +541,11 @@ msgid "PO in Process"
 msgstr "OC en Proceso"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__payment_journal_id
+msgid "Payment Journal"
+msgstr "Diario de Pago"
+
+#. module: purchase_requisition_custom
 #: code:addons/purchase_requisition_custom/wizard/create_po_wizard.py:0
 #, python-format
 msgid "Please select a vendor."
@@ -464,12 +558,19 @@ msgid "Please select an agreement type."
 msgstr "Por favor, seleccione un tipo de acuerdo."
 
 #. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/wizard/create_expense_wizard.py:0
+#, python-format
+msgid "Please select at least one line to expense."
+msgstr "Por favor, selecciona al menos una línea para gastar."
+
+#. module: purchase_requisition_custom
 #: code:addons/purchase_requisition_custom/wizard/create_po_wizard.py:0
 #, python-format
 msgid "Please select at least one vendor."
 msgstr "Por favor, seleccione al menos un proveedor."
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__product_id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__product_id
 msgid "Product"
 msgstr "Producto"
@@ -520,6 +621,16 @@ msgid "Purchase Requisitions"
 msgstr "Requisiciones de Compra"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__create_expense_wizard__fortnight__q1
+msgid "Q1"
+msgstr ""
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__create_expense_wizard__fortnight__q2
+msgid "Q2"
+msgstr ""
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__product_qty
 msgid "Quantity"
 msgstr "Cantidad"
@@ -556,6 +667,7 @@ msgid "Requires Vehicle"
 msgstr "Requiere Vehículo"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__requisition_id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__requisition_id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__requisition_id
 msgid "Requisition"
@@ -633,6 +745,7 @@ msgid "Unread Messages Counter"
 msgstr "Contador de mensajes no leídos"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__vehicle_id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__vehicle_id
 msgid "Vehicle"
 msgstr "Vehículo"
@@ -649,6 +762,7 @@ msgid "Vehicle:"
 msgstr "Vehículo:"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__partner_id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__partner_id
 msgid "Vendor"
 msgstr "Proveedor"

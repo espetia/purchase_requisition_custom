@@ -32,6 +32,9 @@ class PurchaseRequisitionCustom(models.Model):
     line_ids = fields.One2many('purchase.requisition.line.custom', 'requisition_id', string='Lines', required=True)
     purchase_order_ids = fields.One2many('purchase.order', 'custom_requisition_id', string='Purchase Orders')
     purchase_order_count = fields.Integer(string='PO Count', compute='_compute_purchase_order_count')
+    expense_register_ids = fields.One2many('expense.register', 'custom_requisition_id', string='Minor Expenses')
+    expense_register_count = fields.Integer(string='Minor Expense Count', compute='_compute_expense_register_count')
+    can_create_minor_expense = fields.Boolean(compute='_compute_can_create_minor_expense')
 
     @api.depends('purchase_order_ids')
     def _compute_purchase_order_count(self):
@@ -43,6 +46,30 @@ class PurchaseRequisitionCustom(models.Model):
                 rec.purchase_order_count = len(rec.sudo().purchase_order_ids)
             else:
                 rec.purchase_order_count = 0
+
+    @api.depends('expense_register_ids')
+    def _compute_expense_register_count(self):
+        """
+        Computes the total number of minor expenses linked to this requisition.
+        """
+        for rec in self:
+            if self.env.user.has_group('purchase_requisition_custom.group_purchase_requisition_user') or self.env.user.has_group('purchase.group_purchase_user'):
+                rec.expense_register_count = len(rec.sudo().expense_register_ids)
+            else:
+                rec.expense_register_count = 0
+
+    @api.depends_context('uid')
+    def _compute_can_create_minor_expense(self):
+        """
+        A Minor Expense can only be created by a Purchase Manager who is also
+        a member of the minor_expenses module's basic expense register group.
+        """
+        can_create = (
+            self.env.user.has_group('purchase.group_purchase_manager')
+            and self.env.user.has_group('minor_expenses.group_expense_register_user')
+        )
+        for rec in self:
+            rec.can_create_minor_expense = can_create
 
     @api.model
     def _group_expand_states(self, states, domain, order):
@@ -62,6 +89,21 @@ class PurchaseRequisitionCustom(models.Model):
             'name': _('Purchase Orders'),
             'type': 'ir.actions.act_window',
             'res_model': 'purchase.order',
+            'view_mode': 'tree,form',
+            'domain': [('custom_requisition_id', '=', self.id)],
+            'context': {'default_custom_requisition_id': self.id},
+        }
+
+    def action_view_expense_registers(self):
+        """
+        Returns a dictionary representing an action to open the tree/form view
+        of the minor expenses associated with this requisition.
+        """
+        self.ensure_one()
+        return {
+            'name': _('Minor Expenses'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'expense.register',
             'view_mode': 'tree,form',
             'domain': [('custom_requisition_id', '=', self.id)],
             'context': {'default_custom_requisition_id': self.id},

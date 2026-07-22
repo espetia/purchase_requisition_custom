@@ -9,7 +9,7 @@
     'website': "http://www.carlosespetia.com",
     'category': 'Uncategorized',
     'version': '15.0.1.0.0',
-    'depends': ['base', 'purchase', 'purchase_requisition', 'mail', 'fleet'],
+    'depends': ['base', 'purchase', 'purchase_requisition', 'mail', 'fleet', 'minor_expenses'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
@@ -17,6 +17,7 @@
         'data/mail_template_data.xml',
         'data/cron_data.xml',
         'wizard/create_po_wizard_views.xml',
+        'wizard/create_expense_wizard_views.xml',
         'views/requisition_views.xml',
         'views/rubro_views.xml',
     ],

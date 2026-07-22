@@ -43,4 +43,20 @@
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_purchase_requisition_manager'))]"/>
     </record>
+
+    <!-- Expense Register: Basic User can see minor expenses linked to their own requisitions -->
+    <record id="rule_expense_register_requisition_user" model="ir.rule">
+        <field name="name">Expense Register: Requisition-Linked, Own Requisitions Only</field>
+        <field name="model_id" ref="minor_expenses.model_expense_register"/>
+        <field name="domain_force">[('custom_requisition_id.requester_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_purchase_requisition_user'))]"/>
+    </record>
+
+    <!-- Expense Register: Purchase Managers can see all requisition-linked minor expenses -->
+    <record id="rule_expense_register_requisition_manager" model="ir.rule">
+        <field name="name">Expense Register: Requisition-Linked, All Managers</field>
+        <field name="model_id" ref="minor_expenses.model_expense_register"/>
+        <field name="domain_force">[('custom_requisition_id', '!=', False)]</field>
+        <field name="groups" eval="[(4, ref('group_purchase_requisition_manager'))]"/>
+    </record>
 </odoo>
