@@ -95,6 +95,11 @@ msgstr "Icono de Tipo de Actividad"
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Add your comments..."
+msgstr "Agrega tus comentarios..."
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid "Additional comments for this line..."
 msgstr "Comentarios adicionales para esta línea..."
 
@@ -167,9 +172,16 @@ msgid "Comment"
 msgstr "Comentario"
 
 #. module: purchase_requisition_custom
-#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__comments
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__text_comment
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid "Comments"
 msgstr "Comentarios"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__comments
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Comments (Legacy)"
+msgstr "Comentarios (Histórico)"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__concept
@@ -359,6 +371,11 @@ msgstr "Icono de Font Awesome, ej. fa-tasks"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__fortnight
 msgid "Fortnight"
 msgstr "Quincena"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__has_legacy_comments
+msgid "Has Legacy Comments"
+msgstr "Tiene Comentarios Históricos"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__has_message

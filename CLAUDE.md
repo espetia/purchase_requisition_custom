@@ -49,6 +49,9 @@ kanban, PO generation wizard) after upgrading.
   decides whether `rubro_id` (category) is shown and required (view `attrs` + `@api.constrains`), and that
   `rubro_id` can in turn force a `vehicle_id` (fleet) via `requires_vehicle` (same pattern). UI labels differ
   from field names: `name` = "Folio", `requisition_name` = "Purchase Reference", `manager_id` = "Process Area".
+  Comments are captured in `text_comment` (plain Text). The old `comments` Html field is kept `readonly` only to
+  preserve historical data (it allowed embedded images); the form shows it only when `has_legacy_comments`
+  (computed with `odoo.tools.is_html_empty`, so empty editor markup like `<p><br></p>` is hidden).
   Inherits `mail.thread`/`mail.activity.mixin` for chatter.
 - **`purchase.requisition.department`** (`department.py`) — department catalog (`name`, `need_rubro`), under
   Purchase > Configuration.

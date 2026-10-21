@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+from odoo.tools import is_html_empty
 
 class PurchaseRequisitionCustom(models.Model):
     _name = 'purchase.requisition.custom'
@@ -30,7 +31,9 @@ class PurchaseRequisitionCustom(models.Model):
         ('cancel', 'Denied')
     ], string='Status', default='draft', tracking=True, group_expand='_group_expand_states')
     
-    comments = fields.Html(string='Comments')
+    comments = fields.Html(string='Comments (Legacy)', readonly=True)
+    has_legacy_comments = fields.Boolean(compute='_compute_has_legacy_comments')
+    text_comment = fields.Text(string='Comments')
     line_ids = fields.One2many('purchase.requisition.line.custom', 'requisition_id', string='Lines', required=True)
     purchase_order_ids = fields.One2many('purchase.order', 'custom_requisition_id', string='Purchase Orders')
     purchase_order_count = fields.Integer(string='PO Count', compute='_compute_purchase_order_count')
@@ -59,6 +62,15 @@ class PurchaseRequisitionCustom(models.Model):
                 rec.expense_register_count = len(rec.sudo().expense_register_ids)
             else:
                 rec.expense_register_count = 0
+
+    @api.depends('comments')
+    def _compute_has_legacy_comments(self):
+        """
+        The legacy HTML comments are only shown when they hold real content,
+        ignoring empty editor markup such as '<p><br></p>'.
+        """
+        for rec in self:
+            rec.has_legacy_comments = not is_html_empty(rec.comments)
 
     @api.depends_context('uid')
     def _compute_can_create_minor_expense(self):

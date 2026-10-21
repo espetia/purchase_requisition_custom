@@ -135,7 +135,11 @@
                                 </field>
                             </page>
                         </notebook>
-                        <field name="comments" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <separator string="Comments"/>
+                        <field name="text_comment" nolabel="1" placeholder="Add your comments..." attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="has_legacy_comments" invisible="1"/>
+                        <separator string="Comments (Legacy)" attrs="{'invisible': [('has_legacy_comments', '=', False)]}"/>
+                        <field name="comments" nolabel="1" readonly="1" attrs="{'invisible': [('has_legacy_comments', '=', False)]}"/>
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers"/>
