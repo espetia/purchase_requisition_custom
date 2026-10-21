@@ -53,22 +53,57 @@
                         <notebook>
                             <page string="Lines">
                                 <field name="line_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
-                                    <tree editable="bottom">
-                                        <field name="product_id" options="{'no_create': True, 'no_create_edit': True}" domain="[('purchase_ok', '=', True)]"/>
-                                        <field name="name"/>
-                                        <field name="product_qty"/>
-                                        <field name="product_uom_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                    <form string="Requisition Line">
+                                        <sheet>
+                                            <group>
+                                                <group string="Product">
+                                                    <field name="product_id" options="{'no_create': True, 'no_create_edit': True}" domain="[('purchase_ok', '=', True)]"/>
+                                                    <field name="name"/>
+                                                    <label for="product_qty"/>
+                                                    <div class="o_row">
+                                                        <field name="product_qty"/>
+                                                        <field name="product_uom_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                                    </div>
+                                                </group>
+                                                <group string="Supplier">
+                                                    <field name="supplier_suggestion"/>
+                                                    <field name="attached_filename" invisible="1"/>
+                                                    <field name="attached" filename="attached_filename" widget="binary"
+                                                           options="{'accepted_file_extensions': '.png,.jpg,.jpeg,.gif,.bmp,.pdf,.xls,.xlsx'}"/>
+                                                </group>
+                                            </group>
+                                            <group>
+                                                <group string="Payment">
+                                                    <field name="payment_method_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                                    <field name="currency_id" invisible="1"/>
+                                                    <field name="payment_import" widget="monetary"/>
+                                                    <field name="need_invoice"/>
+                                                </group>
+                                                <group string="Traceability" groups="purchase_requisition_custom.group_purchase_requisition_user">
+                                                    <field name="po_line_id" readonly="1"/>
+                                                    <field name="expense_register_id" readonly="1"/>
+                                                </group>
+                                            </group>
+                                            <separator string="Comment"/>
+                                            <field name="comment" nolabel="1" placeholder="Additional comments for this line..."/>
+                                        </sheet>
+                                    </form>
+                                    <tree>
+                                        <field name="product_id" width="300px" options="{'no_create': True, 'no_create_edit': True}" domain="[('purchase_ok', '=', True)]"/>
+                                        <field name="name" width="220px"/>
+                                        <field name="product_qty" width="100px"/>
+                                        <field name="product_uom_id" width="150px" options="{'no_create': True, 'no_create_edit': True}"/>
                                         <field name="attached_filename" invisible="1"/>
-                                        <field name="attached" filename="attached_filename" widget="binary" optional="show"
+                                        <field name="attached" filename="attached_filename" widget="binary" optional="show" width="200px"
                                                options="{'accepted_file_extensions': '.png,.jpg,.jpeg,.gif,.bmp,.pdf,.xls,.xlsx'}"/>
-                                        <field name="supplier_suggestion" optional="show"/>
-                                        <field name="need_invoice" optional="show"/>
-                                        <field name="payment_method_id" optional="show" options="{'no_create': True, 'no_create_edit': True}"/>
+                                        <field name="supplier_suggestion" optional="show" width="180px"/>
+                                        <field name="need_invoice" optional="show" width="140px"/>
+                                        <field name="payment_method_id" optional="show" width="160px" options="{'no_create': True, 'no_create_edit': True}"/>
                                         <field name="currency_id" invisible="1"/>
-                                        <field name="payment_import" widget="monetary" optional="show"/>
-                                        <field name="comment" optional="hide"/>
-                                        <field name="po_line_id" readonly="1" groups="purchase_requisition_custom.group_purchase_requisition_user"/>
-                                        <field name="expense_register_id" readonly="1" groups="purchase_requisition_custom.group_purchase_requisition_user"/>
+                                        <field name="payment_import" widget="monetary" optional="show" width="120px"/>
+                                        <field name="comment" optional="hide" width="220px"/>
+                                        <field name="po_line_id" readonly="1" width="180px" groups="purchase_requisition_custom.group_purchase_requisition_user"/>
+                                        <field name="expense_register_id" readonly="1" width="180px" groups="purchase_requisition_custom.group_purchase_requisition_user"/>
                                     </tree>
                                 </field>
                             </page>

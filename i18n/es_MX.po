@@ -94,6 +94,11 @@ msgid "Activity Type Icon"
 msgstr "Icono de Tipo de Actividad"
 
 #. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Additional comments for this line..."
+msgstr "Comentarios adicionales para esta línea..."
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__type_id
 msgid "Agreement Type"
 msgstr "Tipo de Acuerdo"
@@ -157,6 +162,7 @@ msgstr "Catálogo de Categorías/Rubros"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__comment
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid "Comment"
 msgstr "Comentario"
 
@@ -485,6 +491,11 @@ msgid "Need Invoice"
 msgstr "Requiere Factura"
 
 #. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Payment"
+msgstr "Pago"
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__payment_import
 msgid "Payment Amount"
 msgstr "Importe"
@@ -665,6 +676,7 @@ msgstr "Por favor, seleccione al menos un proveedor."
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__product_id
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid "Product"
 msgstr "Producto"
 
@@ -777,6 +789,11 @@ msgid "Requisition"
 msgstr "Requisición"
 
 #. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Requisition Line"
+msgstr "Línea de Requisición"
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_user_id
 msgid "Responsible User"
 msgstr "Usuario Responsable"
@@ -834,9 +851,19 @@ msgstr ""
 "Planificado: Actividades futuras."
 
 #. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Supplier"
+msgstr "Proveedor"
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__supplier_suggestion
 msgid "Supplier Suggestion"
 msgstr "Proveedor Sugerido"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Traceability"
+msgstr "Trazabilidad"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__activity_exception_decoration
