@@ -8,8 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 "Purchase Requisition" pre-approval layer in front of Odoo's native Purchase Orders. Basic users submit
 requisitions; Purchase Managers/Warehouse Agents convert approved lines into real `purchase.order` records
 via a wizard — or, alternatively, relate lines to a Minor Expense (petty-cash) record from the `minor_expenses`
-addon via a second wizard. It depends on `base`, `purchase`, `purchase_requisition` (Odoo's native agreements
-module), `mail`, `fleet`, and `minor_expenses`.
+addon via a second wizard. It depends on `base`, `hr` (for the employee job title shown next to users),
+`purchase`, `purchase_requisition` (Odoo's native agreements module), `mail`, `fleet`, and `minor_expenses`.
 
 This repo (`/home/espetia/dev/odoo15/addons/purchase_requisition_custom`) is only this one addon. The Odoo
 instance lives one level up at `/home/espetia/dev/odoo15`, which runs via `docker-compose.yml` (Postgres 13 +
@@ -17,8 +17,9 @@ instance lives one level up at `/home/espetia/dev/odoo15`, which runs via `docke
 
 ## Running / installing the module
 
-There is no build step, linter config, or test suite in this addon — it is pure Python/XML loaded by the
-Odoo server at runtime.
+There is no build step, linter config, or test suite in this addon — it is Python/XML plus a few static
+JS/SCSS/QWeb assets (see "Frontend assets"), all loaded by the Odoo server at runtime. The dev database is
+named `odoo`.
 
 ```bash
 # from /home/espetia/dev/odoo15
@@ -36,8 +37,43 @@ When a field's `string` changes (and `i18n/es_MX.po` with it), a plain `-u` does
 es_MX label translation — Odoo 15 keeps the old row, so the UI keeps showing the old Spanish label. Upgrade with
 `--i18n-overwrite` (or Settings > Translations > Load a Translation with "Overwrite Existing Terms") in every
 database the module is deployed to.
+
+### Verifying changes (no automated tests)
+
 There are no automated tests in this module — verify changes manually through the UI (requisition form,
-kanban, PO generation wizard) after upgrading.
+kanban, PO generation wizard) after upgrading. Server-side behavior (constraints, computes, `name_get`,
+translations, asset bundles) can be checked without a browser through `odoo shell`, rolling back at the end so
+the dev data is untouched:
+
+```bash
+# from /home/espetia/dev/odoo15
+docker-compose exec -T web odoo shell -d odoo --no-http --log-level=error <<'EOF'
+line = env['purchase.requisition.line.custom'].search([], limit=1)
+print(line.currency_id.name)
+env.cr.rollback()
+EOF
+```
+
+- Field labels per language: `Model.with_context(lang='es_MX').fields_get([...])`; translated view text:
+  `fields_view_get(view_id, 'form')['arch']` (non-ASCII comes back as XML entities, e.g. `&#xED;`).
+- Asset bundles: `env['ir.qweb']._get_asset_content('web.assets_backend')` +
+  `odoo.addons.base.models.assetsbundle.AssetsBundle(...).css()/.js()` (compiles the SCSS);
+  QWeb templates via `env['ir.asset']._get_asset_paths(bundle='web.assets_qweb', xml=True)`.
+- Static checks: the host has no `msgfmt`/`node`, so validate the `.po` with babel inside the Odoo image
+  (`docker run --rm -v $PWD/i18n:/i odoo:15.0 python3 -c "import babel.messages.pofile as p; p.read_po(open('/i/es_MX.po','rb'))"`)
+  and JS with `docker run --rm -v $PWD:/m:ro node:18-alpine node --check /m/static/src/js/<file>.js`.
+
+### Editing conventions
+
+- Line endings are mixed: most of the original files (`__manifest__.py`, `data/`, `security/security.xml`,
+  `models/requisition*.py`, `rubro.py`, `purchase_order.py`, `views/requisition_views.xml`, the PO wizard) use
+  CRLF, while newer files are LF. Check with `file <path>` and preserve each file's existing endings when
+  editing; git's "LF will be replaced by CRLF" warnings are just `core.autocrlf` and harmless.
+- `i18n/es_MX.po` is maintained by hand (not re-exported): entries are kept roughly alphabetical by `msgid`,
+  model-field labels use `#: model:ir.model.fields,field_description:...` references, Python `_()` strings use
+  `#: code:addons/purchase_requisition_custom/<path>:0` + `#, python-format`, and JS/QWeb strings additionally
+  need `#. openerp-web`. When a `msgid` is shared by several fields, moving one field to a new label means
+  removing its reference from the old entry and adding a new entry.
 
 ## Architecture
 
@@ -121,6 +157,24 @@ own native rule restricts a record to its `user_id`, which would otherwise hide 
 from another manager viewing the same requisition. Deliberately, `group_purchase_requisition_manager` does
 **not** imply `minor_expenses.group_expense_register_user`/`_admin` — see the wizard note above for why.
 
+The three configuration catalogs (`rubro`, `department`, `payment.method`) all follow the same access pattern
+in `ir.model.access.csv`: basic users read-only, managers full CRUD, no `ir.rule`s. Their tree/form views and
+menus live in `views/<catalog>_views.xml` under `purchase.menu_purchase_config` (sequences 100/101/102).
+
+### Views (`views/requisition_views.xml`)
+
+- **Requisition action** context sets `show_job_title`, so every `res.users` many2one rendered inside it
+  (Process Area, but also Requester, activity assignees) shows "Name - Job Title". The Odoo 15 web client strips
+  `show_*` (and `default_*`/`search_default_*`) keys from the context when a button opens another action, so it
+  does not leak into the PO / Minor Expense views or the wizards.
+- **Lines** are a non-editable `<tree>` (each column has a `width` attribute, which Odoo 15 applies as a
+  min-width so columns scroll horizontally instead of truncating) plus an inline `<form>` that opens as a popup
+  on click, grouped into Product / Supplier / Payment / Traceability sections and a Comment area. The popup
+  inherits the `line_ids` `readonly` attrs, so lines are read-only once the requisition leaves `draft`. The
+  wizard line trees (`wizard/*_views.xml`) reuse the line fields and pick up label changes automatically.
+- **Header**: `department_id` drives `rubro_id` visibility/required via `need_rubro`; `text_comment` sits below
+  the notebook, followed by the read-only legacy `comments` block (only when `has_legacy_comments`).
+
 ### PO generation wizard (`wizard/create_po_wizard.py`)
 
 `CreatePoWizard` is opened as a contextual action from a requisition (`default_get` reads `active_id` and
@@ -174,7 +228,11 @@ The module ships one legacy (Odoo 15, non-OWL) field widget, `binary_dropzone`
 (`web.assets_backend` / `web.assets_qweb`). It extends the native `FieldBinaryFile` and adds a drop area plus
 Ctrl+V paste (document-level listener, active only while the widget is editable and in the topmost dialog). Every
 dropped/pasted `File` goes through the native upload flow (`on_file_uploaded`), so value/filename handling is
-Odoo's own. Used on the requisition line popup form for `attached`. Translatable JS/QWeb strings in
+Odoo's own. Supported `options`: `accepted_file_extensions` (native) and `max_file_size_mb`, which lowers
+`max_upload_size` and therefore also applies to the native file-picker path. Files dropped outside the drop
+area are swallowed (`preventDefault`) so the browser doesn't navigate away and lose unsaved changes. Used on the
+requisition line popup form for `attached`; the read-only list column keeps the plain `binary` widget.
+Translatable JS/QWeb strings in
 `i18n/es_MX.po` need the `#. openerp-web` comment to reach the web client. After changing assets, browsers need a
 hard refresh (or `?debug=assets`).
 
