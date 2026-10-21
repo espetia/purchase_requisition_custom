@@ -40,9 +40,16 @@ kanban, PO generation wizard) after upgrading.
 
 - **`purchase.requisition.custom`** (`requisition.py`) — the requisition header. Sequence-generated
   `name` (`PR/00001`, via `ir_sequence_data.xml`), a `state` statusbar
-  (`draft → quote → waiting → authorized/cancel → done`), and a required `rubro_id` (category) that can
-  force a `vehicle_id` (fleet) via `requires_vehicle` (related field + `@api.constrains`). Inherits
-  `mail.thread`/`mail.activity.mixin` for chatter.
+  (`draft → quote → waiting → authorized/cancel → done`), a required `department_id` whose `need_rubro`
+  decides whether `rubro_id` (category) is shown and required (view `attrs` + `@api.constrains`), and that
+  `rubro_id` can in turn force a `vehicle_id` (fleet) via `requires_vehicle` (same pattern). UI labels differ
+  from field names: `name` = "Folio", `requisition_name` = "Purchase Reference", `manager_id` = "Process Area".
+  Inherits `mail.thread`/`mail.activity.mixin` for chatter.
+- **`purchase.requisition.department`** (`department.py`) — department catalog (`name`, `need_rubro`), under
+  Purchase > Configuration.
+- **`res.users`** (`res_users.py`, `_inherit`) — `name_get()` appends the employee's `job_title`
+  ("Carlos Espetia - Compras") only when `show_job_title` is in context; the requisition action and the
+  `manager_id` form field set that key. Requires the `hr` dependency.
 - **`purchase.requisition.line.custom`** (`requisition_line.py`) — requisition lines. `po_line_id` links a
   line to the `purchase.order.line` it was converted into, once generated; `expense_register_id` links it to
   the `expense.register` it was resolved by instead. These two are mutually exclusive — a line is resolved by

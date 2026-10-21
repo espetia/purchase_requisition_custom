@@ -6,13 +6,15 @@ class PurchaseRequisitionCustom(models.Model):
     _description = 'Purchase Requisition'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    requisition_name = fields.Char(string='Name', required=True)
+    name = fields.Char(string='Folio', required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    requisition_name = fields.Char(string='Purchase Reference', required=True)
     requester_id = fields.Many2one('res.users', string='Requester', default=lambda self: self.env.user)
-    rubro_id = fields.Many2one('purchase.requisition.rubro', string='Rubro', required=True)
+    department_id = fields.Many2one('purchase.requisition.department', string='Department', required=True)
+    need_rubro = fields.Boolean(related='department_id.need_rubro')
+    rubro_id = fields.Many2one('purchase.requisition.rubro', string='Rubro')
     manager_id = fields.Many2one(
-        'res.users', 
-        string='Manager', 
+        'res.users',
+        string='Process Area',
         required=True, 
         domain=lambda self: [('groups_id', 'in', self.env.ref('purchase_requisition_custom.group_purchase_requisition_manager').id)]
     )
@@ -118,6 +120,25 @@ class PurchaseRequisitionCustom(models.Model):
         for rec in self:
             if rec.rubro_id.requires_vehicle and not rec.vehicle_id:
                 raise ValidationError(_("Vehicle is mandatory when Rubro requires it."))
+
+    @api.constrains('department_id', 'rubro_id')
+    def _check_rubro_required(self):
+        """
+        Ensures that a rubro is provided if the selected department needs one.
+        Raises a ValidationError if the condition is not met.
+        """
+        for rec in self:
+            if rec.department_id.need_rubro and not rec.rubro_id:
+                raise ValidationError(_("Rubro is mandatory for the selected Department."))
+
+    @api.onchange('department_id')
+    def _onchange_department_id(self):
+        """
+        Clears the rubro when the selected department does not need one,
+        since the field is hidden in that case.
+        """
+        if not self.department_id.need_rubro:
+            self.rubro_id = False
 
     def write(self, vals):
         """

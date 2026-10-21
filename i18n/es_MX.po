@@ -55,13 +55,13 @@ msgstr ""
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
-msgid "<span class=\"o_form_label\">Name</span>"
-msgstr "<span class=\"o_form_label\">Nombre</span>"
+msgid "<span class=\"o_form_label\">Purchase Reference</span>"
+msgstr "<span class=\"o_form_label\">Referencia de Compra</span>"
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
-msgid "<span class=\"o_form_label\">Reference</span>"
-msgstr "<span class=\"o_form_label\">Referencia</span>"
+msgid "<span class=\"o_form_label\">Folio</span>"
+msgstr "<span class=\"o_form_label\">Folio</span>"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__action_type
@@ -203,6 +203,7 @@ msgstr "Crear una nueva requisición de compra"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__create_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__create_uid
 msgid "Created by"
 msgstr "Creado por"
@@ -212,6 +213,7 @@ msgstr "Creado por"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__create_date
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__create_date
 msgid "Created on"
 msgstr "Creado el"
@@ -243,6 +245,29 @@ msgid "Denied"
 msgstr "Denegado"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__department_id
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_department_form
+msgid "Department"
+msgstr "Departamento"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
+msgid "Department:"
+msgstr "Departamento:"
+
+#. module: purchase_requisition_custom
+#: model:ir.actions.act_window,name:purchase_requisition_custom.action_purchase_requisition_department
+#: model:ir.ui.menu,name:purchase_requisition_custom.menu_purchase_requisition_department
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_department_tree
+msgid "Departments"
+msgstr "Departamentos"
+
+#. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_purchase_requisition_department
+msgid "Departments Catalog"
+msgstr "Catálogo de Departamentos"
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__description
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__name
 msgid "Description"
@@ -253,6 +278,7 @@ msgstr "Descripción"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__display_name
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__display_name
 msgid "Display Name"
 msgstr "Nombre a mostrar"
@@ -318,6 +344,7 @@ msgstr "Ayuda a gestionar las requisiciones de compra."
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__id
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__id
 msgid "ID"
 msgstr ""
@@ -369,6 +396,7 @@ msgstr "Solo Agente de Almacén"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom____last_update
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro____last_update
 msgid "Last Modified on"
 msgstr "Última modificación el"
@@ -378,6 +406,7 @@ msgstr "Última modificación el"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__write_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__write_uid
 msgid "Last Updated by"
 msgstr "Última actualización por"
@@ -387,6 +416,7 @@ msgstr "Última actualización por"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__write_date
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__write_date
 msgid "Last Updated on"
 msgstr "Última actualización el"
@@ -422,13 +452,13 @@ msgstr "Archivo adjunto principal"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__manager_id
-msgid "Manager"
-msgstr "Gerente"
+msgid "Process Area"
+msgstr "Área de Proceso"
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
-msgid "Manager:"
-msgstr "Gerente:"
+msgid "Process Area:"
+msgstr "Área de Proceso:"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_has_error
@@ -459,10 +489,16 @@ msgid "My Activity Deadline"
 msgstr "Mi fecha límite de actividad"
 
 #. module: purchase_requisition_custom
-#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__requisition_name
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__name
 msgid "Name"
 msgstr "Nombre"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__need_rubro
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__need_rubro
+msgid "Need Rubro"
+msgstr "Requiere Rubro"
 
 #. module: purchase_requisition_custom
 #: code:addons/purchase_requisition_custom/models/requisition.py:0
@@ -594,6 +630,11 @@ msgid "Purchase Orders"
 msgstr "Órdenes de Compra"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__requisition_name
+msgid "Purchase Reference"
+msgstr "Referencia de Compra"
+
+#. module: purchase_requisition_custom
 #: model:ir.model,name:purchase_requisition_custom.model_purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid "Purchase Requisition"
@@ -642,8 +683,8 @@ msgstr ""
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__name
-msgid "Reference"
-msgstr "Referencia"
+msgid "Folio"
+msgstr "Folio"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__state__draft
@@ -683,6 +724,12 @@ msgstr "Usuario Responsable"
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_rubro_form
 msgid "Rubro"
 msgstr ""
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "Rubro is mandatory for the selected Department."
+msgstr "El rubro es obligatorio para el departamento seleccionado."
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
