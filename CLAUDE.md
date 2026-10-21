@@ -146,7 +146,10 @@ access vs. row visibility vs. field/state-transition rules).
 `group_purchase_requisition_user` (basic, own records only) ⊂ `group_purchase_requisition_warehouse`
 (can change requisition state, limited PO field edits) ⊂ `group_purchase_requisition_manager` (implies
 native `purchase.group_purchase_manager`, full CRUD everywhere, generates POs). Record rules restrict basic
-users to `requester_id = user.id`; managers see all.
+users to `requester_id = user.id`; managers see all. Requisition lines have the matching pair
+(`rule_purchase_requisition_line_own`: `requisition_id.requester_id = user.id`; `_line_all` for managers) —
+these also protect the line `attached` files, since `/web/content` only serves a field attachment after a read
+check on the line. Note that a Warehouse Agent who isn't a manager falls under the "own" rules too.
 
 Two more `ir.rule`s here govern `expense.register` (a model owned by `minor_expenses`, not this addon) for
 requisition-linked records specifically: `rule_expense_register_requisition_user` scopes basic users to
@@ -226,7 +229,10 @@ separately by whoever administers users/groups.
 The module ships one legacy (Odoo 15, non-OWL) field widget, `binary_dropzone`
 (`static/src/js/binary_dropzone.js` + `xml/` template + `scss/`), registered in `__manifest__.py` `assets`
 (`web.assets_backend` / `web.assets_qweb`). It extends the native `FieldBinaryFile` and adds a drop area plus
-Ctrl+V paste (document-level listener, active only while the widget is editable and in the topmost dialog). Every
+Ctrl+V paste (document-level listener, active only while the widget is editable, empty and in the topmost dialog,
+and ignored while the focus is in an input/textarea/contenteditable — copying from Excel/Word also puts a PNG in
+the clipboard, so pasting text must stay text). Clicking the drop area only focuses it (ready to paste; the
+dialog autofocuses its first input); the file picker is the area's "Select a file" button. Every
 dropped/pasted `File` goes through the native upload flow (`on_file_uploaded`), so value/filename handling is
 Odoo's own. Supported `options`: `accepted_file_extensions` (native) and `max_file_size_mb`, which lowers
 `max_upload_size` and therefore also applies to the native file-picker path. Files dropped outside the drop
@@ -243,6 +249,15 @@ hard refresh (or `?debug=assets`).
   requisitions by `manager_id` and sends **one** consolidated email per manager (not one per requisition)
   via `mail_template_data.xml`'s `email_template_draft_requisitions_reminder`. The same template is also
   fired synchronously on `create()` for the single new requisition's manager.
+
+### Migrations (`migrations/`)
+
+Data fixes for existing databases go in `migrations/<version>/{pre,post}-*.py` and only run when
+`__manifest__.py`'s `version` is bumped past the installed one (never on a fresh install).
+`15.0.1.1.0/post-migrate.py` gives requisitions created before `department_id` existed a default "General"
+department (`need_rubro=True`, since `rubro_id` used to be required) and then enforces `NOT NULL`, which Odoo
+itself could not apply during the upgrade. Making a field `required=True` on a table with existing rows needs
+the same treatment, otherwise those records can't be saved from the form.
 
 ### Known inconsistency
 

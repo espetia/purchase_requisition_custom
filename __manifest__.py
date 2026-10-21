@@ -8,7 +8,7 @@
     'author': "Carlos Espetia",
     'website': "http://www.carlosespetia.com",
     'category': 'Uncategorized',
-    'version': '15.0.1.0.0',
+    'version': '15.0.1.1.0',
     'depends': ['base', 'hr', 'purchase', 'purchase_requisition', 'mail', 'fleet', 'minor_expenses'],
     'data': [
         'security/security.xml',

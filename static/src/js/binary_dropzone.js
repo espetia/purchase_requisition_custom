@@ -11,8 +11,9 @@ const qweb = core.qweb;
 
 /**
  * Binary file widget with a drop area: files can be dragged onto the area,
- * pasted with Ctrl+V anywhere in the form, or picked with the native file
- * dialog by clicking the area. Once a file is obtained, it goes through the
+ * pasted with Ctrl+V while the focus is not in a text field (clicking the area
+ * focuses it), or picked with the native file dialog through the area's
+ * "Select a file" button. Once a file is obtained, it goes through the
  * native FieldBinaryFile upload flow (filename sync, value set, re-render).
  */
 const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
@@ -22,6 +23,7 @@ const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
         'dragleave .o_prc_dropzone': '_onDragLeave',
         'drop .o_prc_dropzone': '_onDrop',
         'click .o_prc_dropzone': '_onDropzoneClick',
+        'click .o_prc_dropzone_browse': '_onBrowseClick',
         'keydown .o_prc_dropzone': '_onDropzoneKeydown',
     }),
 
@@ -83,6 +85,17 @@ const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
             return modals[modals.length - 1] === modal;
         }
         return true;
+    },
+    /**
+     * Whether the element is a text-editing target (input, textarea or
+     * contenteditable), where a paste must keep its native behavior.
+     *
+     * @private
+     * @param {Element} el
+     * @returns {boolean}
+     */
+    _isEditableElement: function (el) {
+        return !!el && (el.isContentEditable || (el.closest && !!el.closest('input, textarea')));
     },
     /**
      * @private
@@ -198,8 +211,13 @@ const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
      */
     _onDocumentPaste: function (ev) {
         const files = ev.clipboardData && ev.clipboardData.files;
-        if (!this._isActive() || !files || !files.length) {
-            // plain text keeps pasting normally in the focused input
+        // Leave the paste alone when:
+        // - the focus is in a text field: copying cells from Excel or text from
+        //   Word also puts a PNG in the clipboard, and the user expects the text;
+        // - a file is already attached: never replace it silently (the native
+        //   edit button is the way to replace it).
+        if (!this._isActive() || this.value || !files || !files.length ||
+                this._isEditableElement(ev.target) || this._isEditableElement(document.activeElement)) {
             return;
         }
         ev.preventDefault();
@@ -239,9 +257,23 @@ const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
         }
     },
     /**
+     * Clicking the drop area only focuses it, so the user can paste right
+     * away (pastes are ignored while the focus is in a text field, and the
+     * dialog autofocuses its first field).
+     *
      * @private
+     * @param {jQuery.Event} ev
      */
-    _onDropzoneClick: function () {
+    _onDropzoneClick: function (ev) {
+        ev.currentTarget.focus();
+    },
+    /**
+     * @private
+     * @param {jQuery.Event} ev
+     */
+    _onBrowseClick: function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
         this.$('.o_input_file').click();
     },
     /**
@@ -249,9 +281,9 @@ const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
      * @param {jQuery.Event} ev
      */
     _onDropzoneKeydown: function (ev) {
-        if (ev.key === 'Enter' || ev.key === ' ') {
+        if (ev.target === ev.currentTarget && (ev.key === 'Enter' || ev.key === ' ')) {
             ev.preventDefault();
-            this._onDropzoneClick();
+            this.$('.o_input_file').click();
         }
     },
 });

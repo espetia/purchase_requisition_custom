@@ -22,19 +22,25 @@
         color: $body-color;
     }
 
-    &:hover, &:focus {
+    &:hover {
         border-color: $o-brand-primary;
-        outline: none;
     }
 
-    &.o_prc_dropzone_active {
+    // focused = ready to receive a Ctrl+V paste
+    &:focus, &.o_prc_dropzone_active {
         border-color: $o-brand-primary;
         background-color: rgba($o-brand-primary, 0.08);
+        outline: none;
     }
 
     // children must not intercept drag events, so dragleave only fires when
     // the pointer really leaves the drop area
     > * {
         pointer-events: none;
+    }
+
+    > .o_prc_dropzone_browse {
+        pointer-events: auto;
+        padding: 0;
     }
 }

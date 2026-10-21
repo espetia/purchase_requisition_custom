@@ -44,6 +44,23 @@
         <field name="groups" eval="[(4, ref('group_purchase_requisition_manager'))]"/>
     </record>
 
+    <!-- Requisition Lines: Basic User only on lines of own requisitions (also guards the line attachments,
+         which /web/content serves after checking access on the line) -->
+    <record id="rule_purchase_requisition_line_own" model="ir.rule">
+        <field name="name">Purchase Requisition Line: Own Requisitions Only</field>
+        <field name="model_id" ref="model_purchase_requisition_line_custom"/>
+        <field name="domain_force">[('requisition_id.requester_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_purchase_requisition_user'))]"/>
+    </record>
+
+    <!-- Requisition Lines: Manager on all lines -->
+    <record id="rule_purchase_requisition_line_all" model="ir.rule">
+        <field name="name">Purchase Requisition Line: All</field>
+        <field name="model_id" ref="model_purchase_requisition_line_custom"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_purchase_requisition_manager'))]"/>
+    </record>
+
     <!-- Expense Register: Basic User can see minor expenses linked to their own requisitions -->
     <record id="rule_expense_register_requisition_user" model="ir.rule">
         <field name="name">Expense Register: Requisition-Linked, Own Requisitions Only</field>

@@ -330,8 +330,8 @@ msgstr "Nombre a mostrar"
 #. openerp-web
 #: code:addons/purchase_requisition_custom/static/src/xml/binary_dropzone.xml:0
 #, python-format
-msgid "Drag a file here, paste it (Ctrl+V) or click to select it"
-msgstr "Arrastra un archivo aquí, pégalo (Ctrl+V) o haz clic para seleccionarlo"
+msgid "Drag a file here, or click here and paste it (Ctrl+V)"
+msgstr "Arrastra un archivo aquí, o haz clic aquí y pégalo (Ctrl+V)"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__user_id
@@ -859,6 +859,13 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_rubro_tree
 msgid "Rubros"
 msgstr ""
+
+#. module: purchase_requisition_custom
+#. openerp-web
+#: code:addons/purchase_requisition_custom/static/src/xml/binary_dropzone.xml:0
+#, python-format
+msgid "Select a file"
+msgstr "Seleccionar archivo"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_has_sms_error
