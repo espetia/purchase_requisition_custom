@@ -109,6 +109,22 @@ msgid "Area"
 msgstr "Área"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__attached
+msgid "Attached"
+msgstr "Adjunto"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition_line.py:0
+#, python-format
+msgid "Attached file must be an image, PDF or Excel file."
+msgstr "El archivo adjunto debe ser una imagen, PDF o archivo de Excel."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__attached_filename
+msgid "Attached Filename"
+msgstr "Nombre del Adjunto"
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_attachment_count
 msgid "Attachment Count"
 msgstr "Número de archivos adjuntos"
@@ -138,6 +154,11 @@ msgstr "Cancelar"
 #: model:ir.model,name:purchase_requisition_custom.model_purchase_requisition_rubro
 msgid "Categories/Rubrics Catalog"
 msgstr "Catálogo de Categorías/Rubros"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__comment
+msgid "Comment"
+msgstr "Comentario"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__comments
@@ -204,6 +225,7 @@ msgstr "Crear una nueva requisición de compra"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__create_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__create_uid
 msgid "Created by"
 msgstr "Creado por"
@@ -214,12 +236,14 @@ msgstr "Creado por"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__create_date
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__create_date
 msgid "Created on"
 msgstr "Creado el"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__currency_id
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__currency_id
 msgid "Currency"
 msgstr "Moneda"
 
@@ -279,6 +303,7 @@ msgstr "Descripción"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__display_name
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__display_name
 msgid "Display Name"
 msgstr "Nombre a mostrar"
@@ -345,6 +370,7 @@ msgstr "Ayuda a gestionar las requisiciones de compra."
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__id
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__id
 msgid "ID"
 msgstr ""
@@ -397,6 +423,7 @@ msgstr "Solo Agente de Almacén"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department____last_update
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro____last_update
 msgid "Last Modified on"
 msgstr "Última modificación el"
@@ -407,6 +434,7 @@ msgstr "Última modificación el"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__write_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__write_uid
 msgid "Last Updated by"
 msgstr "Última actualización por"
@@ -417,6 +445,7 @@ msgstr "Última actualización por"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__write_date
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__write_date
 msgid "Last Updated on"
 msgstr "Última actualización el"
@@ -449,6 +478,34 @@ msgstr "Líneas a Pedir"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_main_attachment_id
 msgid "Main Attachment"
 msgstr "Archivo adjunto principal"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__need_invoice
+msgid "Need Invoice"
+msgstr "Requiere Factura"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__payment_import
+msgid "Payment Amount"
+msgstr "Importe"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__payment_method_id
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_payment_method_form
+msgid "Payment Method"
+msgstr "Método de Pago"
+
+#. module: purchase_requisition_custom
+#: model:ir.actions.act_window,name:purchase_requisition_custom.action_purchase_requisition_payment_method
+#: model:ir.ui.menu,name:purchase_requisition_custom.menu_purchase_requisition_payment_method
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_payment_method_tree
+msgid "Payment Methods"
+msgstr "Métodos de Pago"
+
+#. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_purchase_requisition_payment_method
+msgid "Payment Methods Catalog"
+msgstr "Catálogo de Métodos de Pago"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__manager_id
@@ -490,6 +547,7 @@ msgstr "Mi fecha límite de actividad"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__name
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__name
 msgid "Name"
 msgstr "Nombre"
@@ -607,9 +665,13 @@ msgstr "Por favor, seleccione al menos un proveedor."
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__product_id
-#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__product_id
 msgid "Product"
 msgstr "Producto"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__product_id
+msgid "Product/Purchase Type"
+msgstr "Producto/Tipo de Compra"
 
 #. module: purchase_requisition_custom
 #: model:res.groups,name:purchase_requisition_custom.group_purchase_requisition_manager
@@ -770,6 +832,11 @@ msgstr ""
 "Vencido: La fecha de vencimiento ya pasó\n"
 "Hoy: La fecha de la actividad es hoy\n"
 "Planificado: Actividades futuras."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__supplier_suggestion
+msgid "Supplier Suggestion"
+msgstr "Proveedor Sugerido"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__activity_exception_decoration

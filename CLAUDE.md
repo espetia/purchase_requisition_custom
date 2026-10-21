@@ -31,6 +31,11 @@ docker-compose exec web odoo -d <dbname> -u purchase_requisition_custom --stop-a
 
 After editing Python model files, an `-u purchase_requisition_custom` restart (or Apps > Update) is required
 for changes to take effect; after editing only XML views/data, the same upgrade applies the record updates.
+
+When a field's `string` changes (and `i18n/es_MX.po` with it), a plain `-u` does **not** replace the existing
+es_MX label translation — Odoo 15 keeps the old row, so the UI keeps showing the old Spanish label. Upgrade with
+`--i18n-overwrite` (or Settings > Translations > Load a Translation with "Overwrite Existing Terms") in every
+database the module is deployed to.
 There are no automated tests in this module — verify changes manually through the UI (requisition form,
 kanban, PO generation wizard) after upgrading.
 
@@ -54,7 +59,13 @@ kanban, PO generation wizard) after upgrading.
   line to the `purchase.order.line` it was converted into, once generated; `expense_register_id` links it to
   the `expense.register` it was resolved by instead. These two are mutually exclusive — a line is resolved by
   *either* a PO or a Minor Expense, never both, and both wizards filter/reject lines the other has already
-  claimed.
+  claimed. `product_id` is labelled "Product/Purchase Type". Lines also carry optional purchasing info:
+  `attached` (+ `attached_filename`; an `@api.constrains` limits it to image/PDF/Excel extensions),
+  `supplier_suggestion`, `need_invoice`, `payment_method_id`, `payment_import` (Monetary; `currency_id` is a
+  non-stored compute of the company currency), and `comment`. `image` is a legacy field, kept for
+  historical data but no longer shown in any view.
+- **`purchase.requisition.payment.method`** (`payment_method.py`) — payment methods catalog (`name` only),
+  under Purchase > Configuration.
 - **`purchase.requisition.rubro`** (`rubro.py`) — simple category catalog; `requires_vehicle` drives the
   constraint on the header.
 - **`purchase.order`** (`purchase_order.py`, `_inherit`) — adds `custom_requisition_id` back-link and syncs

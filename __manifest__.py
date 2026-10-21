@@ -21,6 +21,7 @@
         'views/requisition_views.xml',
         'views/rubro_views.xml',
         'views/department_views.xml',
+        'views/payment_method_views.xml',
     ],
     'demo': [
     ],
