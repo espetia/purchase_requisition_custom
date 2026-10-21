@@ -63,7 +63,9 @@ kanban, PO generation wizard) after upgrading.
   the `expense.register` it was resolved by instead. These two are mutually exclusive — a line is resolved by
   *either* a PO or a Minor Expense, never both, and both wizards filter/reject lines the other has already
   claimed. `product_id` is labelled "Product/Purchase Type". Lines also carry optional purchasing info:
-  `attached` (+ `attached_filename`; an `@api.constrains` limits it to image/PDF/Excel extensions),
+  `attached` (+ `attached_filename`; `@api.constrains` limit it to image/PDF/Excel extensions and to
+  `MAX_ATTACHED_SIZE_MB` = 2 MB, read from the stored `ir.attachment.file_size` — keep that constant in sync with
+  the `max_file_size_mb` widget option in the view, which gives the same check client-side),
   `supplier_suggestion`, `need_invoice`, `payment_method_id`, `payment_import` (Monetary; `currency_id` is a
   non-stored compute of the company currency), and `comment`. `image` is a legacy field, kept for
   historical data but no longer shown in any view.
@@ -164,6 +166,17 @@ attribute can't express an AND condition, so this is a Python compute checked vi
 existing `is_warehouse_agent_only` compute pattern in `purchase_order.py`. Membership in the `minor_expenses`
 group is **not** granted automatically (no `implied_ids` link) — it must be assigned to a Purchase Manager
 separately by whoever administers users/groups.
+
+### Frontend assets (`static/src/`)
+
+The module ships one legacy (Odoo 15, non-OWL) field widget, `binary_dropzone`
+(`static/src/js/binary_dropzone.js` + `xml/` template + `scss/`), registered in `__manifest__.py` `assets`
+(`web.assets_backend` / `web.assets_qweb`). It extends the native `FieldBinaryFile` and adds a drop area plus
+Ctrl+V paste (document-level listener, active only while the widget is editable and in the topmost dialog). Every
+dropped/pasted `File` goes through the native upload flow (`on_file_uploaded`), so value/filename handling is
+Odoo's own. Used on the requisition line popup form for `attached`. Translatable JS/QWeb strings in
+`i18n/es_MX.po` need the `#. openerp-web` comment to reach the web client. After changing assets, browsers need a
+hard refresh (or `?debug=assets`).
 
 ### Automation (`data/`)
 

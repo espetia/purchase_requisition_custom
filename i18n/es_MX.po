@@ -327,6 +327,13 @@ msgid "Display Name"
 msgstr "Nombre a mostrar"
 
 #. module: purchase_requisition_custom
+#. openerp-web
+#: code:addons/purchase_requisition_custom/static/src/xml/binary_dropzone.xml:0
+#, python-format
+msgid "Drag a file here, paste it (Ctrl+V) or click to select it"
+msgstr "Arrastra un archivo aquí, pégalo (Ctrl+V) o haz clic para seleccionarlo"
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__user_id
 msgid "Employee"
 msgstr "Empleado"
@@ -351,6 +358,13 @@ msgstr "Expirado:"
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
 msgid "Expires:"
 msgstr "Expira:"
+
+#. module: purchase_requisition_custom
+#. openerp-web
+#: code:addons/purchase_requisition_custom/static/src/js/binary_dropzone.js:0
+#, python-format
+msgid "File type not allowed. Allowed: %s"
+msgstr "Tipo de archivo no permitido. Permitidos: %s"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_follower_ids
@@ -501,6 +515,13 @@ msgstr "Líneas a Pedir"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_main_attachment_id
 msgid "Main Attachment"
 msgstr "Archivo adjunto principal"
+
+#. module: purchase_requisition_custom
+#. openerp-web
+#: code:addons/purchase_requisition_custom/static/src/xml/binary_dropzone.xml:0
+#, python-format
+msgid "Max. size:"
+msgstr "Tamaño máx.:"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__need_invoice
@@ -876,6 +897,12 @@ msgstr "Proveedor"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__supplier_suggestion
 msgid "Supplier Suggestion"
 msgstr "Proveedor Sugerido"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition_line.py:0
+#, python-format
+msgid "The attached file cannot exceed %s MB."
+msgstr "El archivo adjunto no puede exceder %s MB."
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form

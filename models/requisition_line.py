@@ -4,6 +4,8 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 ALLOWED_ATTACHED_EXTENSIONS = ('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.pdf', '.xls', '.xlsx')
+# keep in sync with the 'max_file_size_mb' option of the attached field in the views
+MAX_ATTACHED_SIZE_MB = 2
 
 class PurchaseRequisitionLineCustom(models.Model):
     _name = 'purchase.requisition.line.custom'
@@ -43,3 +45,19 @@ class PurchaseRequisitionLineCustom(models.Model):
         for line in self:
             if line.attached_filename and os.path.splitext(line.attached_filename)[1].lower() not in ALLOWED_ATTACHED_EXTENSIONS:
                 raise ValidationError(_("Attached file must be an image, PDF or Excel file."))
+
+    @api.constrains('attached')
+    def _check_attached_size(self):
+        """
+        Ensures the attached file does not exceed MAX_ATTACHED_SIZE_MB.
+        The size is read from the stored ir.attachment instead of decoding
+        the base64 value.
+        """
+        attachments = self.env['ir.attachment'].sudo().search([
+            ('res_model', '=', self._name),
+            ('res_field', '=', 'attached'),
+            ('res_id', 'in', self.ids),
+        ])
+        max_size = MAX_ATTACHED_SIZE_MB * 1024 * 1024
+        if any(attachment.file_size > max_size for attachment in attachments):
+            raise ValidationError(_("The attached file cannot exceed %s MB.") % MAX_ATTACHED_SIZE_MB)

@@ -68,8 +68,8 @@
                                                 <group string="Supplier">
                                                     <field name="supplier_suggestion"/>
                                                     <field name="attached_filename" invisible="1"/>
-                                                    <field name="attached" filename="attached_filename" widget="binary"
-                                                           options="{'accepted_file_extensions': '.png,.jpg,.jpeg,.gif,.bmp,.pdf,.xls,.xlsx'}"/>
+                                                    <field name="attached" filename="attached_filename" widget="binary_dropzone"
+                                                           options="{'accepted_file_extensions': '.png,.jpg,.jpeg,.gif,.bmp,.pdf,.xls,.xlsx', 'max_file_size_mb': 2}"/>
                                                 </group>
                                             </group>
                                             <group>

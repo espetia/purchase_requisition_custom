@@ -23,6 +23,15 @@
         'views/department_views.xml',
         'views/payment_method_views.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'purchase_requisition_custom/static/src/js/binary_dropzone.js',
+            'purchase_requisition_custom/static/src/scss/binary_dropzone.scss',
+        ],
+        'web.assets_qweb': [
+            'purchase_requisition_custom/static/src/xml/binary_dropzone.xml',
+        ],
+    },
     'demo': [
     ],
     'installable': True,

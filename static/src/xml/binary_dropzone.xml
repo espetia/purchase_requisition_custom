@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="purchase_requisition_custom.BinaryDropzoneArea">
+        <div class="o_prc_dropzone" tabindex="0" role="button">
+            <i class="fa fa-cloud-upload fa-2x" role="img" aria-hidden="true"/>
+            <span class="o_prc_dropzone_label">Drag a file here, paste it (Ctrl+V) or click to select it</span>
+            <small t-if="widget.accepted_file_extensions and widget.accepted_file_extensions !== '*'"
+                   class="text-muted" t-esc="widget.accepted_file_extensions.split(',').join(', ')"/>
+            <small class="text-muted">Max. size: <t t-esc="widget.maxUploadSizeLabel"/></small>
+        </div>
+    </t>
+</templates>

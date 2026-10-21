@@ -1,0 +1,40 @@
+.o_field_binary_file .o_prc_dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    min-height: 110px;
+    padding: 16px;
+    border: 2px dashed $border-color;
+    border-radius: 8px;
+    color: $text-muted;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+
+    .fa {
+        color: $o-brand-primary;
+    }
+
+    .o_prc_dropzone_label {
+        color: $body-color;
+    }
+
+    &:hover, &:focus {
+        border-color: $o-brand-primary;
+        outline: none;
+    }
+
+    &.o_prc_dropzone_active {
+        border-color: $o-brand-primary;
+        background-color: rgba($o-brand-primary, 0.08);
+    }
+
+    // children must not intercept drag events, so dragleave only fires when
+    // the pointer really leaves the drop area
+    > * {
+        pointer-events: none;
+    }
+}
