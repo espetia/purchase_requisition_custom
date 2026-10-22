@@ -12,6 +12,7 @@ class PurchaseRequisitionCustom(models.Model):
     requester_id = fields.Many2one('res.users', string='Requester', default=lambda self: self.env.user)
     department_id = fields.Many2one('purchase.requisition.department', string='Department', required=True)
     need_rubro = fields.Boolean(related='department_id.need_rubro')
+    department_rubro_ids = fields.Many2many(related='department_id.rubro_ids')
     need_payment_method = fields.Boolean(related='department_id.need_payment_method')
     allow_minor_expense = fields.Boolean(related='department_id.allow_minor_expense')
     rubro_id = fields.Many2one('purchase.requisition.rubro', string='Rubro')
@@ -158,11 +159,19 @@ class PurchaseRequisitionCustom(models.Model):
     @api.onchange('department_id')
     def _onchange_department_id(self):
         """
-        Clears the rubro when the selected department does not need one,
-        since the field is hidden in that case.
+        Clears the rubro when the selected department does not need one
+        (the field is hidden in that case) or does not include it among its
+        rubros, and warns when the department needs a rubro but has none
+        configured, since none can be selected.
         """
-        if not self.department_id.need_rubro:
+        department = self.department_id
+        if not department.need_rubro or self.rubro_id not in department.rubro_ids:
             self.rubro_id = False
+        if department.need_rubro and not department.rubro_ids:
+            return {'warning': {
+                'title': _("Warning"),
+                'message': _("The selected Department has no Rubros configured. Ask an administrator to configure them in Purchase > Configuration > Departments."),
+            }}
 
     def write(self, vals):
         """

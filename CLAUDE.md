@@ -89,7 +89,8 @@ EOF
   preserve historical data (it allowed embedded images); the form shows it only when `has_legacy_comments`
   (computed with `odoo.tools.is_html_empty`, so empty editor markup like `<p><br></p>` is hidden).
   Inherits `mail.thread`/`mail.activity.mixin` for chatter.
-- **`purchase.requisition.department`** (`department.py`) — department catalog (`name`, `need_rubro`, `need_payment_method`, `allow_minor_expense`), under
+- **`purchase.requisition.department`** (`department.py`) — department catalog (`name`, `need_rubro`, `rubro_ids` — the rubros the department may use, many2many through
+  `purchase_requisition_department_rubro_rel` — `need_payment_method`, `allow_minor_expense`), under
   Purchase > Configuration.
 - **`res.users`** (`res_users.py`, `_inherit`) — `name_get()` appends the employee's `job_title`
   ("Carlos Espetia - Compras") only when `show_job_title` is in context; the requisition action and the
@@ -187,7 +188,10 @@ menus live in `views/<catalog>_views.xml` under `purchase.menu_purchase_config` 
   on click, grouped into Product / Supplier / Payment / Traceability / Support sections and a Comment area. The popup
   inherits the `line_ids` `readonly` attrs, so lines are read-only once the requisition leaves `draft`. The
   wizard line trees (`wizard/*_views.xml`) reuse the line fields and pick up label changes automatically.
-- **Header**: `department_id` drives `rubro_id` visibility/required via `need_rubro`; `text_comment` sits below
+- **Header**: `department_id` drives `rubro_id` visibility/required via `need_rubro`, and its selectable values via
+  `domain=[('id', 'in', department_rubro_ids)]` (related to the department's `rubro_ids`). This rubro/department
+  match is a **view-only** rule (no constraint); `_onchange_department_id` clears a rubro outside the new
+  department's list and warns when the department needs a rubro but has none configured; `text_comment` sits below
   the notebook, followed by the read-only legacy `comments` block (only when `has_legacy_comments`).
 
 ### PO generation wizard (`wizard/create_po_wizard.py`)

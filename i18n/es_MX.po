@@ -920,6 +920,8 @@ msgstr ""
 #. module: purchase_requisition_custom
 #: model:ir.actions.act_window,name:purchase_requisition_custom.action_purchase_requisition_rubro
 #: model:ir.ui.menu,name:purchase_requisition_custom.menu_purchase_requisition_rubro
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__department_rubro_ids
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__rubro_ids
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_rubro_tree
 msgid "Rubros"
 msgstr ""
@@ -993,6 +995,16 @@ msgid "The attached file cannot exceed %s MB."
 msgstr "El archivo adjunto no puede exceder %s MB."
 
 #. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid ""
+"The selected Department has no Rubros configured. Ask an administrator to "
+"configure them in Purchase > Configuration > Departments."
+msgstr ""
+"El departamento seleccionado no tiene rubros configurados. Pide a un "
+"administrador que los configure en Compras > Configuración > Departamentos."
+
+#. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid "Traceability"
 msgstr "Trazabilidad"
@@ -1058,6 +1070,12 @@ msgid ""
 msgstr ""
 "Los Agentes de Almacén solo pueden editar 'date_planned' y "
 "'date_invoice_partner'."
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "Warning"
+msgstr "Advertencia"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__website_message_ids
