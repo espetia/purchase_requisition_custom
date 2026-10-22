@@ -30,6 +30,25 @@ class CreatePoWizard(models.TransientModel):
             res['line_ids'] = [(6, 0, lines.ids)]
         return res
 
+    def _prepare_po_line_vals(self, po, line):
+        """
+        Values of the purchase order line created from a requisition line.
+        The requisition's vehicle is carried over to vehicle_id, a field added
+        to purchase.order.line by the purchase_custom module (not a dependency
+        of this one, hence the check).
+        """
+        vals = {
+            'order_id': po.id,
+            'product_id': line.product_id.id,
+            'name': line.name,
+            'product_qty': line.product_qty,
+            'product_uom': line.product_uom_id.id,
+            'date_planned': fields.Datetime.now(),
+        }
+        if self.requisition_id.vehicle_id and 'vehicle_id' in self.env['purchase.order.line']._fields:
+            vals['vehicle_id'] = self.requisition_id.vehicle_id.id
+        return vals
+
     def action_create_po(self):
         self.ensure_one()
         
@@ -49,14 +68,7 @@ class CreatePoWizard(models.TransientModel):
             po = self.env['purchase.order'].create(po_vals)
 
             for line in self.line_ids:
-                po_line = self.env['purchase.order.line'].create({
-                    'order_id': po.id,
-                    'product_id': line.product_id.id,
-                    'name': line.name,
-                    'product_qty': line.product_qty,
-                    'product_uom': line.product_uom_id.id,
-                    'date_planned': fields.Datetime.now(),
-                })
+                po_line = self.env['purchase.order.line'].create(self._prepare_po_line_vals(po, line))
                 line.po_line_id = po_line.id
 
             # Update state if all lines are ordered
@@ -110,14 +122,7 @@ class CreatePoWizard(models.TransientModel):
                 })
                 
                 for line in self.line_ids:
-                    po_line = self.env['purchase.order.line'].create({
-                        'order_id': po.id,
-                        'product_id': line.product_id.id,
-                        'name': line.name,
-                        'product_qty': line.product_qty,
-                        'product_uom': line.product_uom_id.id,
-                        'date_planned': fields.Datetime.now(),
-                    })
+                    po_line = self.env['purchase.order.line'].create(self._prepare_po_line_vals(po, line))
                     
                     # Link back to the custom line using the first PO created.
                     if index == 0:

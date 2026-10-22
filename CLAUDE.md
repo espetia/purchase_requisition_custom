@@ -196,7 +196,10 @@ menus live in `views/<catalog>_views.xml` under `purchase.menu_purchase_config` 
 pre-populates only lines with a `product_id` and no `po_line_id` yet — i.e. not already ordered). It has two
 flows selected via `action_type`:
 
-Both flows copy the requisition's `requisition_name` into the PO's `partner_ref` (Vendor Reference).
+Both flows copy the requisition's `requisition_name` into the PO's `partner_ref` (Vendor Reference), and build
+every PO line through `_prepare_po_line_vals()`, which also carries the requisition's `vehicle_id` onto
+`purchase.order.line.vehicle_id`. That field belongs to the `purchase_custom` addon, which is **not** a dependency
+of this one, so it is only set when present in `_fields`.
 
 - **`create_po`** — creates one `purchase.order` directly, one `purchase.order.line` per selected requisition
   line, and stamps `po_line_id` back onto each source line.
