@@ -1031,6 +1031,7 @@ msgstr "Requisición de Compra: Recordatorio de Borrador"
 #: model:ir.actions.act_window,name:purchase_requisition_custom.action_purchase_requisition_custom
 #: model:ir.module.category,name:purchase_requisition_custom.module_category_purchase_requisition
 #: model:ir.ui.menu,name:purchase_requisition_custom.menu_purchase_requisition_custom
+#: model:ir.ui.menu,name:purchase_requisition_custom.menu_purchase_requisition_root
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_tree
 msgid "Purchase Requisitions"
 msgstr "Requisiciones de Compra"
