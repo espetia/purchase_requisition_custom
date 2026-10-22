@@ -16,6 +16,18 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,quote,waiting,authorized,done,cancel" options="{'clickable': '1'}"/>
                     </header>
                     <sheet>
+                        <div class="alert alert-warning" role="alert" attrs="{'invisible': [('duplicate_requisition_ids', '=', [])]}">
+                            <strong>Possible duplicate:</strong> there are draft requisitions in this department with similar data. Review them before saving to avoid purchasing twice.
+                            <field name="duplicate_requisition_ids" readonly="1" nolabel="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="requisition_name"/>
+                                    <field name="requester_id"/>
+                                    <field name="vehicle_id" optional="hide"/>
+                                    <field name="create_date" string="Created on"/>
+                                </tree>
+                            </field>
+                        </div>
                         <div class="oe_button_box" name="button_box">
                             <button name="action_view_purchase_orders" type="object" class="oe_stat_button" icon="fa-shopping-cart"
                                     attrs="{'invisible': [('purchase_order_count', '=', 0)]}" groups="purchase_requisition_custom.group_purchase_requisition_user">

@@ -55,6 +55,17 @@ msgstr ""
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid ""
+"<strong>Possible duplicate:</strong> there are draft requisitions in this "
+"department with similar data. Review them before saving to avoid purchasing "
+"twice."
+msgstr ""
+"<strong>Posible duplicado:</strong> hay requisiciones en borrador de este "
+"departamento con datos similares. Revísalas antes de guardar para evitar "
+"comprar dos veces."
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid "<span class=\"o_form_label\">Purchase Reference</span>"
 msgstr "<span class=\"o_form_label\">Referencia de Compra</span>"
 
@@ -288,6 +299,7 @@ msgstr "Creado por"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__create_date
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid "Created on"
 msgstr "Creado el"
 
@@ -937,6 +949,11 @@ msgstr ""
 #, python-format
 msgid "Select a file"
 msgstr "Seleccionar archivo"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__duplicate_requisition_ids
+msgid "Similar Requisitions"
+msgstr "Requisiciones Similares"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_has_sms_error

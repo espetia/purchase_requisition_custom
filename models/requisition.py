@@ -1,6 +1,15 @@
+import difflib
+import unicodedata
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from odoo.tools import is_html_empty
+
+# Minimum difflib ratio for two normalized texts to count as similar
+# (see PurchaseRequisitionCustom._is_similar_text).
+SIMILARITY_RATIO = 0.8
+# Shorter normalized texts are too generic to compare.
+MIN_SIMILAR_TEXT_LENGTH = 4
 
 class PurchaseRequisitionCustom(models.Model):
     _name = 'purchase.requisition.custom'
@@ -49,6 +58,8 @@ class PurchaseRequisitionCustom(models.Model):
     expense_register_ids = fields.One2many('expense.register', 'custom_requisition_id', string='Minor Expenses')
     expense_register_count = fields.Integer(string='Minor Expense Count', compute='_compute_expense_register_count')
     can_create_minor_expense = fields.Boolean(compute='_compute_can_create_minor_expense')
+    duplicate_requisition_ids = fields.Many2many(
+        'purchase.requisition.custom', compute='_compute_duplicate_requisition_ids', string='Similar Requisitions')
 
     @api.depends('purchase_order_ids')
     def _compute_purchase_order_count(self):
@@ -81,7 +92,6 @@ class PurchaseRequisitionCustom(models.Model):
         for rec in self:
             rec.has_legacy_comments = not is_html_empty(rec.comments)
 
-    @api.depends('department_id.allow_minor_expense')
     @api.model
     def _default_department_id(self):
         """
@@ -104,6 +114,7 @@ class PurchaseRequisitionCustom(models.Model):
         for rec in self:
             rec.allowed_department_ids = departments
 
+    @api.depends('department_id.allow_minor_expense')
     @api.depends_context('uid')
     def _compute_can_create_minor_expense(self):
         """
@@ -117,6 +128,62 @@ class PurchaseRequisitionCustom(models.Model):
         )
         for rec in self:
             rec.can_create_minor_expense = can_create and rec.department_id.allow_minor_expense
+
+    @api.model
+    def _normalize_text(self, text):
+        """
+        Lowercases the text, strips accents and collapses whitespace.
+        """
+        text = unicodedata.normalize('NFKD', text or '')
+        text = ''.join(char for char in text if not unicodedata.combining(char))
+        return ' '.join(text.lower().split())
+
+    @api.model
+    def _is_similar_text(self, text_a, text_b):
+        """
+        Two texts are similar when, once normalized, one contains the other or
+        they are close enough (difflib ratio >= SIMILARITY_RATIO).
+        """
+        text_a, text_b = self._normalize_text(text_a), self._normalize_text(text_b)
+        if len(text_a) < MIN_SIMILAR_TEXT_LENGTH or len(text_b) < MIN_SIMILAR_TEXT_LENGTH:
+            return False
+        if text_a in text_b or text_b in text_a:
+            return True
+        return difflib.SequenceMatcher(None, text_a, text_b).ratio() >= SIMILARITY_RATIO
+
+    @api.depends('state', 'department_id', 'requisition_name', 'vehicle_id', 'line_ids.product_id', 'line_ids.name')
+    def _compute_duplicate_requisition_ids(self):
+        """
+        Draft requisitions of the same department that look like this one, to
+        warn about possible duplicates while it is being filled. A candidate
+        matches on any of: similar purchase reference, same vehicle, a shared
+        product or a similar line description. Searched without sudo: the
+        "own or department" rule already shows the whole department.
+        """
+        drafts_by_department = {}
+        for rec in self:
+            if rec.state != 'draft' or not rec.department_id:
+                rec.duplicate_requisition_ids = False
+                continue
+            department = rec.department_id._origin
+            if department.id not in drafts_by_department:
+                drafts_by_department[department.id] = self.search([
+                    ('state', '=', 'draft'),
+                    ('department_id', '=', department.id),
+                ])
+            candidates = drafts_by_department[department.id].filtered(lambda r: r.id != rec._origin.id)
+            products = rec.line_ids.product_id._origin
+            descriptions = [name for name in rec.line_ids.mapped('name') if name]
+            rec.duplicate_requisition_ids = candidates.filtered(lambda candidate: (
+                self._is_similar_text(rec.requisition_name, candidate.requisition_name)
+                or (rec.vehicle_id and rec.vehicle_id._origin == candidate.vehicle_id)
+                or (products & candidate.line_ids.product_id)
+                or any(
+                    self._is_similar_text(description, candidate_name)
+                    for description in descriptions
+                    for candidate_name in candidate.line_ids.mapped('name')
+                )
+            ))
 
     @api.model
     def _group_expand_states(self, states, domain, order):

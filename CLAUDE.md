@@ -200,6 +200,13 @@ menus live in `views/<catalog>_views.xml` under `purchase.menu_purchase_config` 
   match is a **view-only** rule (no constraint); `_onchange_department_id` clears a rubro outside the new
   department's list and warns when the department needs a rubro but has none configured; `text_comment` sits below
   the notebook, followed by the read-only legacy `comments` block (only when `has_legacy_comments`).
+- **Duplicate warning**: a non-blocking `alert-warning` banner at the top of the sheet lists
+  `duplicate_requisition_ids` — a non-stored compute (recomputed live through onchange) of the other **draft**
+  requisitions of the **same department** that match on *any* of: similar `requisition_name`, same `vehicle_id`,
+  a shared line `product_id`, or a similar line description. Text similarity (`_is_similar_text`) normalizes
+  case/accents/whitespace and matches on containment or a `difflib` ratio >= `SIMILARITY_RATIO` (0.8, module
+  constant; texts under `MIN_SIMILAR_TEXT_LENGTH` are ignored). The candidate search runs without `sudo`, relying
+  on the "own or department" rule. It never blocks saving.
 
 ### PO generation wizard (`wizard/create_po_wizard.py`)
 
