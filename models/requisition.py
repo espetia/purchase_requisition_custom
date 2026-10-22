@@ -12,6 +12,8 @@ class PurchaseRequisitionCustom(models.Model):
     requester_id = fields.Many2one('res.users', string='Requester', default=lambda self: self.env.user)
     department_id = fields.Many2one('purchase.requisition.department', string='Department', required=True)
     need_rubro = fields.Boolean(related='department_id.need_rubro')
+    need_payment_method = fields.Boolean(related='department_id.need_payment_method')
+    allow_minor_expense = fields.Boolean(related='department_id.allow_minor_expense')
     rubro_id = fields.Many2one('purchase.requisition.rubro', string='Rubro')
     manager_id = fields.Many2one(
         'res.users',
@@ -72,18 +74,20 @@ class PurchaseRequisitionCustom(models.Model):
         for rec in self:
             rec.has_legacy_comments = not is_html_empty(rec.comments)
 
+    @api.depends('department_id.allow_minor_expense')
     @api.depends_context('uid')
     def _compute_can_create_minor_expense(self):
         """
-        A Minor Expense can only be created by a Purchase Manager who is also
-        a member of the minor_expenses module's basic expense register group.
+        A Minor Expense can only be created on requisitions whose department
+        allows it, by a Purchase Manager who is also a member of the
+        minor_expenses module's basic expense register group.
         """
         can_create = (
             self.env.user.has_group('purchase.group_purchase_manager')
             and self.env.user.has_group('minor_expenses.group_expense_register_user')
         )
         for rec in self:
-            rec.can_create_minor_expense = can_create
+            rec.can_create_minor_expense = can_create and rec.department_id.allow_minor_expense
 
     @api.model
     def _group_expand_states(self, states, domain, order):
@@ -142,6 +146,14 @@ class PurchaseRequisitionCustom(models.Model):
         for rec in self:
             if rec.department_id.need_rubro and not rec.rubro_id:
                 raise ValidationError(_("Rubro is mandatory for the selected Department."))
+
+    @api.constrains('department_id')
+    def _check_lines_payment_method_required(self):
+        """
+        Ensures the existing lines have a payment method when the requisition
+        moves to a department that needs one.
+        """
+        self.line_ids._check_payment_method_required()
 
     @api.onchange('department_id')
     def _onchange_department_id(self):

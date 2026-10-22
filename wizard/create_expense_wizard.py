@@ -53,6 +53,9 @@ class CreateExpenseWizard(models.TransientModel):
     def action_create_expense(self):
         self.ensure_one()
 
+        if not self.requisition_id.department_id.allow_minor_expense:
+            raise exceptions.UserError(_('Minor Expenses are not enabled for the department of this requisition.'))
+
         if not self.line_ids:
             raise exceptions.UserError(_('Please select at least one line to expense.'))
 

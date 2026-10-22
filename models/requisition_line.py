@@ -39,6 +39,17 @@ class PurchaseRequisitionLineCustom(models.Model):
         for line in self:
             line.currency_id = self.env.company.currency_id
 
+    @api.constrains('payment_method_id', 'requisition_id')
+    def _check_payment_method_required(self):
+        """
+        Ensures that a payment method is provided if the requisition's
+        department needs one.
+        Raises a ValidationError if the condition is not met.
+        """
+        for line in self:
+            if line.requisition_id.department_id.need_payment_method and not line.payment_method_id:
+                raise ValidationError(_("Payment Method is mandatory for the selected Department."))
+
     @api.constrains('attached_filename', 'support_filename')
     def _check_attached_extension(self):
         """

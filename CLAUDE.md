@@ -89,7 +89,7 @@ EOF
   preserve historical data (it allowed embedded images); the form shows it only when `has_legacy_comments`
   (computed with `odoo.tools.is_html_empty`, so empty editor markup like `<p><br></p>` is hidden).
   Inherits `mail.thread`/`mail.activity.mixin` for chatter.
-- **`purchase.requisition.department`** (`department.py`) — department catalog (`name`, `need_rubro`), under
+- **`purchase.requisition.department`** (`department.py`) — department catalog (`name`, `need_rubro`, `need_payment_method`, `allow_minor_expense`), under
   Purchase > Configuration.
 - **`res.users`** (`res_users.py`, `_inherit`) — `name_get()` appends the employee's `job_title`
   ("Carlos Espetia - Compras") only when `show_job_title` is in context; the requisition action and the
@@ -102,7 +102,9 @@ EOF
   `attached` (+ `attached_filename`; `@api.constrains` limit it to image/PDF/Excel extensions and to
   `MAX_ATTACHED_SIZE_MB` = 2 MB, read from the stored `ir.attachment.file_size` — keep that constant in sync with
   the `max_file_size_mb` widget option in the view, which gives the same check client-side),
-  `supplier_suggestion`, `need_invoice`, `payment_method_id`, `payment_import` (Monetary; `currency_id` is a
+  `supplier_suggestion`, `need_invoice`, `payment_method_id` (required only when the requisition's department has
+  `need_payment_method`: view `attrs` on `parent.need_payment_method` in the line popup, plus `@api.constrains` on
+  the line and on the header's `department_id`), `payment_import` (Monetary; `currency_id` is a
   non-stored compute of the company currency), and `comment`. A "Support" section adds a **required**
   `consult_list_id` and an optional `support_file` (+ `support_filename`), which shares the `attached`
   constraints (same extensions and size limit; both `@api.constrains` check the two files). `image` is a legacy field, kept for
@@ -207,8 +209,9 @@ single new `expense.register` record (`type='minor_casher'`, `apply_on='provider
 description) is captured manually in the wizard form — it is *not* derived from the selected lines, since a
 single Minor Expense can bundle lines with different products. `action_create_expense()`:
 
-1. Re-validates server-side (not just via the view domain) that no selected line already has a `po_line_id`
-   or `expense_register_id` — raises `UserError` otherwise.
+1. Re-validates server-side (not just via the view domain) that the requisition's department has
+   `allow_minor_expense` and that no selected line already has a `po_line_id` or `expense_register_id` —
+   raises `UserError` otherwise.
 2. Replicates `expense.register`'s own fund-lookup onchange manually (`expense.fund` search by
    `manager_ids`), since `create()` never fires onchanges.
 3. Creates the `expense.register` with `custom_requisition_id` set, stamps `expense_register_id` back onto
@@ -221,12 +224,15 @@ whole flow work without `sudo()` anywhere. Making it editable would let a manage
 longer read back.
 
 The "Create Minor Expense" button on the requisition form (`views/requisition_views.xml`) is only visible
-when the computed field `can_create_minor_expense` is `True`, which requires **both**
-`purchase.group_purchase_manager` and `minor_expenses.group_expense_register_user` — the view's `groups`
+when the computed field `can_create_minor_expense` is `True`, which requires the department's
+`allow_minor_expense` **and both** `purchase.group_purchase_manager` and
+`minor_expenses.group_expense_register_user` — the view's `groups`
 attribute can't express an AND condition, so this is a Python compute checked via `attrs`, mirroring the
 existing `is_warehouse_agent_only` compute pattern in `purchase_order.py`. Membership in the `minor_expenses`
 group is **not** granted automatically (no `implied_ids` link) — it must be assigned to a Purchase Manager
-separately by whoever administers users/groups.
+separately by whoever administers users/groups. The "Minor Expenses" page is likewise hidden whenever the
+department doesn't have `allow_minor_expense`, even if expenses are already linked (the "Minor Expenses" stat
+button, shown only when the count is > 0, still reaches them).
 
 ### Frontend assets (`static/src/`)
 

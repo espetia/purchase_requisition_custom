@@ -109,6 +109,12 @@ msgid "Agreement Type"
 msgstr "Tipo de Acuerdo"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__allow_minor_expense
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__allow_minor_expense
+msgid "Allow Minor Expenses"
+msgstr "Permite Gastos Menores"
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__amount
 msgid "Amount"
 msgstr "Monto"
@@ -570,6 +576,12 @@ msgid "Payment Method"
 msgstr "Método de Pago"
 
 #. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition_line.py:0
+#, python-format
+msgid "Payment Method is mandatory for the selected Department."
+msgstr "El método de pago es obligatorio para el departamento seleccionado."
+
+#. module: purchase_requisition_custom
 #: model:ir.actions.act_window,name:purchase_requisition_custom.action_purchase_requisition_payment_method
 #: model:ir.ui.menu,name:purchase_requisition_custom.menu_purchase_requisition_payment_method
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_payment_method_tree
@@ -615,6 +627,12 @@ msgid "Minor Expenses"
 msgstr ""
 
 #. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/wizard/create_expense_wizard.py:0
+#, python-format
+msgid "Minor Expenses are not enabled for the department of this requisition."
+msgstr "Los gastos menores no están habilitados para el departamento de esta requisición."
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__my_activity_date_deadline
 msgid "My Activity Deadline"
 msgstr "Mi fecha límite de actividad"
@@ -626,6 +644,12 @@ msgstr "Mi fecha límite de actividad"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__name
 msgid "Name"
 msgstr "Nombre"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__need_payment_method
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__need_payment_method
+msgid "Need Payment Method"
+msgstr "Requiere Método de Pago"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__need_rubro

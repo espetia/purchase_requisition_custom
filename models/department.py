@@ -6,3 +6,5 @@ class PurchaseRequisitionDepartment(models.Model):
 
     name = fields.Char(string='Name', required=True)
     need_rubro = fields.Boolean(string='Need Rubro', default=False)
+    need_payment_method = fields.Boolean(string='Need Payment Method', default=False)
+    allow_minor_expense = fields.Boolean(string='Allow Minor Expenses', default=False)
