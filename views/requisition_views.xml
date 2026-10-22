@@ -47,6 +47,15 @@
                                 <field name="expense_register_count" widget="statinfo" string="Minor Expenses"/>
                             </button>
                         </div>
+                        <div class="mb-2" attrs="{'invisible': [('approval_status', '=', 'not_sent')]}">
+                            <field name="approval_status" widget="badge" attrs="{'invisible': [('approval_status', '=', 'not_sent')]}"
+                                   decoration-warning="approval_status == 'in_progress'" decoration-success="approval_status == 'approved'"
+                                   decoration-danger="approval_status == 'rejected'"/>
+                            <span attrs="{'invisible': [('current_approver_id', '=', False)]}" class="text-muted ml-2">
+                                Waiting for <field name="current_approver_id" class="oe_inline" options="{'no_open': True}"/>
+                                (<field name="approval_step" class="oe_inline"/>)
+                            </span>
+                        </div>
                         <div class="oe_title">
                             <span class="o_form_label">Folio</span>
                             <h1>
@@ -56,13 +65,6 @@
                             <h2>
                                 <field name="requisition_name" attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('approval_status', '=', 'in_progress')]}"/>
                             </h2>
-                            <field name="approval_status" widget="badge" attrs="{'invisible': [('approval_status', '=', 'not_sent')]}"
-                                   decoration-warning="approval_status == 'in_progress'" decoration-success="approval_status == 'approved'"
-                                   decoration-danger="approval_status == 'rejected'"/>
-                            <span attrs="{'invisible': [('current_approver_id', '=', False)]}" class="text-muted ml-2">
-                                Waiting for <field name="current_approver_id" class="oe_inline" options="{'no_open': True}"/>
-                                (<field name="approval_step" class="oe_inline"/>)
-                            </span>
                         </div>
                         <group>
                             <group>
