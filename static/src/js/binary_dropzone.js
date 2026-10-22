@@ -15,6 +15,8 @@ const qweb = core.qweb;
  * focuses it), or picked with the native file dialog through the area's
  * "Select a file" button. Once a file is obtained, it goes through the
  * native FieldBinaryFile upload flow (filename sync, value set, re-render).
+ * With several drop areas in one form, a paste goes to the focused one, or
+ * else to the first empty one.
  */
 const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
     events: _.extend({}, basicFields.FieldBinaryFile.prototype.events, {
@@ -85,6 +87,26 @@ const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
             return modals[modals.length - 1] === modal;
         }
         return true;
+    },
+    /**
+     * Every widget listens to 'paste' on the document, so when a form has
+     * several empty drop areas only one of them must take the file: the one
+     * holding the focus (the user clicked it), or else the first visible one
+     * in the same dialog (or page).
+     *
+     * @private
+     * @returns {boolean}
+     */
+    _isPasteTarget: function () {
+        const focusedDropzone = document.activeElement && document.activeElement.closest &&
+            document.activeElement.closest('.o_prc_dropzone');
+        if (focusedDropzone) {
+            return this.el.contains(focusedDropzone);
+        }
+        const container = this.el.closest('.modal') || document;
+        const firstDropzone = _.find(container.querySelectorAll('.o_prc_dropzone:not(.o_hidden)'),
+            dropzone => dropzone.offsetParent !== null);
+        return !!firstDropzone && this.el.contains(firstDropzone);
     },
     /**
      * Whether the element is a text-editing target (input, textarea or
@@ -217,7 +239,8 @@ const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
         // - a file is already attached: never replace it silently (the native
         //   edit button is the way to replace it).
         if (!this._isActive() || this.value || !files || !files.length ||
-                this._isEditableElement(ev.target) || this._isEditableElement(document.activeElement)) {
+                this._isEditableElement(ev.target) || this._isEditableElement(document.activeElement) ||
+                !this._isPasteTarget()) {
             return;
         }
         ev.preventDefault();

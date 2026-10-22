@@ -189,6 +189,24 @@ msgid "Concept"
 msgstr "Concepto"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__consult_list_id
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_consult_list_form
+msgid "Consult List"
+msgstr "Lista de Consulta"
+
+#. module: purchase_requisition_custom
+#: model:ir.actions.act_window,name:purchase_requisition_custom.action_purchase_requisition_consult_list
+#: model:ir.ui.menu,name:purchase_requisition_custom.menu_purchase_requisition_consult_list
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_consult_list_tree
+msgid "Consult Lists"
+msgstr "Listas de Consulta"
+
+#. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_purchase_requisition_consult_list
+msgid "Consult Lists Catalog"
+msgstr "Catálogo de Listas de Consulta"
+
+#. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_create_expense_wizard_form
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_create_po_wizard_form
 msgid "Create"
@@ -243,6 +261,7 @@ msgstr "Crear una nueva requisición de compra"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__create_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__create_uid
 msgid "Created by"
@@ -254,6 +273,7 @@ msgstr "Creado por"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__create_date
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__create_date
 msgid "Created on"
@@ -321,6 +341,7 @@ msgstr "Descripción"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__display_name
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__display_name
 msgid "Display Name"
@@ -407,6 +428,7 @@ msgstr "Ayuda a gestionar las requisiciones de compra."
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__id
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__id
 msgid "ID"
@@ -460,6 +482,7 @@ msgstr "Solo Agente de Almacén"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department____last_update
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro____last_update
 msgid "Last Modified on"
@@ -471,6 +494,7 @@ msgstr "Última modificación el"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__write_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__write_uid
 msgid "Last Updated by"
@@ -482,6 +506,7 @@ msgstr "Última actualización por"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__write_date
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__write_date
 msgid "Last Updated on"
@@ -596,6 +621,7 @@ msgstr "Mi fecha límite de actividad"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__name
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list__name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__name
 msgid "Name"
@@ -904,6 +930,21 @@ msgstr "Proveedor"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__supplier_suggestion
 msgid "Supplier Suggestion"
 msgstr "Proveedor Sugerido"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Support"
+msgstr "Soporte"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__support_file
+msgid "Support File"
+msgstr "Archivo de Soporte"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__support_filename
+msgid "Support Filename"
+msgstr "Nombre del Archivo de Soporte"
 
 #. module: purchase_requisition_custom
 #: code:addons/purchase_requisition_custom/models/requisition_line.py:0

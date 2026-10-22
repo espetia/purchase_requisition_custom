@@ -103,10 +103,14 @@ EOF
   `MAX_ATTACHED_SIZE_MB` = 2 MB, read from the stored `ir.attachment.file_size` — keep that constant in sync with
   the `max_file_size_mb` widget option in the view, which gives the same check client-side),
   `supplier_suggestion`, `need_invoice`, `payment_method_id`, `payment_import` (Monetary; `currency_id` is a
-  non-stored compute of the company currency), and `comment`. `image` is a legacy field, kept for
+  non-stored compute of the company currency), and `comment`. A "Support" section adds a **required**
+  `consult_list_id` and an optional `support_file` (+ `support_filename`), which shares the `attached`
+  constraints (same extensions and size limit; both `@api.constrains` check the two files). `image` is a legacy field, kept for
   historical data but no longer shown in any view.
 - **`purchase.requisition.payment.method`** (`payment_method.py`) — payment methods catalog (`name` only),
   under Purchase > Configuration.
+- **`purchase.requisition.consult.list`** (`consult_list.py`) — consult lists catalog (`name` only), under
+  Purchase > Configuration; referenced by the required line field `consult_list_id`.
 - **`purchase.requisition.rubro`** (`rubro.py`) — simple category catalog; `requires_vehicle` drives the
   constraint on the header.
 - **`purchase.order`** (`purchase_order.py`, `_inherit`) — adds `custom_requisition_id` back-link and syncs
@@ -160,9 +164,9 @@ own native rule restricts a record to its `user_id`, which would otherwise hide 
 from another manager viewing the same requisition. Deliberately, `group_purchase_requisition_manager` does
 **not** imply `minor_expenses.group_expense_register_user`/`_admin` — see the wizard note above for why.
 
-The three configuration catalogs (`rubro`, `department`, `payment.method`) all follow the same access pattern
+The four configuration catalogs (`rubro`, `department`, `payment.method`, `consult.list`) all follow the same access pattern
 in `ir.model.access.csv`: basic users read-only, managers full CRUD, no `ir.rule`s. Their tree/form views and
-menus live in `views/<catalog>_views.xml` under `purchase.menu_purchase_config` (sequences 100/101/102).
+menus live in `views/<catalog>_views.xml` under `purchase.menu_purchase_config` (sequences 100/101/102/103).
 
 ### Views (`views/requisition_views.xml`)
 
@@ -172,7 +176,7 @@ menus live in `views/<catalog>_views.xml` under `purchase.menu_purchase_config` 
   does not leak into the PO / Minor Expense views or the wizards.
 - **Lines** are a non-editable `<tree>` (each column has a `width` attribute, which Odoo 15 applies as a
   min-width so columns scroll horizontally instead of truncating) plus an inline `<form>` that opens as a popup
-  on click, grouped into Product / Supplier / Payment / Traceability sections and a Comment area. The popup
+  on click, grouped into Product / Supplier / Payment / Traceability / Support sections and a Comment area. The popup
   inherits the `line_ids` `readonly` attrs, so lines are read-only once the requisition leaves `draft`. The
   wizard line trees (`wizard/*_views.xml`) reuse the line fields and pick up label changes automatically.
 - **Header**: `department_id` drives `rubro_id` visibility/required via `need_rubro`; `text_comment` sits below
@@ -236,8 +240,10 @@ dialog autofocuses its first input); the file picker is the area's "Select a fil
 dropped/pasted `File` goes through the native upload flow (`on_file_uploaded`), so value/filename handling is
 Odoo's own. Supported `options`: `accepted_file_extensions` (native) and `max_file_size_mb`, which lowers
 `max_upload_size` and therefore also applies to the native file-picker path. Files dropped outside the drop
-area are swallowed (`preventDefault`) so the browser doesn't navigate away and lose unsaved changes. Used on the
-requisition line popup form for `attached`; the read-only list column keeps the plain `binary` widget.
+area are swallowed (`preventDefault`) so the browser doesn't navigate away and lose unsaved changes. Since every
+widget listens on `document`, `_isPasteTarget()` makes sure only one empty drop area takes a paste: the focused one,
+or else the first visible one in the same dialog. Used on the requisition line popup form for `attached` and
+`support_file`; the read-only list columns keep the plain `binary` widget.
 Translatable JS/QWeb strings in
 `i18n/es_MX.po` need the `#. openerp-web` comment to reach the web client. After changing assets, browsers need a
 hard refresh (or `?debug=assets`).
@@ -257,7 +263,8 @@ Data fixes for existing databases go in `migrations/<version>/{pre,post}-*.py` a
 `15.0.1.1.0/post-migrate.py` gives requisitions created before `department_id` existed a default "General"
 department (`need_rubro=True`, since `rubro_id` used to be required) and then enforces `NOT NULL`, which Odoo
 itself could not apply during the upgrade. Making a field `required=True` on a table with existing rows needs
-the same treatment, otherwise those records can't be saved from the form.
+the same treatment, otherwise those records can't be saved from the form. `15.0.1.2.0/post-migrate.py` does the
+same for the required line field `consult_list_id` (default "General" consult list).
 
 ### Known inconsistency
 

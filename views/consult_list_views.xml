@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_requisition_consult_list_tree" model="ir.ui.view">
+        <field name="name">purchase.requisition.consult.list.tree</field>
+        <field name="model">purchase.requisition.consult.list</field>
+        <field name="arch" type="xml">
+            <tree string="Consult Lists">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_purchase_requisition_consult_list_form" model="ir.ui.view">
+        <field name="name">purchase.requisition.consult.list.form</field>
+        <field name="model">purchase.requisition.consult.list</field>
+        <field name="arch" type="xml">
+            <form string="Consult List">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_purchase_requisition_consult_list" model="ir.actions.act_window">
+        <field name="name">Consult Lists</field>
+        <field name="res_model">purchase.requisition.consult.list</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_purchase_requisition_consult_list"
+              name="Consult Lists"
+              parent="purchase.menu_purchase_config"
+              action="action_purchase_requisition_consult_list"
+              sequence="103"/>
+</odoo>

@@ -8,7 +8,7 @@
     'author': "Carlos Espetia",
     'website': "http://www.carlosespetia.com",
     'category': 'Uncategorized',
-    'version': '15.0.1.1.0',
+    'version': '15.0.1.2.0',
     'depends': ['base', 'hr', 'purchase', 'purchase_requisition', 'mail', 'fleet', 'minor_expenses'],
     'data': [
         'security/security.xml',
@@ -22,6 +22,7 @@
         'views/rubro_views.xml',
         'views/department_views.xml',
         'views/payment_method_views.xml',
+        'views/consult_list_views.xml',
     ],
     'assets': {
         'web.assets_backend': [

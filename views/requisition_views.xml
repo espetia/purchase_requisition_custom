@@ -84,6 +84,14 @@
                                                     <field name="expense_register_id" readonly="1"/>
                                                 </group>
                                             </group>
+                                            <group>
+                                                <group string="Support">
+                                                    <field name="consult_list_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                                    <field name="support_filename" invisible="1"/>
+                                                    <field name="support_file" filename="support_filename" widget="binary_dropzone"
+                                                           options="{'accepted_file_extensions': '.png,.jpg,.jpeg,.gif,.bmp,.pdf,.xls,.xlsx', 'max_file_size_mb': 2}"/>
+                                                </group>
+                                            </group>
                                             <separator string="Comment"/>
                                             <field name="comment" nolabel="1" placeholder="Additional comments for this line..."/>
                                         </sheet>
@@ -101,6 +109,10 @@
                                         <field name="payment_method_id" optional="show" width="160px" options="{'no_create': True, 'no_create_edit': True}"/>
                                         <field name="currency_id" invisible="1"/>
                                         <field name="payment_import" widget="monetary" optional="show" width="120px"/>
+                                        <field name="consult_list_id" optional="show" width="180px" options="{'no_create': True, 'no_create_edit': True}"/>
+                                        <field name="support_filename" invisible="1"/>
+                                        <field name="support_file" filename="support_filename" widget="binary" optional="show" width="200px"
+                                               options="{'accepted_file_extensions': '.png,.jpg,.jpeg,.gif,.bmp,.pdf,.xls,.xlsx'}"/>
                                         <field name="comment" optional="hide" width="220px"/>
                                         <field name="po_line_id" readonly="1" width="180px" groups="purchase_requisition_custom.group_purchase_requisition_user"/>
                                         <field name="expense_register_id" readonly="1" width="180px" groups="purchase_requisition_custom.group_purchase_requisition_user"/>
