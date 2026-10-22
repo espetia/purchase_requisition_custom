@@ -19,7 +19,7 @@ class PurchaseRequisitionLineCustom(models.Model):
     product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure', required=True)
     po_line_id = fields.Many2one('purchase.order.line', string='PO Line', readonly=True)
     expense_register_id = fields.Many2one('expense.register', string='Expense Register', readonly=True)
-    attached = fields.Binary(string='Attached', attachment=True)
+    attached = fields.Binary(string='Attached', attachment=True, required=True)
     attached_filename = fields.Char(string='Attached Filename')
     supplier_suggestion = fields.Char(string='Supplier Suggestion')
     need_invoice = fields.Boolean(string='Need Invoice', default=False)
