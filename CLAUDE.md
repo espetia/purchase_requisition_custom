@@ -116,7 +116,13 @@ EOF
 - **`purchase.requisition.rubro`** (`rubro.py`) — simple category catalog; `requires_vehicle` drives the
   constraint on the header.
 - **`purchase.order`** (`purchase_order.py`, `_inherit`) — adds `custom_requisition_id` back-link and syncs
-  requisition state from PO state changes (see below).
+  requisition state from PO state changes (see below). `requisition_line_ids` is a non-stored compute of the
+  requisition lines converted into *this* PO (`po_line_id.order_id`), restricted with field-level
+  `groups='...group_purchase_requisition_user'` because plain purchase users have no access to the line model.
+  It feeds the read-only "Requisition Details" page that `views/purchase_order_views.xml` adds to the PO form
+  (link to the requisition + lines with their `attached`/`support_file` downloads), shown only when
+  `custom_requisition_id` is set. A non-manager Warehouse Agent only sees lines of their own requisitions there
+  (line "own" rule).
 - **`expense.register`** (`models/expense_register.py`, `_inherit` of `minor_expenses`' own model) — adds
   `custom_requisition_id` back-link, mirroring the `purchase.order` inherit above.
 
@@ -190,12 +196,14 @@ menus live in `views/<catalog>_views.xml` under `purchase.menu_purchase_config` 
 pre-populates only lines with a `product_id` and no `po_line_id` yet — i.e. not already ordered). It has two
 flows selected via `action_type`:
 
+Both flows copy the requisition's `requisition_name` into the PO's `partner_ref` (Vendor Reference).
+
 - **`create_po`** — creates one `purchase.order` directly, one `purchase.order.line` per selected requisition
   line, and stamps `po_line_id` back onto each source line.
 - **`create_pr`** — creates a native `purchase.requisition` (Odoo's own agreements model) plus one
   `purchase.order` per selected vendor in `vendor_ids`, replicating lines onto each PO; only the *first*
   vendor's PO lines get `po_line_id` back-linked (the others remain competing quotes under the same
-  agreement). Immediately calls `pr.action_in_progress()` to confirm the native requisition.
+  agreement, so their "Requisition Details" page shows the requisition link but no lines). Immediately calls `pr.action_in_progress()` to confirm the native requisition.
 
 Both flows flip the custom requisition's `state` to `waiting` once every one of its lines has a `po_line_id`.
 
@@ -271,10 +279,3 @@ department (`need_rubro=True`, since `rubro_id` used to be required) and then en
 itself could not apply during the upgrade. Making a field `required=True` on a table with existing rows needs
 the same treatment, otherwise those records can't be saved from the form. `15.0.1.2.0/post-migrate.py` does the
 same for the required line field `consult_list_id` (default "General" consult list).
-
-### Known inconsistency
-
-`views/purchase_order_views.xml` still exists in the tree but is **not** referenced in `__manifest__.py`'s
-`data` list (removed in commit `75d4cbd`) — it is currently dead/unloaded. Don't assume its contents are
-active in the UI; if PO view changes are needed, check whether this file should be re-wired into the
-manifest or whether the intent was to delete it.

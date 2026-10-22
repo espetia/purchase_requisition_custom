@@ -44,6 +44,7 @@ class CreatePoWizard(models.TransientModel):
                 'partner_id': self.partner_id.id,
                 'custom_requisition_id': self.requisition_id.id,
                 'origin': self.requisition_id.name,
+                'partner_ref': self.requisition_id.requisition_name,
             }
             po = self.env['purchase.order'].create(po_vals)
 
@@ -105,6 +106,7 @@ class CreatePoWizard(models.TransientModel):
                     'requisition_id': pr.id,
                     'custom_requisition_id': self.requisition_id.id,
                     'origin': self.requisition_id.name,
+                    'partner_ref': self.requisition_id.requisition_name,
                 })
                 
                 for line in self.line_ids:

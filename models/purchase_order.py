@@ -5,11 +5,28 @@ class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
     custom_requisition_id = fields.Many2one('purchase.requisition.custom', string='Custom Requisition')
+    requisition_line_ids = fields.Many2many(
+        'purchase.requisition.line.custom',
+        string='Requisition Lines',
+        compute='_compute_requisition_line_ids',
+        groups='purchase_requisition_custom.group_purchase_requisition_user',
+    )
     is_warehouse_agent_only = fields.Boolean(
         compute='_compute_is_warehouse_agent_only',
         default=False,
         store=False
     )
+
+    @api.depends('order_line')
+    def _compute_requisition_line_ids(self):
+        """
+        Requisition lines that were converted into lines of this purchase order.
+        """
+        lines = self.env['purchase.requisition.line.custom'].search([
+            ('po_line_id.order_id', 'in', self._origin.ids),
+        ])
+        for rec in self:
+            rec.requisition_line_ids = lines.filtered(lambda line: line.po_line_id.order_id == rec._origin)
 
     @api.depends_context('uid')
     def _compute_is_warehouse_agent_only(self):

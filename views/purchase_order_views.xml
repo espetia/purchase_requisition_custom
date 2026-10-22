@@ -1,30 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_purchase_order_form_warehouse" model="ir.ui.view">
-        <field name="name">purchase.order.form.warehouse</field>
+    <record id="view_purchase_order_form_requisition_details" model="ir.ui.view">
+        <field name="name">purchase.order.form.requisition.details</field>
         <field name="model">purchase.order</field>
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
-            <!-- Invisible field to hold boolean -->
-            <xpath expr="//field[@name='partner_id']" position="before">
-                <field name="is_warehouse_agent_only" invisible="1"/>
+            <xpath expr="//page[@name='purchase_delivery_invoice']" position="after">
+                <page string="Requisition Details" name="requisition_details"
+                      attrs="{'invisible': [('custom_requisition_id', '=', False)]}"
+                      groups="purchase_requisition_custom.group_purchase_requisition_user">
+                    <group>
+                        <group>
+                            <field name="custom_requisition_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="requisition_line_ids" readonly="1">
+                        <tree create="0" edit="0" delete="0">
+                            <field name="product_id" width="300px"/>
+                            <field name="name" width="220px"/>
+                            <field name="product_qty" width="100px"/>
+                            <field name="product_uom_id" width="150px"/>
+                            <field name="consult_list_id" optional="show" width="180px"/>
+                            <field name="attached_filename" invisible="1"/>
+                            <field name="attached" filename="attached_filename" widget="binary" optional="show" width="200px"/>
+                            <field name="support_filename" invisible="1"/>
+                            <field name="support_file" filename="support_filename" widget="binary" optional="show" width="200px"/>
+                            <field name="supplier_suggestion" optional="show" width="180px"/>
+                            <field name="payment_method_id" optional="show" width="160px"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="payment_import" widget="monetary" optional="show" width="120px"/>
+                            <field name="need_invoice" optional="show" width="140px"/>
+                            <field name="comment" optional="hide" width="220px"/>
+                        </tree>
+                        <form string="Requisition Line">
+                            <sheet>
+                                <group>
+                                    <group string="Product">
+                                        <field name="product_id"/>
+                                        <field name="name"/>
+                                        <label for="product_qty"/>
+                                        <div class="o_row">
+                                            <field name="product_qty"/>
+                                            <field name="product_uom_id"/>
+                                        </div>
+                                    </group>
+                                    <group string="Supplier">
+                                        <field name="supplier_suggestion"/>
+                                        <field name="attached_filename" invisible="1"/>
+                                        <field name="attached" filename="attached_filename" widget="binary"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Payment">
+                                        <field name="payment_method_id"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="payment_import" widget="monetary"/>
+                                        <field name="need_invoice"/>
+                                    </group>
+                                    <group string="Support">
+                                        <field name="consult_list_id"/>
+                                        <field name="support_filename" invisible="1"/>
+                                        <field name="support_file" filename="support_filename" widget="binary"/>
+                                    </group>
+                                </group>
+                                <separator string="Comment"/>
+                                <field name="comment" nolabel="1"/>
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
             </xpath>
-
-            <!-- Make key fields read-only if is_warehouse_agent_only is True -->
-            <xpath expr="//field[@name='partner_id']" position="attributes">
-                <attribute name="attrs">{'readonly': ['|', ('state', 'in', ['cancel', 'done', 'purchase']), ('is_warehouse_agent_only', '=', True)]}</attribute>
-            </xpath>
-            <xpath expr="//field[@name='partner_ref']" position="attributes">
-                <attribute name="attrs">{'readonly': ['|', ('state', 'in', ['cancel', 'done', 'purchase']), ('is_warehouse_agent_only', '=', True)]}</attribute>
-            </xpath>
-            <xpath expr="//field[@name='currency_id']" position="attributes">
-                <attribute name="attrs">{'readonly': ['|', ('state', 'in', ['cancel', 'done', 'purchase']), ('is_warehouse_agent_only', '=', True)]}</attribute>
-            </xpath>
-            <xpath expr="//field[@name='order_line']" position="attributes">
-                <attribute name="attrs">{'readonly': ['|', ('state', 'in', ['cancel', 'done', 'purchase']), ('is_warehouse_agent_only', '=', True)]}</attribute>
-            </xpath>
-            <!-- Make sure date_planned and date_invoice_partner are editable -->
-            <!-- If date_invoice_partner isn't standard, it might not exist in the form, but let's assume it does or is added elsewhere. -->
         </field>
     </record>
 </odoo>

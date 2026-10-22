@@ -19,6 +19,7 @@
         'wizard/create_po_wizard_views.xml',
         'wizard/create_expense_wizard_views.xml',
         'views/requisition_views.xml',
+        'views/purchase_order_views.xml',
         'views/rubro_views.xml',
         'views/department_views.xml',
         'views/payment_method_views.xml',

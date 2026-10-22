@@ -174,6 +174,7 @@ msgstr "Catálogo de Categorías/Rubros"
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__comment
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_order_form_requisition_details
 msgid "Comment"
 msgstr "Comentario"
 
@@ -294,8 +295,8 @@ msgstr "Moneda"
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_expense_register__custom_requisition_id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_order__custom_requisition_id
-msgid "Custom Requisition"
-msgstr "Requisición Personalizada"
+msgid "Requisition"
+msgstr "Requisición"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__date
@@ -561,6 +562,7 @@ msgstr "Requiere Factura"
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_order_form_requisition_details
 msgid "Payment"
 msgstr "Pago"
 
@@ -765,6 +767,7 @@ msgstr "Por favor, seleccione al menos un proveedor."
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__product_id
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_order_form_requisition_details
 msgid "Product"
 msgstr "Producto"
 
@@ -877,9 +880,20 @@ msgid "Requisition"
 msgstr "Requisición"
 
 #. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_order_form_requisition_details
+msgid "Requisition Details"
+msgstr "Detalles de Requisición"
+
+#. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_order_form_requisition_details
 msgid "Requisition Line"
 msgstr "Línea de Requisición"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_order__requisition_line_ids
+msgid "Requisition Lines"
+msgstr "Líneas de Requisición"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_user_id
@@ -947,6 +961,7 @@ msgstr ""
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_order_form_requisition_details
 msgid "Supplier"
 msgstr "Proveedor"
 
@@ -957,6 +972,7 @@ msgstr "Proveedor Sugerido"
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_order_form_requisition_details
 msgid "Support"
 msgstr "Soporte"
 
