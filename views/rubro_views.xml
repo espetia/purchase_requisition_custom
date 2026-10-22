@@ -7,6 +7,7 @@
             <tree string="Rubros">
                 <field name="name"/>
                 <field name="requires_vehicle"/>
+                <field name="approver_ids" widget="many2many_tags" string="Authorization Chain" optional="show"/>
             </tree>
         </field>
     </record>
@@ -21,6 +22,17 @@
                         <field name="name"/>
                         <field name="requires_vehicle"/>
                     </group>
+                    <separator string="Authorization Chain"/>
+                    <p class="text-muted">
+                        Users who must authorize the requisitions of this rubro, in order. Each one is notified once the
+                        previous one approves. Without a chain, requisitions are pre-authorized as soon as they are sent.
+                    </p>
+                    <field name="approver_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="user_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                        </tree>
+                    </field>
                 </sheet>
             </form>
         </field>

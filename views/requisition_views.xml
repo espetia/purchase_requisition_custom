@@ -8,12 +8,21 @@
             <field name="arch" type="xml">
                 <form string="Purchase Requisition">
                     <header>
+                        <field name="approval_status" invisible="1"/>
+                        <field name="is_current_approver" invisible="1"/>
+                        <button name="action_send_for_approval" string="Send for Approval" type="object" class="btn-primary"
+                                attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('approval_status', 'not in', ('not_sent', 'rejected'))]}"/>
+                        <button name="action_approve" string="Approve" type="object" class="btn-primary"
+                                attrs="{'invisible': [('is_current_approver', '=', False)]}"/>
+                        <button name="action_open_reject_wizard" string="Reject" type="object" class="btn-danger"
+                                attrs="{'invisible': [('is_current_approver', '=', False)]}"/>
                         <button name="%(action_create_po_wizard)d" string="Create PO" type="action" class="btn-primary"
                                 states="quote,waiting,authorized,done" groups="purchase.group_purchase_manager"/>
                         <button name="%(action_create_expense_wizard)d" string="Create Minor Expense" type="action" class="btn-secondary"
                                 states="quote,waiting,authorized,done" attrs="{'invisible': [('can_create_minor_expense', '=', False)]}"/>
                         <field name="can_create_minor_expense" invisible="1"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,quote,waiting,authorized,done,cancel" options="{'clickable': '1'}"/>
+                        <field name="can_edit_lines" invisible="1"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,preauthorized,quote,waiting,authorized,done,cancel" options="{'clickable': '1'}"/>
                     </header>
                     <sheet>
                         <div class="alert alert-warning" role="alert" attrs="{'invisible': [('duplicate_requisition_ids', '=', [])]}">
@@ -45,30 +54,36 @@
                             </h1>
                             <span class="o_form_label">Purchase Reference</span>
                             <h2>
-                                <field name="requisition_name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="requisition_name" attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('approval_status', '=', 'in_progress')]}"/>
                             </h2>
+                            <field name="approval_status" widget="badge" attrs="{'invisible': [('approval_status', '=', 'not_sent')]}"
+                                   decoration-warning="approval_status == 'in_progress'" decoration-success="approval_status == 'approved'"
+                                   decoration-danger="approval_status == 'rejected'"/>
+                            <span attrs="{'invisible': [('current_approver_id', '=', False)]}" class="text-muted ml-2">
+                                Waiting for <field name="current_approver_id" class="oe_inline" options="{'no_open': True}"/>
+                                (<field name="approval_step" class="oe_inline"/>)
+                            </span>
                         </div>
                         <group>
                             <group>
                                 <field name="requester_id" readonly="1" force_save="1" options="{'no_create': True, 'no_create_edit': True}"/>
-                                <field name="manager_id" attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'no_create': True, 'no_create_edit': True}" context="{'show_job_title': True}"/>
-                                <field name="allowed_department_ids" invisible="1"/>
-                                <field name="department_id" domain="[('id', 'in', allowed_department_ids)]" attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'no_create': True, 'no_create_edit': True}"/>
+                                <field name="manager_id" attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('approval_status', '=', 'in_progress')]}" options="{'no_create': True, 'no_create_edit': True}" context="{'show_job_title': True}"/>
+                                <field name="department_id" attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('approval_status', '=', 'in_progress')]}" options="{'no_create': True, 'no_create_edit': True}"/>
                                 <field name="need_rubro" invisible="1"/>
                                 <field name="department_rubro_ids" invisible="1"/>
                                 <field name="need_payment_method" invisible="1"/>
                                 <field name="allow_minor_expense" invisible="1"/>
-                                <field name="rubro_id" domain="[('id', 'in', department_rubro_ids)]" attrs="{'invisible': [('need_rubro', '=', False)], 'required': [('need_rubro', '=', True)], 'readonly': [('state', '!=', 'draft')]}" options="{'no_create': True, 'no_create_edit': True}"/>
+                                <field name="rubro_id" domain="[('id', 'in', department_rubro_ids)]" attrs="{'invisible': [('need_rubro', '=', False)], 'required': [('need_rubro', '=', True)], 'readonly': ['|', ('state', '!=', 'draft'), ('approval_status', '=', 'in_progress')]}" options="{'no_create': True, 'no_create_edit': True}"/>
                             </group>
                             <group>
-                                <field name="expiration_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="expiration_date" attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('approval_status', '=', 'in_progress')]}"/>
                                 <field name="requires_vehicle" invisible="1"/>
-                                <field name="vehicle_id" attrs="{'invisible': [('requires_vehicle', '=', False)], 'required': [('requires_vehicle', '=', True)], 'readonly': [('state', '!=', 'draft')]}" options="{'no_create': True, 'no_create_edit': True}"/>
+                                <field name="vehicle_id" attrs="{'invisible': [('requires_vehicle', '=', False)], 'required': [('requires_vehicle', '=', True)], 'readonly': ['|', ('state', '!=', 'draft'), ('approval_status', '=', 'in_progress')]}" options="{'no_create': True, 'no_create_edit': True}"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Lines">
-                                <field name="line_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                                <field name="line_ids" attrs="{'readonly': [('can_edit_lines', '=', False)]}">
                                     <form string="Requisition Line">
                                         <sheet>
                                             <group>
@@ -136,6 +151,19 @@
                                     </tree>
                                 </field>
                             </page>
+                            <page string="Authorizations" attrs="{'invisible': [('approval_ids', '=', [])]}">
+                                <field name="approval_ids" readonly="1">
+                                    <tree no_open="1" decoration-muted="state == 'waiting'" decoration-success="state == 'approved'"
+                                          decoration-danger="state == 'rejected'" decoration-warning="state == 'pending'">
+                                        <field name="sequence" invisible="1"/>
+                                        <field name="user_id"/>
+                                        <field name="state" widget="badge" decoration-warning="state == 'pending'"
+                                               decoration-success="state == 'approved'" decoration-danger="state == 'rejected'"/>
+                                        <field name="date"/>
+                                        <field name="comment"/>
+                                    </tree>
+                                </field>
+                            </page>
                             <page string="Purchase Orders" groups="purchase_requisition_custom.group_purchase_requisition_user">
                                 <field name="purchase_order_ids" readonly="1">
                                     <tree no_open="1" string="Purchase Orders">
@@ -166,7 +194,7 @@
                             </page>
                         </notebook>
                         <separator string="Comments"/>
-                        <field name="text_comment" nolabel="1" placeholder="Add your comments..." attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="text_comment" nolabel="1" placeholder="Add your comments..." attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('approval_status', '=', 'in_progress')]}"/>
                         <field name="has_legacy_comments" invisible="1"/>
                         <separator string="Comments (Legacy)" attrs="{'invisible': [('has_legacy_comments', '=', False)]}"/>
                         <field name="comments" nolabel="1" readonly="1" attrs="{'invisible': [('has_legacy_comments', '=', False)]}"/>
@@ -192,6 +220,9 @@
                     <field name="department_id"/>
                     <field name="rubro_id"/>
                     <field name="expiration_date"/>
+                    <field name="approval_status" widget="badge" optional="show" decoration-warning="approval_status == 'in_progress'"
+                           decoration-success="approval_status == 'approved'" decoration-danger="approval_status == 'rejected'"/>
+                    <field name="current_approver_id" optional="show"/>
                     <field name="state"/>
                 </tree>
             </field>
@@ -208,6 +239,14 @@
                     <field name="manager_id"/>
                     <field name="department_id"/>
                     <field name="rubro_id"/>
+                    <field name="current_approver_id"/>
+                    <filter name="pending_my_approval" string="Pending my Authorization"
+                            domain="[('current_approver_id', '=', uid), ('approval_status', '=', 'in_progress')]"/>
+                    <filter name="in_authorization" string="In Authorization" domain="[('approval_status', '=', 'in_progress')]"/>
+                    <filter name="rejected" string="Rejected" domain="[('approval_status', '=', 'rejected')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_approval_status" string="Authorization" context="{'group_by': 'approval_status'}"/>
+                    </group>
                 </search>
             </field>
         </record>
@@ -227,6 +266,8 @@
                     <field name="rubro_id"/>
                     <field name="expiration_date"/>
                     <field name="vehicle_id"/>
+                    <field name="approval_status"/>
+                    <field name="current_approver_id"/>
                     <templates>
                         <t t-name="kanban-box">
                             <div t-attf-class="oe_kanban_global_click">
@@ -252,6 +293,12 @@
                                     </div>
                                     <div t-if="record.vehicle_id.raw_value">
                                         Vehicle: <field name="vehicle_id"/>
+                                    </div>
+                                    <div t-if="record.approval_status.raw_value == 'in_progress'" class="text-warning">
+                                        Waiting for: <field name="current_approver_id"/>
+                                    </div>
+                                    <div t-if="record.approval_status.raw_value == 'rejected'" class="text-danger">
+                                        Authorization rejected
                                     </div>
                                     <div t-if="record.expiration_date.raw_value and record.expiration_date.raw_value &lt; (new Date())" class="text-danger">
                                         Expired: <field name="expiration_date"/>
@@ -280,6 +327,45 @@
             </field>
         </record>
 
+        <!-- Pending Approvals: requisitions waiting for the current user's authorization -->
+        <record id="view_purchase_requisition_custom_pending_tree" model="ir.ui.view">
+            <field name="name">purchase.requisition.custom.pending.tree</field>
+            <field name="model">purchase.requisition.custom</field>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <tree string="Pending Authorizations" create="false" delete="false">
+                    <field name="name"/>
+                    <field name="requisition_name"/>
+                    <field name="requester_id"/>
+                    <field name="department_id"/>
+                    <field name="rubro_id"/>
+                    <field name="expiration_date"/>
+                    <field name="approval_step"/>
+                    <field name="is_current_approver" invisible="1"/>
+                    <button name="action_approve" type="object" string="Approve" icon="fa-check" class="btn-link text-success"
+                            attrs="{'invisible': [('is_current_approver', '=', False)]}"/>
+                    <button name="action_open_reject_wizard" type="object" string="Reject" icon="fa-times" class="btn-link text-danger"
+                            attrs="{'invisible': [('is_current_approver', '=', False)]}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_purchase_requisition_pending_approval" model="ir.actions.act_window">
+            <field name="name">Pending Authorizations</field>
+            <field name="res_model">purchase.requisition.custom</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('current_approver_id', '=', uid), ('approval_status', '=', 'in_progress')]</field>
+            <field name="context">{'show_job_title': True, 'create': False}</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('view_purchase_requisition_custom_pending_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_purchase_requisition_custom_form')})]"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                No requisitions are waiting for your authorization
+              </p>
+            </field>
+        </record>
+
         <!-- Make Purchase Root Menu visible to Requisition Users -->
         <record id="purchase.menu_purchase_root" model="ir.ui.menu">
             <field name="groups_id" eval="[(4, ref('purchase_requisition_custom.group_purchase_requisition_user'))]"/>
@@ -290,10 +376,21 @@
         </record>
 
         <!-- Menu -->
-        <menuitem id="menu_purchase_requisition_custom"
+        <menuitem id="menu_purchase_requisition_root"
                   name="Purchase Requisitions"
                   parent="purchase.menu_purchase_root"
-                  action="action_purchase_requisition_custom"
                   sequence="15"/>
+
+        <menuitem id="menu_purchase_requisition_custom"
+                  name="Purchase Requisitions"
+                  parent="menu_purchase_requisition_root"
+                  action="action_purchase_requisition_custom"
+                  sequence="10"/>
+
+        <menuitem id="menu_purchase_requisition_pending_approval"
+                  name="Pending Authorizations"
+                  parent="menu_purchase_requisition_root"
+                  action="action_purchase_requisition_pending_approval"
+                  sequence="20"/>
     </data>
 </odoo>

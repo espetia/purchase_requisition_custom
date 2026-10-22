@@ -75,6 +75,14 @@ msgid "<span class=\"o_form_label\">Folio</span>"
 msgstr "<span class=\"o_form_label\">Folio</span>"
 
 #. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid ""
+"A requisition can only leave the draft state through its authorization "
+"chain."
+msgstr "Una requisición solo puede salir de borrador a través de su cadena de autorización."
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__action_type
 msgid "Action"
 msgstr "Acción"
@@ -126,14 +134,40 @@ msgid "Allow Minor Expenses"
 msgstr "Permite Gastos Menores"
 
 #. module: purchase_requisition_custom
-#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__allowed_department_ids
-msgid "Allowed Departments"
-msgstr "Departamentos Permitidos"
-
-#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__amount
 msgid "Amount"
 msgstr "Monto"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_pending_tree
+msgid "Approve"
+msgstr "Aprobar"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_approval__state__approved
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__approval_status__approved
+msgid "Approved"
+msgstr "Aprobada"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid ""
+"Approved by %s (step %s). Authorization chain completed: pre-authorized."
+msgstr "Aprobada por %s (paso %s). Cadena de autorización completa: preautorizada."
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "Approved by %s (step %s). Waiting for %s."
+msgstr "Aprobada por %s (paso %s). En espera de %s."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_approval__user_id
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro_approver__user_id
+msgid "Approver"
+msgstr "Autorizador"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__depto_id
@@ -160,6 +194,41 @@ msgstr "Nombre del Adjunto"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_attachment_count
 msgid "Attachment Count"
 msgstr "Número de archivos adjuntos"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__approval_status
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_search
+msgid "Authorization"
+msgstr "Autorización"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__approver_ids
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_rubro_form
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_rubro_tree
+msgid "Authorization Chain"
+msgstr "Cadena de Autorización"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
+msgid "Authorization rejected"
+msgstr "Autorización rechazada"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__approval_step
+msgid "Authorization Step"
+msgstr "Paso de Autorización"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__approval_ids
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Authorizations"
+msgstr "Autorizaciones"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "Authorize requisition"
+msgstr "Autorizar requisición"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__state__authorized
@@ -308,6 +377,119 @@ msgstr "Creado el"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__currency_id
 msgid "Currency"
 msgstr "Moneda"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__current_approver_id
+msgid "Current Approver"
+msgstr "Autorizador Actual"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_reject_wizard_form
+msgid "Explain to the requester why the requisition is rejected..."
+msgstr "Explique al solicitante por qué se rechaza la requisición..."
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_search
+msgid "In Authorization"
+msgstr "En Autorización"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__approval_status__in_progress
+msgid "In Progress"
+msgstr "En Proceso"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__is_current_approver
+msgid "Is Current Approver"
+msgstr "Es Autorizador Actual"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.actions.act_window,help:purchase_requisition_custom.action_purchase_requisition_pending_approval
+msgid "No requisitions are waiting for your authorization"
+msgstr "No hay requisiciones esperando su autorización"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__approval_status__not_sent
+msgid "Not Sent"
+msgstr "No Enviada"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "Only a completed authorization chain can pre-authorize a requisition."
+msgstr "Solo una cadena de autorización completa puede preautorizar una requisición."
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid ""
+"Only draft requisitions that have not been sent can be sent for "
+"authorization."
+msgstr "Solo las requisiciones en borrador que no se han enviado pueden enviarse a autorización."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_approval__state__pending
+msgid "Pending"
+msgstr "Pendiente"
+
+#. module: purchase_requisition_custom
+#: model:ir.actions.act_window,name:purchase_requisition_custom.action_purchase_requisition_pending_approval
+#: model:ir.ui.menu,name:purchase_requisition_custom.menu_purchase_requisition_pending_approval
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_pending_tree
+msgid "Pending Authorizations"
+msgstr "Autorizaciones Pendientes"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_search
+msgid "Pending my Authorization"
+msgstr "Pendientes de mi Autorización"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__state__preauthorized
+msgid "Pre-authorized"
+msgstr "Preautorizada"
+
+#. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_purchase_requisition_approval
+msgid "Purchase Requisition Approval Step"
+msgstr "Paso de Autorización de Requisición de Compra"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_reject_wizard__reason
+msgid "Reason"
+msgstr "Motivo"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_pending_tree
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_reject_wizard_form
+msgid "Reject"
+msgstr "Rechazar"
+
+#. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_purchase_requisition_reject_wizard
+msgid "Reject Purchase Requisition"
+msgstr "Rechazar Requisición de Compra"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_reject_wizard_form
+#, python-format
+msgid "Reject Requisition"
+msgstr "Rechazar Requisición"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_approval__state__rejected
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_custom__approval_status__rejected
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_search
+msgid "Rejected"
+msgstr "Rechazada"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "Rejected by %s: %s"
+msgstr "Rechazada por %s: %s"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_expense_register__custom_requisition_id
@@ -733,6 +915,16 @@ msgstr ""
 "Solo los Gerentes de Compras pueden actualizar el estado de una requisición."
 
 #. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid ""
+"Only Warehouse Agents and Purchase Managers can modify the lines of the "
+"pre-authorized requisition %s."
+msgstr ""
+"Solo los Agentes de Almacén y los Gerentes de Compras pueden modificar las "
+"líneas de la requisición preautorizada %s."
+
+#. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid "Open"
 msgstr "Abierto"
@@ -897,6 +1089,20 @@ msgid "Requisition"
 msgstr "Requisición"
 
 #. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "Requisition %s is not waiting for your authorization."
+msgstr "La requisición %s no está esperando su autorización."
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid ""
+"Requisition %s is waiting for authorization and cannot be modified. It can "
+"be changed again once it is rejected."
+msgstr "La requisición %s está en espera de autorización y no se puede modificar. Podrá cambiarse de nuevo si es rechazada."
+
+#. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_order_form_requisition_details
 msgid "Requisition Details"
 msgstr "Detalles de Requisición"
@@ -924,6 +1130,11 @@ msgid "Rubro"
 msgstr ""
 
 #. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_purchase_requisition_rubro_approver
+msgid "Rubro Authorization Chain Step"
+msgstr "Paso de Cadena de Autorización del Rubro"
+
+#. module: purchase_requisition_custom
 #: code:addons/purchase_requisition_custom/models/requisition.py:0
 #, python-format
 msgid "Rubro is mandatory for the selected Department."
@@ -949,6 +1160,31 @@ msgstr ""
 #, python-format
 msgid "Select a file"
 msgstr "Seleccionar archivo"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Send for Approval"
+msgstr "Enviar a Autorización"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "Sent for authorization. Waiting for %s (step %s)."
+msgstr "Enviada a autorización. En espera de %s (paso %s)."
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid ""
+"Sent for authorization: no authorization chain configured, pre-authorized "
+"directly."
+msgstr "Enviada a autorización: sin cadena de autorización configurada, preautorizada directamente."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_approval__sequence
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro_approver__sequence
+msgid "Sequence"
+msgstr "Secuencia"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__duplicate_requisition_ids
@@ -1057,6 +1293,13 @@ msgid "Users"
 msgstr "Usuarios"
 
 #. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_rubro_form
+msgid ""
+"Users who must authorize the requisitions of this rubro, in order. Each one is notified once the\n"
+"                        previous one approves. Without a chain, requisitions are pre-authorized as soon as they are sent."
+msgstr "Usuarios que deben autorizar las requisiciones de este rubro, en orden. Cada uno recibe la notificación cuando el anterior aprueba. Sin cadena, las requisiciones se preautorizan en cuanto se envían."
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__vehicle_id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__vehicle_id
 msgid "Vehicle"
@@ -1083,6 +1326,21 @@ msgstr "Proveedor"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__vendor_ids
 msgid "Vendors"
 msgstr "Proveedores"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_approval__state__waiting
+msgid "Waiting"
+msgstr "En Espera"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Waiting for"
+msgstr "En espera de"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
+msgid "Waiting for:"
+msgstr "En espera de:"
 
 #. module: purchase_requisition_custom
 #: model:res.groups,name:purchase_requisition_custom.group_purchase_requisition_warehouse
@@ -1118,8 +1376,11 @@ msgstr "Historial de comunicación del sitio web"
 #: code:addons/purchase_requisition_custom/models/requisition.py:0
 #, python-format
 msgid ""
-"You cannot change the draft state if there are lines without a product."
-msgstr "No puede cambiar el estado borrador si hay líneas sin producto."
+"A requisition cannot move to quotation or later stages while it has lines "
+"without a product."
+msgstr ""
+"Una requisición no puede pasar a cotización o etapas posteriores mientras "
+"tenga líneas sin producto."
 
 #. module: purchase_requisition_custom
 #: code:addons/purchase_requisition_custom/models/requisition.py:0

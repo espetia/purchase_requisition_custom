@@ -4,6 +4,7 @@ from . import payment_method
 from . import consult_list
 from . import requisition
 from . import requisition_line
+from . import requisition_approval
 from . import purchase_order
 from . import expense_register
 from . import res_users

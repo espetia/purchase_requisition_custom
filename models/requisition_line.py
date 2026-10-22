@@ -31,6 +31,20 @@ class PurchaseRequisitionLineCustom(models.Model):
     support_file = fields.Binary(string='Support File', attachment=True)
     support_filename = fields.Char(string='Support Filename')
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        requisition_ids = [vals['requisition_id'] for vals in vals_list if vals.get('requisition_id')]
+        self.env['purchase.requisition.custom'].browse(requisition_ids)._check_lines_editable()
+        return super().create(vals_list)
+
+    def write(self, vals):
+        self.requisition_id._check_lines_editable()
+        return super().write(vals)
+
+    def unlink(self):
+        self.requisition_id._check_lines_editable()
+        return super().unlink()
+
     @api.depends_context('company')
     def _compute_currency_id(self):
         """

@@ -81,7 +81,8 @@ EOF
 
 - **`purchase.requisition.custom`** (`requisition.py`) — the requisition header. Sequence-generated
   `name` (`PR/00001`, via `ir_sequence_data.xml`), a `state` statusbar
-  (`draft → quote → waiting → authorized/cancel → done`), a required `department_id` whose `need_rubro`
+  (`draft → preauthorized → quote → waiting → authorized/cancel → done`; `preauthorized` is only reached through the
+  authorization chain, see below), a required `department_id` whose `need_rubro`
   decides whether `rubro_id` (category) is shown and required (view `attrs` + `@api.constrains`), and that
   `rubro_id` can in turn force a `vehicle_id` (fleet) via `requires_vehicle` (same pattern). UI labels differ
   from field names: `name` = "Folio", `requisition_name` = "Purchase Reference", `manager_id` = "Process Area".
@@ -117,7 +118,11 @@ EOF
 - **`purchase.requisition.consult.list`** (`consult_list.py`) — consult lists catalog (`name` only), under
   Purchase > Configuration; referenced by the required line field `consult_list_id`.
 - **`purchase.requisition.rubro`** (`rubro.py`) — simple category catalog; `requires_vehicle` drives the
-  constraint on the header.
+  constraint on the header, and `approver_ids` (`purchase.requisition.rubro.approver`: ordered `sequence` + one
+  `user_id` per step, same file) is the rubro's **authorization chain**.
+- **`purchase.requisition.approval`** (`requisition_approval.py`) — the chain *snapshot* taken when a requisition is
+  sent for authorization (so editing the rubro's chain never affects requisitions in flight): one row per step with
+  `state` `waiting → pending → approved/rejected`, `date` and `comment` (rejection reason).
 - **`purchase.order`** (`purchase_order.py`, `_inherit`) — adds `custom_requisition_id` back-link and syncs
   requisition state from PO state changes (see below). `requisition_line_ids` is a non-stored compute of the
   requisition lines converted into *this* PO (`po_line_id.order_id`), restricted with field-level
@@ -135,8 +140,30 @@ Field-level authorization is enforced in Python `write()` overrides, in addition
 in `security/security.xml` and `security/ir.model.access.csv`:
 
 - `PurchaseRequisitionCustom.write()` blocks any `state` change unless the user is in
-  `group_purchase_requisition_warehouse` (implied by the manager group), and blocks leaving `draft` if any
-  line lacks a `product_id`.
+  `group_purchase_requisition_warehouse` (implied by the manager group) or the write is `sudo()`'d, and blocks
+  moving from `draft`/`preauthorized` (`PRE_QUOTE_STATES`) to `quote` or later if any line lacks a `product_id`
+  (lines may be sent for authorization without one). It also keeps the **authorization chain as the only way out
+  of `draft`** (manually, `draft` can only go to `cancel` — statusbar and kanban drag included), allows
+  `preauthorized` only with the `approval_chain_done` context or when `approval_status == 'approved'` (e.g. moving
+  back from `quote`), and resets `approval_status` to `not_sent` when a requisition goes back to `draft` or is
+  cancelled. While `approval_status == 'in_progress'` the business fields (`APPROVAL_LOCKED_FIELDS`) and the lines
+  (`create`/`write`/`unlink` on the line model, via `_check_lines_editable()`) are locked; the view mirrors it
+  with `readonly` attrs. In `preauthorized` the lines can only be modified by Warehouse Agents/Purchase Managers
+  (so they can complete the missing products before `quote`): `_check_lines_editable()` server-side, and the
+  non-stored `can_edit_lines` compute driving the `line_ids` `readonly` attrs.
+- **Authorization chain** (`requisition.py`): `action_send_for_approval()` (button "Send for Approval", requires
+  write access) copies `rubro_id.approver_ids` into `approval_ids`, sets `approval_status='in_progress'` and
+  notifies the first approver (`email_template_requisition_approval_request` + a to-do activity); with no rubro or
+  an empty chain it pre-authorizes at once. `current_approver_id` (stored compute of the `pending` step) drives the
+  **Pending Authorizations** menu (`action_purchase_requisition_pending_approval`, own tree with row
+  Approve/Reject buttons). `action_approve()` passes to the next step or calls `_finish_approval()` (state
+  `preauthorized` + `email_template_requisition_preauthorized` to the requester); `action_reject(reason)` (from
+  `wizard/reject_approval_wizard.py`) sets `approval_status='rejected'`, leaving an editable draft that restarts
+  the chain from step 1 when resent, and mails `email_template_requisition_rejected` to the requester. Approvers
+  only have **read** access to the requisition, so these actions check `is_current_approver` first and then write,
+  schedule activities and post with `sudo()`; every action is logged in the chatter authored by the acting user
+  (arguments escaped through `Markup`). The e-mails are sent with `model`/`res_id` cleared so their HTML does not
+  land in the chatter.
 - `PurchaseOrder.write()` restricts a pure Warehouse Agent (warehouse group but *not* manager group) to only
   editing `date_planned` / `date_invoice_partner` on POs.
 - `PurchaseOrder.write()` also **auto-syncs the parent requisition's state** whenever a linked PO's `state`
@@ -167,7 +194,10 @@ managers see all. Requisition lines have the matching pair (`rule_purchase_requi
 through `requisition_id.`; `_line_all` for managers) — these also protect the line `attached`/`support_file` files,
 since `/web/content` only serves a field attachment after a read check on the line. Rules of different groups
 add up, so a Warehouse Agent who isn't a manager falls under these "own or department" rules too. The xml ids
-keep the historical `_own` suffix.
+keep the historical `_own` suffix. On top of that, read-only rules (`rule_purchase_requisition_approver`,
+`rule_purchase_requisition_line_approver`) let a basic user read the requisitions (and lines) they are or were an
+approver of (`approval_ids.user_id`), even outside their department; `purchase.requisition.approval` rows follow the
+union of both (`rule_purchase_requisition_approval_user`, `_all` for managers).
 
 Two more `ir.rule`s here govern `expense.register` (a model owned by `minor_expenses`, not this addon) for
 requisition-linked records specifically: `rule_expense_register_requisition_user` scopes basic users to
@@ -191,10 +221,13 @@ menus live in `views/<catalog>_views.xml` under `purchase.menu_purchase_config` 
 - **Lines** are a non-editable `<tree>` (each column has a `width` attribute, which Odoo 15 applies as a
   min-width so columns scroll horizontally instead of truncating) plus an inline `<form>` that opens as a popup
   on click, grouped into Product / Supplier / Payment / Traceability / Support sections and a Comment area. The popup
-  inherits the `line_ids` `readonly` attrs, so lines are read-only once the requisition leaves `draft`. The
+  inherits the `line_ids` `readonly` attrs (`can_edit_lines`), so lines are read-only once the requisition leaves
+  `draft`, except in `preauthorized` for Warehouse Agents/Purchase Managers. The
   wizard line trees (`wizard/*_views.xml`) reuse the line fields and pick up label changes automatically.
-- **Header**: `department_id` only offers `allowed_department_ids` (non-stored, per `uid`: all departments for
-  Purchase Managers, otherwise the user's own) and defaults to the user's department when they belong to exactly
+- **Header**: `department_id` only offers the departments of its field `domain` (`_department_domain()`, evaluated
+  per user when the view's fields load: all departments for Purchase Managers, otherwise the user's own — not a
+  non-stored compute referenced from the view, which the form's first onchange never recomputes and sends empty)
+  and defaults to the user's department when they belong to exactly
   one (`_default_department_id`). It drives `rubro_id` visibility/required via `need_rubro`, and its selectable values via
   `domain=[('id', 'in', department_rubro_ids)]` (related to the department's `rubro_ids`). This rubro/department
   match is a **view-only** rule (no constraint); `_onchange_department_id` clears a rubro outside the new
@@ -290,6 +323,10 @@ hard refresh (or `?debug=assets`).
   requisitions by `manager_id` and sends **one** consolidated email per manager (not one per requisition)
   via `mail_template_data.xml`'s `email_template_draft_requisitions_reminder`. The same template is also
   fired synchronously on `create()` for the single new requisition's manager.
+- `mail_template_data.xml` also holds the three authorization chain templates (approval request, rejected,
+  pre-authorized) on `purchase.requisition.custom`, sharing the reminder's visual structure (grey background, white
+  600px card, icon h2, detail box, indigo button linking to the requisition form). Their recipients come from the
+  record (`current_approver_id` / `requester_id`); the rejection reason arrives as `ctx['reason']`.
 
 ### Migrations (`migrations/`)
 

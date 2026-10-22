@@ -43,5 +43,142 @@
                 </div>
             </field>
         </record>
+
+        <record id="email_template_requisition_approval_request" model="mail.template">
+            <field name="name">Purchase Requisition: Authorization Request</field>
+            <field name="model_id" ref="model_purchase_requisition_custom"/>
+            <field name="subject">Autorización requerida: Requisición {{ object.name }}</field>
+            <field name="email_to">{{ object.current_approver_id.email_formatted }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="background-color: #F3F4F6; padding: 40px; font-family: Arial, sans-serif; text-align: center;">
+                    <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: left;">
+                        <h2 style="color: #333333; font-size: 20px; margin-top: 0; display: flex; align-items: center;">
+                            <span style="color: #F59E0B; font-size: 24px; margin-right: 8px;">🟡</span> ¡Requisición Pendiente de su Autorización!
+                        </h2>
+                        <p style="color: #555555; font-size: 15px; line-height: 1.5; margin-top: 15px;">
+                            Hola <strong><t t-out="object.current_approver_id.name or ''"/></strong>,<br/><br/>
+                            La siguiente requisición de compra está esperando su autorización. Puede aprobarla o rechazarla desde el menú <strong>Autorizaciones Pendientes</strong>.
+                        </p>
+
+                        <div style="background-color: #F9FAFB; padding: 15px; border-radius: 6px; margin: 20px 0; border: 1px solid #E5E7EB;">
+                            <ul style="margin: 0; padding-left: 20px; color: #444444; font-size: 14px;">
+                                <li style="margin-bottom: 5px;"><strong>Folio:</strong> <t t-out="object.name or ''"/></li>
+                                <li style="margin-bottom: 5px;"><strong>Referencia:</strong> <t t-out="object.requisition_name or ''"/></li>
+                                <li style="margin-bottom: 5px;"><strong>Solicitante:</strong> <t t-out="object.requester_id.name or ''"/></li>
+                                <li style="margin-bottom: 5px;"><strong>Departamento:</strong> <t t-out="object.department_id.name or ''"/></li>
+                                <li t-if="object.rubro_id" style="margin-bottom: 5px;"><strong>Rubro:</strong> <t t-out="object.rubro_id.name or ''"/></li>
+                                <li t-if="object.approval_step" style="margin-bottom: 5px;"><strong>Paso de autorización:</strong> <t t-out="object.approval_step or ''"/></li>
+                            </ul>
+                        </div>
+
+                        <div style="margin: 30px 0;">
+                            <a t-attf-href="/web#id={{ object.id }}&amp;model=purchase.requisition.custom&amp;view_type=form"
+                                style="background-color: #6366F1; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 15px; display: inline-block;">
+                                Ver Requisición
+                            </a>
+                        </div>
+
+                        <p style="color: #777777; font-size: 13px; margin-bottom: 0; border-top: 1px solid #E5E7EB; padding-top: 15px;">
+                            Saludos,<br/>
+                            <strong><t t-out="object.env.company.name or ''"/></strong>
+                        </p>
+                    </div>
+                </div>
+            </field>
+        </record>
+
+        <record id="email_template_requisition_rejected" model="mail.template">
+            <field name="name">Purchase Requisition: Rejected</field>
+            <field name="model_id" ref="model_purchase_requisition_custom"/>
+            <field name="subject">Requisición rechazada: {{ object.name }}</field>
+            <field name="email_to">{{ object.requester_id.email_formatted }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="background-color: #F3F4F6; padding: 40px; font-family: Arial, sans-serif; text-align: center;">
+                    <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: left;">
+                        <h2 style="color: #333333; font-size: 20px; margin-top: 0; display: flex; align-items: center;">
+                            <span style="color: #E53935; font-size: 24px; margin-right: 8px;">🔴</span> Requisición Rechazada
+                        </h2>
+                        <p style="color: #555555; font-size: 15px; line-height: 1.5; margin-top: 15px;">
+                            Hola <strong><t t-out="object.requester_id.name or ''"/></strong>,<br/><br/>
+                            Su requisición de compra fue rechazada por <strong><t t-out="object.env.user.name or ''"/></strong>. Regresó a borrador: puede corregirla y enviarla de nuevo a autorización.
+                        </p>
+
+                        <div style="background-color: #F9FAFB; padding: 15px; border-radius: 6px; margin: 20px 0; border: 1px solid #E5E7EB;">
+                            <ul style="margin: 0; padding-left: 20px; color: #444444; font-size: 14px;">
+                                <li style="margin-bottom: 5px;"><strong>Folio:</strong> <t t-out="object.name or ''"/></li>
+                                <li style="margin-bottom: 5px;"><strong>Referencia:</strong> <t t-out="object.requisition_name or ''"/></li>
+                                <li style="margin-bottom: 5px;"><strong>Solicitante:</strong> <t t-out="object.requester_id.name or ''"/></li>
+                                <li style="margin-bottom: 5px;"><strong>Departamento:</strong> <t t-out="object.department_id.name or ''"/></li>
+                                <li t-if="object.rubro_id" style="margin-bottom: 5px;"><strong>Rubro:</strong> <t t-out="object.rubro_id.name or ''"/></li>
+                                <li t-if="object.approval_step" style="margin-bottom: 5px;"><strong>Paso de autorización:</strong> <t t-out="object.approval_step or ''"/></li>
+                            </ul>
+                        </div>
+
+                        <div t-if="ctx.get('reason')" style="background-color: #FEF2F2; padding: 15px; border-radius: 6px; margin: 20px 0; border: 1px solid #FECACA; color: #7F1D1D; font-size: 14px;">
+                            <strong>Motivo del rechazo:</strong><br/>
+                            <t t-out="ctx.get('reason')"/>
+                        </div>
+
+                        <div style="margin: 30px 0;">
+                            <a t-attf-href="/web#id={{ object.id }}&amp;model=purchase.requisition.custom&amp;view_type=form"
+                                style="background-color: #6366F1; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 15px; display: inline-block;">
+                                Ver Requisición
+                            </a>
+                        </div>
+
+                        <p style="color: #777777; font-size: 13px; margin-bottom: 0; border-top: 1px solid #E5E7EB; padding-top: 15px;">
+                            Saludos,<br/>
+                            <strong><t t-out="object.env.company.name or ''"/></strong>
+                        </p>
+                    </div>
+                </div>
+            </field>
+        </record>
+
+        <record id="email_template_requisition_preauthorized" model="mail.template">
+            <field name="name">Purchase Requisition: Pre-authorized</field>
+            <field name="model_id" ref="model_purchase_requisition_custom"/>
+            <field name="subject">Requisición preautorizada: {{ object.name }}</field>
+            <field name="email_to">{{ object.requester_id.email_formatted }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="background-color: #F3F4F6; padding: 40px; font-family: Arial, sans-serif; text-align: center;">
+                    <div style="max-width: 600px; margin: 0 auto; background-color: #FFFFFF; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: left;">
+                        <h2 style="color: #333333; font-size: 20px; margin-top: 0; display: flex; align-items: center;">
+                            <span style="color: #22C55E; font-size: 24px; margin-right: 8px;">🟢</span> ¡Requisición Preautorizada!
+                        </h2>
+                        <p style="color: #555555; font-size: 15px; line-height: 1.5; margin-top: 15px;">
+                            Hola <strong><t t-out="object.requester_id.name or ''"/></strong>,<br/><br/>
+                            Su requisición de compra completó la cadena de autorización y quedó <strong>preautorizada</strong>. Compras continuará con la cotización.
+                        </p>
+
+                        <div style="background-color: #F9FAFB; padding: 15px; border-radius: 6px; margin: 20px 0; border: 1px solid #E5E7EB;">
+                            <ul style="margin: 0; padding-left: 20px; color: #444444; font-size: 14px;">
+                                <li style="margin-bottom: 5px;"><strong>Folio:</strong> <t t-out="object.name or ''"/></li>
+                                <li style="margin-bottom: 5px;"><strong>Referencia:</strong> <t t-out="object.requisition_name or ''"/></li>
+                                <li style="margin-bottom: 5px;"><strong>Solicitante:</strong> <t t-out="object.requester_id.name or ''"/></li>
+                                <li style="margin-bottom: 5px;"><strong>Departamento:</strong> <t t-out="object.department_id.name or ''"/></li>
+                                <li t-if="object.rubro_id" style="margin-bottom: 5px;"><strong>Rubro:</strong> <t t-out="object.rubro_id.name or ''"/></li>
+                                <li t-if="object.approval_step" style="margin-bottom: 5px;"><strong>Paso de autorización:</strong> <t t-out="object.approval_step or ''"/></li>
+                            </ul>
+                        </div>
+
+                        <div style="margin: 30px 0;">
+                            <a t-attf-href="/web#id={{ object.id }}&amp;model=purchase.requisition.custom&amp;view_type=form"
+                                style="background-color: #6366F1; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 15px; display: inline-block;">
+                                Ver Requisición
+                            </a>
+                        </div>
+
+                        <p style="color: #777777; font-size: 13px; margin-bottom: 0; border-top: 1px solid #E5E7EB; padding-top: 15px;">
+                            Saludos,<br/>
+                            <strong><t t-out="object.env.company.name or ''"/></strong>
+                        </p>
+                    </div>
+                </div>
+            </field>
+        </record>
     </data>
 </odoo>

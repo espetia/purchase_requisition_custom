@@ -36,6 +36,18 @@
         <field name="groups" eval="[(4, ref('group_purchase_requisition_user'))]"/>
     </record>
 
+    <!-- Basic User: read-only access to the requisitions they are (or were) an approver of -->
+    <record id="rule_purchase_requisition_approver" model="ir.rule">
+        <field name="name">Purchase Requisition: Approver (Read)</field>
+        <field name="model_id" ref="model_purchase_requisition_custom"/>
+        <field name="domain_force">[('approval_ids.user_id', 'in', [user.id])]</field>
+        <field name="groups" eval="[(4, ref('group_purchase_requisition_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
     <!-- Manager: All requisitions -->
     <record id="rule_purchase_requisition_all" model="ir.rule">
         <field name="name">Purchase Requisition: All</field>
@@ -53,10 +65,38 @@
         <field name="groups" eval="[(4, ref('group_purchase_requisition_user'))]"/>
     </record>
 
+    <!-- Requisition Lines: read-only for the approvers of the requisition -->
+    <record id="rule_purchase_requisition_line_approver" model="ir.rule">
+        <field name="name">Purchase Requisition Line: Approver (Read)</field>
+        <field name="model_id" ref="model_purchase_requisition_line_custom"/>
+        <field name="domain_force">[('requisition_id.approval_ids.user_id', 'in', [user.id])]</field>
+        <field name="groups" eval="[(4, ref('group_purchase_requisition_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
     <!-- Requisition Lines: Manager on all lines -->
     <record id="rule_purchase_requisition_line_all" model="ir.rule">
         <field name="name">Purchase Requisition Line: All</field>
         <field name="model_id" ref="model_purchase_requisition_line_custom"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_purchase_requisition_manager'))]"/>
+    </record>
+
+    <!-- Authorization steps: Basic User only on the steps of the requisitions they can see -->
+    <record id="rule_purchase_requisition_approval_user" model="ir.rule">
+        <field name="name">Purchase Requisition Approval: Visible Requisitions</field>
+        <field name="model_id" ref="model_purchase_requisition_approval"/>
+        <field name="domain_force">['|', '|', ('requisition_id.requester_id', '=', user.id), ('requisition_id.department_id.user_ids', 'in', [user.id]), ('requisition_id.approval_ids.user_id', 'in', [user.id])]</field>
+        <field name="groups" eval="[(4, ref('group_purchase_requisition_user'))]"/>
+    </record>
+
+    <!-- Authorization steps: Manager on all steps -->
+    <record id="rule_purchase_requisition_approval_all" model="ir.rule">
+        <field name="name">Purchase Requisition Approval: All</field>
+        <field name="model_id" ref="model_purchase_requisition_approval"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_purchase_requisition_manager'))]"/>
     </record>
