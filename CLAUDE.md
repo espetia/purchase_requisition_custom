@@ -90,8 +90,10 @@ EOF
   (computed with `odoo.tools.is_html_empty`, so empty editor markup like `<p><br></p>` is hidden).
   Inherits `mail.thread`/`mail.activity.mixin` for chatter.
 - **`purchase.requisition.department`** (`department.py`) — department catalog (`name`, `need_rubro`, `rubro_ids` — the rubros the department may use, many2many through
-  `purchase_requisition_department_rubro_rel` — `need_payment_method`, `allow_minor_expense`), under
-  Purchase > Configuration.
+  `purchase_requisition_department_rubro_rel` — `user_ids`, the members, many2many through
+  `purchase_requisition_department_user_rel` and limited to requisition users — `need_payment_method`,
+  `allow_minor_expense`), under Purchase > Configuration. Membership drives the basic users' record rules
+  (see Security groups).
 - **`res.users`** (`res_users.py`, `_inherit`) — `name_get()` appends the employee's `job_title`
   ("Carlos Espetia - Compras") only when `show_job_title` is in context; the requisition action and the
   `manager_id` form field set that key. Requires the `hr` dependency.
@@ -122,8 +124,8 @@ EOF
   `groups='...group_purchase_requisition_user'` because plain purchase users have no access to the line model.
   It feeds the read-only "Requisition Details" page that `views/purchase_order_views.xml` adds to the PO form
   (link to the requisition + lines with their `attached`/`support_file` downloads), shown only when
-  `custom_requisition_id` is set. A non-manager Warehouse Agent only sees lines of their own requisitions there
-  (line "own" rule).
+  `custom_requisition_id` is set. A non-manager Warehouse Agent only sees there the lines of requisitions they
+  can see (own or department, line rule).
 - **`expense.register`** (`models/expense_register.py`, `_inherit` of `minor_expenses`' own model) — adds
   `custom_requisition_id` back-link, mirroring the `purchase.order` inherit above.
 
@@ -156,17 +158,20 @@ access vs. row visibility vs. field/state-transition rules).
 
 ### Security groups (hierarchy, `security/security.xml`)
 
-`group_purchase_requisition_user` (basic, own records only) ⊂ `group_purchase_requisition_warehouse`
+`group_purchase_requisition_user` (basic, own and own-department records) ⊂ `group_purchase_requisition_warehouse`
 (can change requisition state, limited PO field edits) ⊂ `group_purchase_requisition_manager` (implies
 native `purchase.group_purchase_manager`, full CRUD everywhere, generates POs). Record rules restrict basic
-users to `requester_id = user.id`; managers see all. Requisition lines have the matching pair
-(`rule_purchase_requisition_line_own`: `requisition_id.requester_id = user.id`; `_line_all` for managers) —
-these also protect the line `attached` files, since `/web/content` only serves a field attachment after a read
-check on the line. Note that a Warehouse Agent who isn't a manager falls under the "own" rules too.
+users to requisitions they requested **or** whose department they belong to
+(`['|', ('requester_id', '=', user.id), ('department_id.user_ids', 'in', [user.id])]`, with full read/write on both);
+managers see all. Requisition lines have the matching pair (`rule_purchase_requisition_line_own`: the same domain
+through `requisition_id.`; `_line_all` for managers) — these also protect the line `attached`/`support_file` files,
+since `/web/content` only serves a field attachment after a read check on the line. Rules of different groups
+add up, so a Warehouse Agent who isn't a manager falls under these "own or department" rules too. The xml ids
+keep the historical `_own` suffix.
 
 Two more `ir.rule`s here govern `expense.register` (a model owned by `minor_expenses`, not this addon) for
 requisition-linked records specifically: `rule_expense_register_requisition_user` scopes basic users to
-expenses on their own requisitions (`custom_requisition_id.requester_id = user.id`), and
+expenses on requisitions they can see (same own-or-department domain through `custom_requisition_id.`), and
 `rule_expense_register_requisition_manager` lets any Purchase Manager see all requisition-linked expenses
 (`custom_requisition_id != False`) regardless of who created them — this exists because `minor_expenses`'
 own native rule restricts a record to its `user_id`, which would otherwise hide one manager's Minor Expense
@@ -188,7 +193,9 @@ menus live in `views/<catalog>_views.xml` under `purchase.menu_purchase_config` 
   on click, grouped into Product / Supplier / Payment / Traceability / Support sections and a Comment area. The popup
   inherits the `line_ids` `readonly` attrs, so lines are read-only once the requisition leaves `draft`. The
   wizard line trees (`wizard/*_views.xml`) reuse the line fields and pick up label changes automatically.
-- **Header**: `department_id` drives `rubro_id` visibility/required via `need_rubro`, and its selectable values via
+- **Header**: `department_id` only offers `allowed_department_ids` (non-stored, per `uid`: all departments for
+  Purchase Managers, otherwise the user's own) and defaults to the user's department when they belong to exactly
+  one (`_default_department_id`). It drives `rubro_id` visibility/required via `need_rubro`, and its selectable values via
   `domain=[('id', 'in', department_rubro_ids)]` (related to the department's `rubro_ids`). This rubro/department
   match is a **view-only** rule (no constraint); `_onchange_department_id` clears a rubro outside the new
   department's list and warns when the department needs a rubro but has none configured; `text_comment` sits below

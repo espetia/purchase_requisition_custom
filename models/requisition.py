@@ -10,7 +10,13 @@ class PurchaseRequisitionCustom(models.Model):
     name = fields.Char(string='Folio', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     requisition_name = fields.Char(string='Purchase Reference', required=True)
     requester_id = fields.Many2one('res.users', string='Requester', default=lambda self: self.env.user)
-    department_id = fields.Many2one('purchase.requisition.department', string='Department', required=True)
+    department_id = fields.Many2one(
+        'purchase.requisition.department',
+        string='Department',
+        required=True,
+        default=lambda self: self._default_department_id(),
+    )
+    allowed_department_ids = fields.Many2many('purchase.requisition.department', compute='_compute_allowed_department_ids')
     need_rubro = fields.Boolean(related='department_id.need_rubro')
     department_rubro_ids = fields.Many2many(related='department_id.rubro_ids')
     need_payment_method = fields.Boolean(related='department_id.need_payment_method')
@@ -76,6 +82,28 @@ class PurchaseRequisitionCustom(models.Model):
             rec.has_legacy_comments = not is_html_empty(rec.comments)
 
     @api.depends('department_id.allow_minor_expense')
+    @api.model
+    def _default_department_id(self):
+        """
+        Defaults to the user's department when they belong to exactly one.
+        """
+        departments = self.env['purchase.requisition.department'].search([('user_ids', 'in', self.env.uid)], limit=2)
+        return departments if len(departments) == 1 else False
+
+    @api.depends_context('uid')
+    def _compute_allowed_department_ids(self):
+        """
+        Departments selectable on the requisition: all of them for Purchase
+        Managers, otherwise only those the user belongs to.
+        """
+        Department = self.env['purchase.requisition.department']
+        if self.env.user.has_group('purchase_requisition_custom.group_purchase_requisition_manager'):
+            departments = Department.search([])
+        else:
+            departments = Department.search([('user_ids', 'in', self.env.uid)])
+        for rec in self:
+            rec.allowed_department_ids = departments
+
     @api.depends_context('uid')
     def _compute_can_create_minor_expense(self):
         """

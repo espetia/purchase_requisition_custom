@@ -11,5 +11,11 @@ class PurchaseRequisitionDepartment(models.Model):
         'purchase_requisition_department_rubro_rel', 'department_id', 'rubro_id',
         string='Rubros',
     )
+    user_ids = fields.Many2many(
+        'res.users',
+        'purchase_requisition_department_user_rel', 'department_id', 'user_id',
+        string='Users',
+        domain=lambda self: [('groups_id', 'in', self.env.ref('purchase_requisition_custom.group_purchase_requisition_user').id)],
+    )
     need_payment_method = fields.Boolean(string='Need Payment Method', default=False)
     allow_minor_expense = fields.Boolean(string='Allow Minor Expenses', default=False)

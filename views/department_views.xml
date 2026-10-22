@@ -6,6 +6,7 @@
         <field name="arch" type="xml">
             <tree string="Departments">
                 <field name="name"/>
+                <field name="user_ids" widget="many2many_tags" optional="show"/>
                 <field name="need_rubro"/>
                 <field name="rubro_ids" widget="many2many_tags" optional="show"/>
                 <field name="need_payment_method"/>
@@ -22,6 +23,7 @@
                 <sheet>
                     <group>
                         <field name="name"/>
+                        <field name="user_ids" widget="many2many_tags" options="{'no_create': True}"/>
                         <field name="need_rubro"/>
                         <field name="rubro_ids" widget="many2many_tags" options="{'no_create': True}"
                                attrs="{'invisible': [('need_rubro', '=', False)]}"/>

@@ -115,6 +115,11 @@ msgid "Allow Minor Expenses"
 msgstr "Permite Gastos Menores"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__allowed_department_ids
+msgid "Allowed Departments"
+msgstr "Departamentos Permitidos"
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__amount
 msgid "Amount"
 msgstr "Monto"
@@ -1028,6 +1033,11 @@ msgstr "Mensajes no leídos"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_unread_counter
 msgid "Unread Messages Counter"
 msgstr "Contador de mensajes no leídos"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_department__user_ids
+msgid "Users"
+msgstr "Usuarios"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__vehicle_id
