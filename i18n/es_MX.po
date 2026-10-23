@@ -209,11 +209,6 @@ msgid "Authorization Chain"
 msgstr "Cadena de Autorización"
 
 #. module: purchase_requisition_custom
-#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
-msgid "Authorization rejected"
-msgstr "Autorización rechazada"
-
-#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__approval_step
 msgid "Authorization Step"
 msgstr "Paso de Autorización"
@@ -1335,13 +1330,9 @@ msgstr "En Espera"
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
 msgid "Waiting for"
 msgstr "En espera de"
-
-#. module: purchase_requisition_custom
-#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
-msgid "Waiting for:"
-msgstr "En espera de:"
 
 #. module: purchase_requisition_custom
 #: model:res.groups,name:purchase_requisition_custom.group_purchase_requisition_warehouse

@@ -280,6 +280,13 @@
                                         </strong>
                                     </div>
                                 </div>
+                                <div t-if="record.approval_status.raw_value != 'not_sent'" class="mb-1">
+                                    <field name="approval_status" widget="label_selection"
+                                           options="{'classes': {'in_progress': 'warning', 'approved': 'success', 'rejected': 'danger'}}"/>
+                                    <span t-if="record.current_approver_id.raw_value" class="text-muted ml-1">
+                                        Waiting for <field name="current_approver_id"/>
+                                    </span>
+                                </div>
                                 <div class="o_kanban_record_body">
                                     <div>
                                         Requester: <field name="requester_id"/>
@@ -295,12 +302,6 @@
                                     </div>
                                     <div t-if="record.vehicle_id.raw_value">
                                         Vehicle: <field name="vehicle_id"/>
-                                    </div>
-                                    <div t-if="record.approval_status.raw_value == 'in_progress'" class="text-warning">
-                                        Waiting for: <field name="current_approver_id"/>
-                                    </div>
-                                    <div t-if="record.approval_status.raw_value == 'rejected'" class="text-danger">
-                                        Authorization rejected
                                     </div>
                                     <div t-if="record.expiration_date.raw_value and record.expiration_date.raw_value &lt; (new Date())" class="text-danger">
                                         Expired: <field name="expiration_date"/>
