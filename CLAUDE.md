@@ -102,7 +102,7 @@ EOF
   line to the `purchase.order.line` it was converted into, once generated; `expense_register_id` links it to
   the `expense.register` it was resolved by instead. These two are mutually exclusive — a line is resolved by
   *either* a PO or a Minor Expense, never both, and both wizards filter/reject lines the other has already
-  claimed. `product_id` is labelled "Product/Purchase Type". Lines also carry optional purchasing info:
+  claimed. `product_id` is labelled "Product/Purchase Type". Lines also carry purchasing info: a **required**
   `attached` (+ `attached_filename`; `@api.constrains` limit it to image/PDF/Excel extensions and to
   `MAX_ATTACHED_SIZE_MB` = 2 MB, read from the stored `ir.attachment.file_size` — keep that constant in sync with
   the `max_file_size_mb` widget option in the view, which gives the same check client-side),
@@ -110,8 +110,12 @@ EOF
   `need_payment_method`: view `attrs` on `parent.need_payment_method` in the line popup, plus `@api.constrains` on
   the line and on the header's `department_id`), `payment_import` (Monetary; `currency_id` is a
   non-stored compute of the company currency), and `comment`. A "Support" section adds a **required**
-  `consult_list_id` and an optional `support_file` (+ `support_filename`), which shares the `attached`
-  constraints (same extensions and size limit; both `@api.constrains` check the two files). `image` is a legacy field, kept for
+  `consult_list_id` and a **required** `support_file` (+ `support_filename`), which shares the `attached`
+  constraints (same extensions and size limit; both `@api.constrains` check the two files). Both files are
+  attachment-stored binaries with no database column, so their `required=True` is only enforced by the view;
+  `_check_required_files` enforces it server-side, constrained on the two files *and* `name`, because Odoo 15 only
+  runs create-time constraints for the column fields present in the values. Lines created before the files became
+  required may lack them; the check only bites when a file or the description is written. `image` is a legacy field, kept for
   historical data but no longer shown in any view.
 - **`purchase.requisition.payment.method`** (`payment_method.py`) — payment methods catalog (`name` only),
   under Purchase > Configuration.

@@ -720,6 +720,18 @@ msgid "Line \"%s\" is already resolved by a Purchase Order or Minor Expense."
 msgstr ""
 
 #. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition_line.py:0
+#, python-format
+msgid "Line \"%s\" must have a support file."
+msgstr "La línea \"%s\" debe tener un archivo de soporte."
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition_line.py:0
+#, python-format
+msgid "Line \"%s\" must have an attached file."
+msgstr "La línea \"%s\" debe tener un archivo adjunto."
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__line_ids
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid "Lines"

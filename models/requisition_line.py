@@ -28,7 +28,7 @@ class PurchaseRequisitionLineCustom(models.Model):
     payment_import = fields.Monetary(string='Payment Amount', currency_field='currency_id')
     comment = fields.Text(string='Comment')
     consult_list_id = fields.Many2one('purchase.requisition.consult.list', string='Consult List', required=True)
-    support_file = fields.Binary(string='Support File', attachment=True)
+    support_file = fields.Binary(string='Support File', attachment=True, required=True)
     support_filename = fields.Char(string='Support Filename')
 
     @api.model_create_multi
@@ -63,6 +63,21 @@ class PurchaseRequisitionLineCustom(models.Model):
         for line in self:
             if line.requisition_id.department_id.need_payment_method and not line.payment_method_id:
                 raise ValidationError(_("Payment Method is mandatory for the selected Department."))
+
+    @api.constrains('attached', 'support_file', 'name')
+    def _check_required_files(self):
+        """
+        Ensures every line has an attached file and a support file. The view
+        already marks both fields as required, but attachment-stored binaries
+        have no database column, so neither the ORM nor PostgreSQL enforce
+        required=True. 'name' (required, always written on create) makes the
+        check also run when a line is created without the files.
+        """
+        for line in self:
+            if not line.attached:
+                raise ValidationError(_('Line "%s" must have an attached file.', line.name))
+            if not line.support_file:
+                raise ValidationError(_('Line "%s" must have a support file.', line.name))
 
     @api.constrains('attached_filename', 'support_filename')
     def _check_attached_extension(self):
