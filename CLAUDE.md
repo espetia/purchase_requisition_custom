@@ -117,6 +117,24 @@ EOF
   runs create-time constraints for the column fields present in the values. Lines created before the files became
   required may lack them; the check only bites when a file or the description is written. `image` is a legacy field, kept for
   historical data but no longer shown in any view.
+  **Audit log**: every line addition, modification and removal is logged in the requisition's chatter
+  (`create`/`write`/`unlink` overrides on the line). Only the editable fields in `TRACKED_LINE_FIELDS` are tracked
+  (not `po_line_id`/`expense_register_id`, written by the wizards, nor `image`/`currency_id`); files are shown by
+  name and compared by the `ir.attachment` checksum (same name, new content shows "(replaced)"), and writes that
+  send back unchanged values log nothing. Changing a line's `requisition_id` (code only) logs it as removed from the
+  old requisition and added to the new one (other changes of the same write are logged there too), and checks both
+  are editable. `unlink` posts its note only after the lines are actually deleted, and many2one values are shown with
+  `sudo()` (the user may not be able to read the old value).
+  `PurchaseRequisitionCustom.write()` with `line_ids` collects the fragments in the `line_tracking_buffer` context
+  key and posts **one** note per save ("Lines modified:"); a direct `create`/`write`/`unlink` on lines posts one
+  note per requisition at once (`_log_line_changes()`). The buffer is a `LineTrackingBuffer`, a dict that compares
+  by identity: `Environment.__new__` reuses an existing env whose context is *equal*, so a plain `{}` left empty by
+  an earlier save in the same transaction would be reused and its new fragments never posted. Once the save ends
+  (`try/finally`) the buffer is marked `closed`; envs created during the save keep it in their context, and
+  `_log_line_changes()` treats a closed buffer as no buffer (posts directly). `create()` of
+  the requisition passes `skip_line_tracking` (its initial lines are part of the creation) and returns the record
+  with the caller's env. Notes go through `_post_note()` (sudo, authored by the acting user), shared with the
+  authorization chain messages.
 - **`purchase.requisition.payment.method`** (`payment_method.py`) — payment methods catalog (`name` only),
   under Purchase > Configuration.
 - **`purchase.requisition.consult.list`** (`consult_list.py`) — consult lists catalog (`name` only), under

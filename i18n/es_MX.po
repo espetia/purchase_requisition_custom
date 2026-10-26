@@ -16,6 +16,12 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition_line.py:0
+#, python-format
+msgid "%s (replaced)"
+msgstr "%s (reemplazado)"
+
+#. module: purchase_requisition_custom
 #: model:mail.template,body_html:purchase_requisition_custom.email_template_draft_requisitions_reminder
 msgid ""
 "<div style=\"background-color: #F3F4F6; padding: 40px; font-family: Arial, sans-serif; text-align: center;\">\n"
@@ -116,6 +122,12 @@ msgstr "Icono de Tipo de Actividad"
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid "Add your comments..."
 msgstr "Agrega tus comentarios..."
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition_line.py:0
+#, python-format
+msgid "Added: \"%s\" (%s %s)"
+msgstr "Añadida: \"%s\" (%s %s)"
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
@@ -399,6 +411,24 @@ msgid "Is Current Approver"
 msgstr "Es Autorizador Actual"
 
 #. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "Lines modified:"
+msgstr "Líneas modificadas:"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition_line.py:0
+#, python-format
+msgid "Modified: \"%s\""
+msgstr "Modificada: \"%s\""
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition_line.py:0
+#, python-format
+msgid "No"
+msgstr "No"
+
+#. module: purchase_requisition_custom
 #: model_terms:ir.actions.act_window,help:purchase_requisition_custom.action_purchase_requisition_pending_approval
 msgid "No requisitions are waiting for your authorization"
 msgstr "No hay requisiciones esperando su autorización"
@@ -485,6 +515,12 @@ msgstr "Rechazada"
 #, python-format
 msgid "Rejected by %s: %s"
 msgstr "Rechazada por %s: %s"
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition_line.py:0
+#, python-format
+msgid "Removed: \"%s\""
+msgstr "Eliminada: \"%s\""
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_expense_register__custom_requisition_id
@@ -1385,6 +1421,12 @@ msgid ""
 msgstr ""
 "Una requisición no puede pasar a cotización o etapas posteriores mientras "
 "tenga líneas sin producto."
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition_line.py:0
+#, python-format
+msgid "Yes"
+msgstr "Sí"
 
 #. module: purchase_requisition_custom
 #: code:addons/purchase_requisition_custom/models/requisition.py:0

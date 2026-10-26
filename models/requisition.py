@@ -22,6 +22,21 @@ APPROVAL_LOCKED_FIELDS = (
     'vehicle_id', 'expiration_date', 'text_comment', 'line_ids',
 )
 
+class LineTrackingBuffer(dict):
+    """
+    {requisition_id: [fragments]} collecting the line changes of one save (see
+    the line's _log_line_changes). It compares by identity: Odoo reuses an
+    existing environment whose context is equal, so a buffer left empty by a
+    previous save of the same transaction would otherwise be reused, and the
+    new changes collected in it would never be posted. Once the save is over
+    it is marked closed: environments created during the save keep it in their
+    context, and later line changes made through them are posted directly.
+    """
+    closed = False
+    __eq__ = object.__eq__
+    __ne__ = object.__ne__
+    __hash__ = object.__hash__
+
 class PurchaseRequisitionCustom(models.Model):
     _name = 'purchase.requisition.custom'
     _description = 'Purchase Requisition'
@@ -211,13 +226,23 @@ class PurchaseRequisitionCustom(models.Model):
                 template.sudo().with_context(**ctx).send_mail(
                     rec.id, force_send=False, email_values={'model': False, 'res_id': False})
 
-    def _post_approval_message(self, body):
+    def _post_note(self, body):
         """
-        Logs an authorization action in the chatter, authored by the acting
-        user. Approvers may only have read access to the requisition, so the
-        message is posted with sudo.
+        Logs a note in the chatter (authorization actions, line changes),
+        authored by the acting user. Approvers may only have read access to
+        the requisition, so the message is posted with sudo.
         """
         self.sudo().message_post(body=body, author_id=self.env.user.partner_id.id, subtype_xmlid='mail.mt_note')
+
+    def _post_line_changes(self, changes):
+        """
+        Posts one note per requisition listing the changes of its lines, given
+        as {requisition_id: [fragments]} (see the line's _log_line_changes).
+        """
+        for rec in self:
+            if changes.get(rec.id):
+                rec._post_note(Markup("%s<ul>%s</ul>") % (
+                    _("Lines modified:"), Markup().join(Markup("<li>%s</li>") % fragment for fragment in changes[rec.id])))
 
     def _notify_current_approver(self):
         """
@@ -255,7 +280,7 @@ class PurchaseRequisitionCustom(models.Model):
             approvers = rec.rubro_id.approver_ids
             rec.sudo().approval_ids.unlink()
             if not approvers:
-                rec._post_approval_message(_("Sent for authorization: no authorization chain configured, pre-authorized directly."))
+                rec._post_note(_("Sent for authorization: no authorization chain configured, pre-authorized directly."))
                 rec._finish_approval()
                 continue
             rec.sudo().write({
@@ -266,7 +291,7 @@ class PurchaseRequisitionCustom(models.Model):
                     'state': 'pending' if index == 0 else 'waiting',
                 }) for index, approver in enumerate(approvers)],
             })
-            rec._post_approval_message(Markup(_("Sent for authorization. Waiting for %s (step %s).")) % (
+            rec._post_note(Markup(_("Sent for authorization. Waiting for %s (step %s).")) % (
                 rec.current_approver_id.name, rec.approval_step))
             rec._notify_current_approver()
         return True
@@ -286,11 +311,11 @@ class PurchaseRequisitionCustom(models.Model):
             following = approvals.filtered(lambda a: a.state == 'waiting')[:1]
             if following:
                 following.write({'state': 'pending'})
-                rec._post_approval_message(Markup(_("Approved by %s (step %s). Waiting for %s.")) % (
+                rec._post_note(Markup(_("Approved by %s (step %s). Waiting for %s.")) % (
                     self.env.user.name, step, following.user_id.name))
                 rec._notify_current_approver()
             else:
-                rec._post_approval_message(Markup(_("Approved by %s (step %s). Authorization chain completed: pre-authorized.")) % (
+                rec._post_note(Markup(_("Approved by %s (step %s). Authorization chain completed: pre-authorized.")) % (
                     self.env.user.name, step))
                 rec._finish_approval()
         return True
@@ -307,7 +332,7 @@ class PurchaseRequisitionCustom(models.Model):
             current.write({'state': 'rejected', 'date': fields.Datetime.now(), 'comment': reason})
             rec.sudo().activity_unlink(['mail.mail_activity_data_todo'])
             rec.sudo().write({'approval_status': 'rejected'})
-            rec._post_approval_message(Markup(_("Rejected by %s: %s")) % (self.env.user.name, reason))
+            rec._post_note(Markup(_("Rejected by %s: %s")) % (self.env.user.name, reason))
             rec._send_approval_template('purchase_requisition_custom.email_template_requisition_rejected', reason=reason)
         return True
 
@@ -478,7 +503,8 @@ class PurchaseRequisitionCustom(models.Model):
         """
         Overrides the write method to prevent non-managers from updating the
         state, to keep the authorization chain as the only way out of draft,
-        and to lock the requisition while the chain is in progress.
+        and to lock the requisition while the chain is in progress. Changes of
+        the lines are collected and logged in one chatter note per save.
         """
         chain_done = self.env.context.get('approval_chain_done')
         if 'state' in vals: 
@@ -501,6 +527,15 @@ class PurchaseRequisitionCustom(models.Model):
                     super(PurchaseRequisitionCustom, to_reset).write({'approval_status': 'not_sent'})
         if any(field in vals for field in APPROVAL_LOCKED_FIELDS):
             self._check_not_in_approval()
+        buffer = self.env.context.get('line_tracking_buffer')
+        if 'line_ids' in vals and (buffer is None or buffer.closed):
+            buffer = LineTrackingBuffer()
+            try:
+                res = super(PurchaseRequisitionCustom, self.with_context(line_tracking_buffer=buffer)).write(vals)
+                self.browse(list(buffer))._post_line_changes(buffer)
+            finally:
+                buffer.closed = True
+            return res
         return super(PurchaseRequisitionCustom, self).write(vals)
 
     def _check_not_in_approval(self):
@@ -533,14 +568,16 @@ class PurchaseRequisitionCustom(models.Model):
     def create(self, vals):
         """
         Overrides the create method to assign a unique sequence reference 
-        to the requisition name if it is still set to 'New'.
+        to the requisition name if it is still set to 'New'. The initial lines
+        are part of the creation, so their changes are not logged.
         """
         if not vals.get('line_ids'):
             raise ValidationError(_("You cannot create a requisition without lines."))
 
         if vals.get('name', _('New')) == _('New'):
             vals['name'] = self.env['ir.sequence'].next_by_code('purchase.requisition.custom') or _('New')
-        requisition = super(PurchaseRequisitionCustom, self).create(vals)
+        requisition = super(PurchaseRequisitionCustom, self.with_context(skip_line_tracking=True)).create(vals)
+        requisition = requisition.with_env(self.env)
 
         template = self.env.ref('purchase_requisition_custom.email_template_draft_requisitions_reminder', raise_if_not_found=False)
         if template and requisition.manager_id:
