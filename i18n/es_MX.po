@@ -192,6 +192,26 @@ msgid "Attached"
 msgstr "Adjunto"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__attached_2
+msgid "Attached 2"
+msgstr "Adjunto 2"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__attached_2_filename
+msgid "Attached 2 Filename"
+msgstr "Nombre del Adjunto 2"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__attached_3
+msgid "Attached 3"
+msgstr "Adjunto 3"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_line_custom__attached_3_filename
+msgid "Attached 3 Filename"
+msgstr "Nombre del Adjunto 3"
+
+#. module: purchase_requisition_custom
 #: code:addons/purchase_requisition_custom/models/requisition_line.py:0
 #, python-format
 msgid "Attached file must be an image, PDF or Excel file."
@@ -206,6 +226,12 @@ msgstr "Nombre del Adjunto"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__message_attachment_count
 msgid "Attachment Count"
 msgstr "Número de archivos adjuntos"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_order_form_requisition_details
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Attachments"
+msgstr "Adjuntos"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__approval_status

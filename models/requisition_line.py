@@ -7,15 +7,20 @@ from odoo.exceptions import ValidationError
 from odoo.tools.misc import formatLang
 
 ALLOWED_ATTACHED_EXTENSIONS = ('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.pdf', '.xls', '.xlsx')
-# keep in sync with the 'max_file_size_mb' option of the attached and support_file fields in the views
+# keep in sync with the 'max_file_size_mb' option of all line file fields in the views
 MAX_ATTACHED_SIZE_MB = 2
 # editable fields logged in the requisition's chatter, in display order
 TRACKED_LINE_FIELDS = (
-    'product_id', 'name', 'product_qty', 'product_uom_id', 'attached', 'supplier_suggestion', 'need_invoice',
-    'payment_method_id', 'payment_import', 'comment', 'consult_list_id', 'support_file',
+    'product_id', 'name', 'product_qty', 'product_uom_id', 'attached', 'attached_2', 'attached_3', 'supplier_suggestion',
+    'need_invoice', 'payment_method_id', 'payment_import', 'comment', 'consult_list_id', 'support_file',
 )
 # binary fields and the field holding their file name
-FILE_FIELDS = {'attached': 'attached_filename', 'support_file': 'support_filename'}
+FILE_FIELDS = {
+    'attached': 'attached_filename',
+    'attached_2': 'attached_2_filename',
+    'attached_3': 'attached_3_filename',
+    'support_file': 'support_filename',
+}
 
 class PurchaseRequisitionLineCustom(models.Model):
     _name = 'purchase.requisition.line.custom'
@@ -31,6 +36,10 @@ class PurchaseRequisitionLineCustom(models.Model):
     expense_register_id = fields.Many2one('expense.register', string='Expense Register', readonly=True)
     attached = fields.Binary(string='Attached', attachment=True, required=True)
     attached_filename = fields.Char(string='Attached Filename')
+    attached_2 = fields.Binary(string='Attached 2', attachment=True)
+    attached_2_filename = fields.Char(string='Attached 2 Filename')
+    attached_3 = fields.Binary(string='Attached 3', attachment=True)
+    attached_3_filename = fields.Char(string='Attached 3 Filename')
     supplier_suggestion = fields.Char(string='Supplier Suggestion')
     need_invoice = fields.Boolean(string='Need Invoice', default=False)
     payment_method_id = fields.Many2one('purchase.requisition.payment.method', string='Payment Method')
@@ -211,21 +220,21 @@ class PurchaseRequisitionLineCustom(models.Model):
             if not line.support_file:
                 raise ValidationError(_('Line "%s" must have a support file.', line.name))
 
-    @api.constrains('attached_filename', 'support_filename')
+    @api.constrains(*FILE_FIELDS.values())
     def _check_attached_extension(self):
         """
-        Ensures the attached and support files are images, PDF or Excel files.
+        Ensures all line files (FILE_FIELDS) are images, PDF or Excel files.
         Raises a ValidationError if the condition is not met.
         """
         for line in self:
-            for filename in (line.attached_filename, line.support_filename):
+            for filename in (line[fname] for fname in FILE_FIELDS.values()):
                 if filename and os.path.splitext(filename)[1].lower() not in ALLOWED_ATTACHED_EXTENSIONS:
                     raise ValidationError(_("Attached file must be an image, PDF or Excel file."))
 
-    @api.constrains('attached', 'support_file')
+    @api.constrains(*FILE_FIELDS)
     def _check_attached_size(self):
         """
-        Ensures the attached and support files do not exceed MAX_ATTACHED_SIZE_MB.
+        Ensures all line files (FILE_FIELDS) do not exceed MAX_ATTACHED_SIZE_MB.
         The size is read from the stored ir.attachment instead of decoding
         the base64 value.
         """

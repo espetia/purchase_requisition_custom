@@ -88,21 +88,29 @@
                                 <field name="line_ids" attrs="{'readonly': [('can_edit_lines', '=', False)]}">
                                     <form string="Requisition Line">
                                         <sheet>
+                                            <group string="Product">
+                                                <field name="product_id" options="{'no_create': True, 'no_create_edit': True}" domain="[('purchase_ok', '=', True)]"/>
+                                                <field name="name"/>
+                                                <label for="product_qty"/>
+                                                <div class="o_row">
+                                                    <field name="product_qty"/>
+                                                    <field name="product_uom_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                                </div>
+                                            </group>
                                             <group>
-                                                <group string="Product">
-                                                    <field name="product_id" options="{'no_create': True, 'no_create_edit': True}" domain="[('purchase_ok', '=', True)]"/>
-                                                    <field name="name"/>
-                                                    <label for="product_qty"/>
-                                                    <div class="o_row">
-                                                        <field name="product_qty"/>
-                                                        <field name="product_uom_id" options="{'no_create': True, 'no_create_edit': True}"/>
-                                                    </div>
-                                                </group>
                                                 <group string="Supplier">
                                                     <field name="supplier_suggestion"/>
+                                                </group>
+                                                <group string="Attachments">
                                                     <field name="attached_filename" invisible="1"/>
                                                     <field name="attached" filename="attached_filename" widget="binary_dropzone"
                                                            options="{'accepted_file_extensions': '.png,.jpg,.jpeg,.gif,.bmp,.pdf,.xls,.xlsx', 'max_file_size_mb': 2}"/>
+                                                    <field name="attached_2_filename" invisible="1"/>
+                                                    <field name="attached_2" filename="attached_2_filename" widget="binary_dropzone"
+                                                           options="{'accepted_file_extensions': '.png,.jpg,.jpeg,.gif,.bmp,.pdf,.xls,.xlsx', 'max_file_size_mb': 2, 'paste_fallback': False}"/>
+                                                    <field name="attached_3_filename" invisible="1"/>
+                                                    <field name="attached_3" filename="attached_3_filename" widget="binary_dropzone"
+                                                           options="{'accepted_file_extensions': '.png,.jpg,.jpeg,.gif,.bmp,.pdf,.xls,.xlsx', 'max_file_size_mb': 2, 'paste_fallback': False}"/>
                                                 </group>
                                             </group>
                                             <group>
@@ -137,6 +145,12 @@
                                         <field name="product_uom_id" width="150px" options="{'no_create': True, 'no_create_edit': True}"/>
                                         <field name="attached_filename" invisible="1"/>
                                         <field name="attached" filename="attached_filename" widget="binary" optional="show" width="200px"
+                                               options="{'accepted_file_extensions': '.png,.jpg,.jpeg,.gif,.bmp,.pdf,.xls,.xlsx'}"/>
+                                        <field name="attached_2_filename" invisible="1"/>
+                                        <field name="attached_2" filename="attached_2_filename" widget="binary" optional="hide" width="200px"
+                                               options="{'accepted_file_extensions': '.png,.jpg,.jpeg,.gif,.bmp,.pdf,.xls,.xlsx'}"/>
+                                        <field name="attached_3_filename" invisible="1"/>
+                                        <field name="attached_3" filename="attached_3_filename" widget="binary" optional="hide" width="200px"
                                                options="{'accepted_file_extensions': '.png,.jpg,.jpeg,.gif,.bmp,.pdf,.xls,.xlsx'}"/>
                                         <field name="supplier_suggestion" optional="show" width="180px"/>
                                         <field name="need_invoice" optional="show" width="140px"/>

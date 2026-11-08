@@ -105,14 +105,18 @@ EOF
   claimed. `product_id` is labelled "Product/Purchase Type". Lines also carry purchasing info: a **required**
   `attached` (+ `attached_filename`; `@api.constrains` limit it to image/PDF/Excel extensions and to
   `MAX_ATTACHED_SIZE_MB` = 2 MB, read from the stored `ir.attachment.file_size` — keep that constant in sync with
-  the `max_file_size_mb` widget option in the view, which gives the same check client-side),
+  the `max_file_size_mb` widget option in the view, which gives the same check client-side), two **optional**
+  `attached_2`/`attached_3` (+ `attached_2_filename`/`attached_3_filename`, "Attached 2"/"Attached 3") that are
+  otherwise identical to `attached` (same extension/size constraints, same widget, tracked in the chatter) but not
+  checked by `_check_required_files`; all line files are listed in `FILE_FIELDS`, which drives both constraints,
   `supplier_suggestion`, `need_invoice`, `payment_method_id` (required only when the requisition's department has
   `need_payment_method`: view `attrs` on `parent.need_payment_method` in the line popup, plus `@api.constrains` on
   the line and on the header's `department_id`), `payment_import` (Monetary; `currency_id` is a
   non-stored compute of the company currency), and `comment`. A "Support" section adds a **required**
   `consult_list_id` and a **required** `support_file` (+ `support_filename`), which shares the `attached`
-  constraints (same extensions and size limit; both `@api.constrains` check the two files). Both files are
-  attachment-stored binaries with no database column, so their `required=True` is only enforced by the view;
+  constraints (same extensions and size limit; both `@api.constrains` check every file in `FILE_FIELDS`). Both
+  required files are attachment-stored binaries with no database column, so their `required=True` is only enforced
+  by the view;
   `_check_required_files` enforces it server-side, constrained on the two files *and* `name`, because Odoo 15 only
   runs create-time constraints for the column fields present in the values. Lines created before the files became
   required may lack them; the check only bites when a file or the description is written. `image` is a legacy field, kept for
@@ -242,7 +246,10 @@ menus live in `views/<catalog>_views.xml` under `purchase.menu_purchase_config` 
   does not leak into the PO / Minor Expense views or the wizards.
 - **Lines** are a non-editable `<tree>` (each column has a `width` attribute, which Odoo 15 applies as a
   min-width so columns scroll horizontally instead of truncating) plus an inline `<form>` that opens as a popup
-  on click, grouped into Product / Supplier / Payment / Traceability / Support sections and a Comment area. The popup
+  on click, laid out as a full-width Product section, then the rows Supplier (only `supplier_suggestion`) |
+  Attachments (`attached`, `attached_2`, `attached_3`), Payment | Traceability and Support, and a Comment area; the
+  `attached_2`/`attached_3` columns are `optional="hide"` in the list (also in the PO's "Requisition Details" tree,
+  whose read-only line form uses the same Product and Supplier | Attachments rows, then Payment | Support). The popup
   inherits the `line_ids` `readonly` attrs (`can_edit_lines`), so lines are read-only once the requisition leaves
   `draft`, except in `preauthorized` for Warehouse Agents/Purchase Managers. The
   wizard line trees (`wizard/*_views.xml`) reuse the line fields and pick up label changes automatically.
@@ -328,12 +335,16 @@ and ignored while the focus is in an input/textarea/contenteditable — copying 
 the clipboard, so pasting text must stay text). Clicking the drop area only focuses it (ready to paste; the
 dialog autofocuses its first input); the file picker is the area's "Select a file" button. Every
 dropped/pasted `File` goes through the native upload flow (`on_file_uploaded`), so value/filename handling is
-Odoo's own. Supported `options`: `accepted_file_extensions` (native) and `max_file_size_mb`, which lowers
-`max_upload_size` and therefore also applies to the native file-picker path. Files dropped outside the drop
+Odoo's own. Supported `options`: `accepted_file_extensions` (native), `max_file_size_mb`, which lowers
+`max_upload_size` and therefore also applies to the native file-picker path, and `paste_fallback` (default `true`;
+see below). Files dropped outside the drop
 area are swallowed (`preventDefault`) so the browser doesn't navigate away and lose unsaved changes. Since every
 widget listens on `document`, `_isPasteTarget()` makes sure only one empty drop area takes a paste: the focused one,
-or else the first visible one in the same dialog. Used on the requisition line popup form for `attached` and
-`support_file`; the read-only list columns keep the plain `binary` widget.
+or else the first visible one in the same dialog. With `paste_fallback: False` a drop area only takes a paste while
+focused and is skipped by that fallback (its drop area gets the `o_prc_dropzone_no_fallback` class); the popup sets
+it on the optional `attached_2`/`attached_3`, so an unfocused paste after filling `attached` goes on to
+`support_file` instead of the optional files between them. Used on the requisition line popup form for `attached`,
+`attached_2`, `attached_3` and `support_file`; the read-only list columns keep the plain `binary` widget.
 Translatable JS/QWeb strings in
 `i18n/es_MX.po` need the `#. openerp-web` comment to reach the web client. After changing assets, browsers need a
 hard refresh (or `?debug=assets`).

@@ -16,7 +16,7 @@ const qweb = core.qweb;
  * "Select a file" button. Once a file is obtained, it goes through the
  * native FieldBinaryFile upload flow (filename sync, value set, re-render).
  * With several drop areas in one form, a paste goes to the focused one, or
- * else to the first empty one.
+ * else to the first empty one that allows the fallback (see 'paste_fallback').
  */
 const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
     events: _.extend({}, basicFields.FieldBinaryFile.prototype.events, {
@@ -34,6 +34,11 @@ const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
      * limit. It overrides max_upload_size, which the native file picker
      * (on_file_change) also checks, so every upload path honors it.
      *
+     * Supports a 'paste_fallback' option (default true): when false, the drop
+     * area only takes a paste while it holds the focus, and is skipped when a
+     * paste with no focused drop area falls back to the first empty one (e.g.
+     * optional files placed before a required one).
+     *
      * @override
      */
     init: function () {
@@ -43,6 +48,7 @@ const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
             this.max_upload_size = Math.min(this.max_upload_size, maxFileSizeMb * 1024 * 1024);
         }
         this.maxUploadSizeLabel = utils.human_size(this.max_upload_size);
+        this.pasteFallback = !(this.nodeOptions && this.nodeOptions.paste_fallback === false);
         this._onDocumentPaste = this._onDocumentPaste.bind(this);
         this._onDocumentDragOrDrop = this._onDocumentDragOrDrop.bind(this);
     },
@@ -92,7 +98,8 @@ const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
      * Every widget listens to 'paste' on the document, so when a form has
      * several empty drop areas only one of them must take the file: the one
      * holding the focus (the user clicked it), or else the first visible one
-     * in the same dialog (or page).
+     * in the same dialog (or page) that allows the fallback ('paste_fallback'
+     * option; the others are marked with o_prc_dropzone_no_fallback).
      *
      * @private
      * @returns {boolean}
@@ -104,7 +111,8 @@ const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
             return this.el.contains(focusedDropzone);
         }
         const container = this.el.closest('.modal') || document;
-        const firstDropzone = _.find(container.querySelectorAll('.o_prc_dropzone:not(.o_hidden)'),
+        const firstDropzone = _.find(
+            container.querySelectorAll('.o_prc_dropzone:not(.o_hidden):not(.o_prc_dropzone_no_fallback)'),
             dropzone => dropzone.offsetParent !== null);
         return !!firstDropzone && this.el.contains(firstDropzone);
     },
@@ -202,6 +210,7 @@ const FieldBinaryDropzone = basicFields.FieldBinaryFile.extend({
             this.$el.append($dropzone);
         }
         $dropzone.toggleClass('o_hidden', !!this.value);
+        $dropzone.toggleClass('o_prc_dropzone_no_fallback', !this.pasteFallback);
         if (!this.value) {
             // the drop area replaces the native "Upload your file" button
             this.$('.o_select_file_button').addClass('o_hidden');
