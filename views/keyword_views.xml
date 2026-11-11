@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_requisition_keyword_tree" model="ir.ui.view">
+        <field name="name">purchase.requisition.keyword.tree</field>
+        <field name="model">purchase.requisition.keyword</field>
+        <field name="arch" type="xml">
+            <tree string="Keywords" editable="bottom">
+                <field name="name"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_purchase_requisition_keyword_form" model="ir.ui.view">
+        <field name="name">purchase.requisition.keyword.form</field>
+        <field name="model">purchase.requisition.keyword</field>
+        <field name="arch" type="xml">
+            <form string="Keyword">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="active" widget="boolean_toggle"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_purchase_requisition_keyword_search" model="ir.ui.view">
+        <field name="name">purchase.requisition.keyword.search</field>
+        <field name="model">purchase.requisition.keyword</field>
+        <field name="arch" type="xml">
+            <search string="Keywords">
+                <field name="name"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_purchase_requisition_keyword" model="ir.actions.act_window">
+        <field name="name">Keywords</field>
+        <field name="res_model">purchase.requisition.keyword</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_purchase_requisition_keyword"
+              name="Keywords"
+              parent="purchase.menu_purchase_config"
+              action="action_purchase_requisition_keyword"
+              sequence="104"/>
+</odoo>

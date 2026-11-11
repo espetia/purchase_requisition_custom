@@ -25,6 +25,7 @@
         'views/department_views.xml',
         'views/payment_method_views.xml',
         'views/consult_list_views.xml',
+        'views/keyword_views.xml',
     ],
     'assets': {
         'web.assets_backend': [

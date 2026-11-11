@@ -1,11 +1,12 @@
 import difflib
+import re
 import unicodedata
 
 from markupsafe import Markup
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import is_html_empty
+from odoo.tools import html2plaintext, is_html_empty
 
 # Minimum difflib ratio for two normalized texts to count as similar
 # (see PurchaseRequisitionCustom._is_similar_text).
@@ -102,6 +103,19 @@ class PurchaseRequisitionCustom(models.Model):
     approval_step = fields.Char(string='Authorization Step', compute='_compute_approval_step')
     duplicate_requisition_ids = fields.Many2many(
         'purchase.requisition.custom', compute='_compute_duplicate_requisition_ids', string='Similar Requisitions')
+    requires_additional_info = fields.Boolean(
+        string='Requires Additional Information', readonly=True, copy=False,
+        help="Set when a message sent from the chatter mentions one of the configured keywords.")
+    additional_info_tag = fields.Char(string='Additional Information Tag', compute='_compute_additional_info_tag')
+
+    @api.depends('requires_additional_info')
+    def _compute_additional_info_tag(self):
+        """
+        Text of the tag, shown as a badge in the list view (the Odoo 15 badge
+        widget does not support boolean fields).
+        """
+        for rec in self:
+            rec.additional_info_tag = _("Requires Add. Info") if rec.requires_additional_info else False
 
     @api.depends('purchase_order_ids')
     def _compute_purchase_order_count(self):
@@ -235,7 +249,54 @@ class PurchaseRequisitionCustom(models.Model):
         authored by the acting user. Approvers may only have read access to
         the requisition, so the message is posted with sudo.
         """
-        self.sudo().message_post(body=body, author_id=self.env.user.partner_id.id, subtype_xmlid='mail.mt_note')
+        self.sudo().with_context(skip_keyword_detection=True).message_post(
+            body=body, author_id=self.env.user.partner_id.id, subtype_xmlid='mail.mt_note')
+
+    def message_post(self, **kwargs):
+        """
+        Checks the messages sent with "Send message" (comment with the
+        Discussions subtype) for the additional information keywords. Internal
+        notes, system notes and incoming e-mails are ignored.
+        """
+        message = super().message_post(**kwargs)
+        if (not self.env.context.get('skip_keyword_detection')
+                and message.message_type == 'comment'
+                and message.subtype_id == self.env.ref('mail.mt_comment')):
+            self._detect_additional_info_keywords(message.body)
+        return message
+
+    def _detect_additional_info_keywords(self, body):
+        """
+        Tags the requisition as requiring additional information when the
+        message mentions an active keyword, as a whole word or phrase, ignoring
+        case and accents.
+        """
+        text = self._normalize_text(html2plaintext(body or ''))
+        if not text:
+            return
+        keywords = []
+        for keyword in self.env['purchase.requisition.keyword'].sudo().search([]):
+            normalized = self._normalize_text(keyword.name)
+            if normalized and re.search(r'(?<!\w)' + re.escape(normalized) + r'(?!\w)', text):
+                keywords.append(keyword.name)
+        if not keywords:
+            return
+        for rec in self.filtered(lambda r: not r.requires_additional_info):
+            rec.sudo().write({'requires_additional_info': True})
+            rec._post_note(Markup(_("Tag \"Requires Additional Information\" added: the message mentions %s.")) % (
+                ', '.join(keywords)))
+
+    def action_complete_additional_info(self):
+        """
+        Removes the "Requires Additional Information" tag. Only Warehouse
+        Agents (and Purchase Managers) may do it.
+        """
+        if not self.env.su and not self.env.user.has_group('purchase_requisition_custom.group_purchase_requisition_warehouse'):
+            raise UserError(_("Only Warehouse Agents and Purchase Managers can mark the additional information as completed."))
+        for rec in self.filtered('requires_additional_info'):
+            rec.sudo().write({'requires_additional_info': False})
+            rec._post_note(Markup(_("Additional information completed by %s: tag removed.")) % self.env.user.name)
+        return True
 
     def _post_line_changes(self, changes):
         """

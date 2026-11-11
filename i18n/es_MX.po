@@ -60,6 +60,11 @@ msgid ""
 msgstr ""
 
 #. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_kanban
+msgid "<span class=\"badge badge-pill badge-warning\">Requires Add. Info</span>"
+msgstr "<span class=\"badge badge-pill badge-warning\">Requiere Info. Adicional</span>"
+
+#. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid ""
 "<strong>Possible duplicate:</strong> there are draft requisitions in this "
@@ -99,6 +104,11 @@ msgid "Action Needed"
 msgstr "Acción requerida"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_keyword__active
+msgid "Active"
+msgstr "Activo"
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__activity_ids
 msgid "Activities"
 msgstr "Actividades"
@@ -133,6 +143,22 @@ msgstr "Añadida: \"%s\" (%s %s)"
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
 msgid "Additional comments for this line..."
 msgstr "Comentarios adicionales para esta línea..."
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "Additional information completed by %s: tag removed."
+msgstr "Información adicional completada por %s: etiqueta eliminada."
+
+#. module: purchase_requisition_custom
+#: model:ir.model,name:purchase_requisition_custom.model_purchase_requisition_keyword
+msgid "Additional Information Keywords Catalog"
+msgstr "Catálogo de Palabras Clave de Información Adicional"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__additional_info_tag
+msgid "Additional Information Tag"
+msgstr "Etiqueta de Información Adicional"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_po_wizard__type_id
@@ -180,6 +206,11 @@ msgstr "Aprobada por %s (paso %s). En espera de %s."
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro_approver__user_id
 msgid "Approver"
 msgstr "Autorizador"
+
+#. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_keyword_search
+msgid "Archived"
+msgstr "Archivado"
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_create_expense_wizard__depto_id
@@ -389,6 +420,7 @@ msgstr "Crear una nueva requisición de compra"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__create_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__create_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_keyword__create_uid
 msgid "Created by"
 msgstr "Creado por"
 
@@ -402,6 +434,7 @@ msgstr "Creado por"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__create_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__create_date
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_keyword__create_date
 msgid "Created on"
 msgstr "Creado el"
 
@@ -432,9 +465,28 @@ msgid "In Progress"
 msgstr "En Proceso"
 
 #. module: purchase_requisition_custom
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+msgid "Information Completed"
+msgstr "Información completada"
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__is_current_approver
 msgid "Is Current Approver"
 msgstr "Es Autorizador Actual"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_keyword__name
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_keyword_form
+msgid "Keyword"
+msgstr "Palabra clave"
+
+#. module: purchase_requisition_custom
+#: model:ir.actions.act_window,name:purchase_requisition_custom.action_purchase_requisition_keyword
+#: model:ir.ui.menu,name:purchase_requisition_custom.menu_purchase_requisition_keyword
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_keyword_search
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_keyword_tree
+msgid "Keywords"
+msgstr "Palabras clave"
 
 #. module: purchase_requisition_custom
 #: code:addons/purchase_requisition_custom/models/requisition.py:0
@@ -477,6 +529,14 @@ msgid ""
 "Only draft requisitions that have not been sent can be sent for "
 "authorization."
 msgstr "Solo las requisiciones en borrador que no se han enviado pueden enviarse a autorización."
+
+#. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid ""
+"Only Warehouse Agents and Purchase Managers can mark the additional "
+"information as completed."
+msgstr "Solo los Agentes de Almacén y los Gerentes de Compras pueden marcar la información adicional como completada."
 
 #. module: purchase_requisition_custom
 #: model:ir.model.fields.selection,name:purchase_requisition_custom.selection__purchase_requisition_approval__state__pending
@@ -549,6 +609,19 @@ msgid "Removed: \"%s\""
 msgstr "Eliminada: \"%s\""
 
 #. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form
+#, python-format
+msgid "Requires Add. Info"
+msgstr "Requiere Info. Adicional"
+
+#. module: purchase_requisition_custom
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__requires_additional_info
+#: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_search
+msgid "Requires Additional Information"
+msgstr "Requiere información adicional"
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_expense_register__custom_requisition_id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_order__custom_requisition_id
 msgid "Requisition"
@@ -607,6 +680,7 @@ msgstr "Descripción"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__display_name
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__display_name
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_keyword__display_name
 msgid "Display Name"
 msgstr "Nombre a mostrar"
 
@@ -694,6 +768,7 @@ msgstr "Ayuda a gestionar las requisiciones de compra."
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__id
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__id
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_keyword__id
 msgid "ID"
 msgstr ""
 
@@ -748,6 +823,7 @@ msgstr "Solo Agente de Almacén"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method____last_update
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro____last_update
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_keyword____last_update
 msgid "Last Modified on"
 msgstr "Última modificación el"
 
@@ -760,6 +836,7 @@ msgstr "Última modificación el"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__write_uid
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__write_uid
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_keyword__write_uid
 msgid "Last Updated by"
 msgstr "Última actualización por"
 
@@ -772,6 +849,7 @@ msgstr "Última actualización por"
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_consult_list__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_payment_method__write_date
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_rubro__write_date
+#: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_keyword__write_date
 msgid "Last Updated on"
 msgstr "Última actualización el"
 
@@ -1257,6 +1335,13 @@ msgid "Sequence"
 msgstr "Secuencia"
 
 #. module: purchase_requisition_custom
+#: model:ir.model.fields,help:purchase_requisition_custom.field_purchase_requisition_custom__requires_additional_info
+msgid ""
+"Set when a message sent from the chatter mentions one of the configured "
+"keywords."
+msgstr "Se activa cuando un mensaje enviado desde el chatter menciona una de las palabras clave configuradas."
+
+#. module: purchase_requisition_custom
 #: model:ir.model.fields,field_description:purchase_requisition_custom.field_purchase_requisition_custom__duplicate_requisition_ids
 msgid "Similar Requisitions"
 msgstr "Requisiciones Similares"
@@ -1317,6 +1402,12 @@ msgid "Support Filename"
 msgstr "Nombre del Archivo de Soporte"
 
 #. module: purchase_requisition_custom
+#: code:addons/purchase_requisition_custom/models/requisition.py:0
+#, python-format
+msgid "Tag \"Requires Additional Information\" added: the message mentions %s."
+msgstr "Etiqueta \"Requiere información adicional\" agregada: el mensaje menciona %s."
+
+#. module: purchase_requisition_custom
 #: code:addons/purchase_requisition_custom/models/requisition_line.py:0
 #, python-format
 msgid "The attached file cannot exceed %s MB."
@@ -1331,6 +1422,11 @@ msgid ""
 msgstr ""
 "El departamento seleccionado no tiene rubros configurados. Pide a un "
 "administrador que los configure en Compras > Configuración > Departamentos."
+
+#. module: purchase_requisition_custom
+#: model:ir.model.constraint,message:purchase_requisition_custom.constraint_purchase_requisition_keyword_name_unique
+msgid "This keyword already exists."
+msgstr "Esta palabra clave ya existe."
 
 #. module: purchase_requisition_custom
 #: model_terms:ir.ui.view,arch_db:purchase_requisition_custom.view_purchase_requisition_custom_form

@@ -143,6 +143,9 @@ EOF
   under Purchase > Configuration.
 - **`purchase.requisition.consult.list`** (`consult_list.py`) — consult lists catalog (`name` only), under
   Purchase > Configuration; referenced by the required line field `consult_list_id`.
+- **`purchase.requisition.keyword`** (`keyword.py`) — keywords catalog (`name`, unique, + `active`), under
+  Purchase > Configuration ("Keywords", editable tree); drives the "Requires Additional Information" tag (see
+  below).
 - **`purchase.requisition.rubro`** (`rubro.py`) — simple category catalog; `requires_vehicle` drives the
   constraint on the header, and `approver_ids` (`purchase.requisition.rubro.approver`: ordered `sequence` + one
   `user_id` per step, same file) is the rubro's **authorization chain**.
@@ -203,6 +206,21 @@ in `security/security.xml` and `security/ir.model.access.csv`:
   `sudo()`'d — the wizard is only reachable by a Purchase Manager, who already passes the `write()` group
   check on their own. There is no reverse sync: cancelling/deleting the `expense.register` afterward does not
   revert the requisition's state.
+- **"Requires Additional Information" tag** (`requires_additional_info`, readonly Boolean, no `tracking`): the
+  `message_post()` override checks the *created* message and, only for "Send message" posts (`message_type ==
+  'comment'` with subtype `mail.mt_comment`; internal notes, system notes and incoming e-mails are ignored), calls
+  `_detect_additional_info_keywords()`: the plain-text body and every active keyword (read with `sudo()`) go
+  through `_normalize_text()` and must match as a whole word/phrase (`(?<!\w)…(?!\w)` regex), ignoring case and
+  accents. A match sets the tag with `sudo()` and logs it with `_post_note()` (nothing happens if it is already
+  set). `_post_note()` posts with the `skip_keyword_detection` context (its notes are `mt_note` anyway).
+  `action_complete_additional_info()` (button "Information Completed") removes the tag and logs it; only the
+  warehouse group (incl. managers) or `sudo()` may call it (`UserError` otherwise). The field is not in
+  `APPROVAL_LOCKED_FIELDS`, so it can change during the authorization chain. It shows as a `web_ribbon` in the
+  form, a badge in the kanban, a search filter and, in the list, the non-stored Char `additional_info_tag` with
+  `widget="badge"` (the Odoo 15 badge widget does not support booleans). These three displays use the short text
+  "Requires Add. Info" ("Requiere Info. Adicional", it must fit the ribbon); the field label, the search filter and
+  the chatter notes keep the full "Requires Additional Information". The form's `message_ids` chatter has
+  `options="{'post_refresh': 'recipients'}"` so the form reloads after posting and the ribbon/button show at once.
 
 When modifying access control, changes usually need to land in *three* places at once: the `res.groups` /
 `ir.rule` definitions in `security/security.xml`, the CRUD matrix in `security/ir.model.access.csv`, and the
@@ -234,9 +252,9 @@ own native rule restricts a record to its `user_id`, which would otherwise hide 
 from another manager viewing the same requisition. Deliberately, `group_purchase_requisition_manager` does
 **not** imply `minor_expenses.group_expense_register_user`/`_admin` — see the wizard note above for why.
 
-The four configuration catalogs (`rubro`, `department`, `payment.method`, `consult.list`) all follow the same access pattern
-in `ir.model.access.csv`: basic users read-only, managers full CRUD, no `ir.rule`s. Their tree/form views and
-menus live in `views/<catalog>_views.xml` under `purchase.menu_purchase_config` (sequences 100/101/102/103).
+The five configuration catalogs (`rubro`, `department`, `payment.method`, `consult.list`, `keyword`) all follow the same
+access pattern in `ir.model.access.csv`: basic users read-only, managers full CRUD, no `ir.rule`s. Their tree/form views and
+menus live in `views/<catalog>_views.xml` under `purchase.menu_purchase_config` (sequences 100/101/102/103/104).
 
 ### Views (`views/requisition_views.xml`)
 

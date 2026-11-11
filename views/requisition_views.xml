@@ -22,9 +22,15 @@
                                 states="quote,waiting,authorized,done" attrs="{'invisible': [('can_create_minor_expense', '=', False)]}"/>
                         <field name="can_create_minor_expense" invisible="1"/>
                         <field name="can_edit_lines" invisible="1"/>
+                        <field name="requires_additional_info" invisible="1"/>
+                        <button name="action_complete_additional_info" string="Information Completed" type="object" class="btn-secondary"
+                                groups="purchase_requisition_custom.group_purchase_requisition_warehouse"
+                                attrs="{'invisible': [('requires_additional_info', '=', False)]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,preauthorized,quote,waiting,authorized,done,cancel" options="{'clickable': '1'}"/>
                     </header>
                     <sheet>
+                        <widget name="web_ribbon" title="Requires Add. Info" bg_color="bg-warning"
+                                attrs="{'invisible': [('requires_additional_info', '=', False)]}"/>
                         <div class="alert alert-warning" role="alert" attrs="{'invisible': [('duplicate_requisition_ids', '=', [])]}">
                             <strong>Possible duplicate:</strong> there are draft requisitions in this department with similar data. Review them before saving to avoid purchasing twice.
                             <field name="duplicate_requisition_ids" readonly="1" nolabel="1">
@@ -218,7 +224,7 @@
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers"/>
                         <field name="activity_ids" widget="mail_activity"/>
-                        <field name="message_ids" widget="mail_thread"/>
+                        <field name="message_ids" widget="mail_thread" options="{'post_refresh': 'recipients'}"/>
                     </div>
                 </form>
             </field>
@@ -239,6 +245,8 @@
                     <field name="approval_status" widget="badge" optional="show" decoration-warning="approval_status == 'in_progress'"
                            decoration-success="approval_status == 'approved'" decoration-danger="approval_status == 'rejected'"/>
                     <field name="current_approver_id" optional="show"/>
+                    <field name="requires_additional_info" invisible="1"/>
+                    <field name="additional_info_tag" widget="badge" decoration-warning="requires_additional_info" optional="show"/>
                     <field name="state"/>
                 </tree>
             </field>
@@ -260,6 +268,8 @@
                             domain="[('current_approver_id', '=', uid), ('approval_status', '=', 'in_progress')]"/>
                     <filter name="in_authorization" string="In Authorization" domain="[('approval_status', '=', 'in_progress')]"/>
                     <filter name="rejected" string="Rejected" domain="[('approval_status', '=', 'rejected')]"/>
+                    <separator/>
+                    <filter name="requires_additional_info" string="Requires Additional Information" domain="[('requires_additional_info', '=', True)]"/>
                     <group expand="0" string="Group By">
                         <filter name="group_approval_status" string="Authorization" context="{'group_by': 'approval_status'}"/>
                     </group>
@@ -284,6 +294,7 @@
                     <field name="vehicle_id"/>
                     <field name="approval_status"/>
                     <field name="current_approver_id"/>
+                    <field name="requires_additional_info"/>
                     <templates>
                         <t t-name="kanban-box">
                             <div t-attf-class="oe_kanban_global_click">
@@ -300,6 +311,9 @@
                                     <span t-if="record.current_approver_id.raw_value" class="text-muted ml-1">
                                         Waiting for <field name="current_approver_id"/>
                                     </span>
+                                </div>
+                                <div t-if="record.requires_additional_info.raw_value" class="mb-1">
+                                    <span class="badge badge-pill badge-warning">Requires Add. Info</span>
                                 </div>
                                 <div class="o_kanban_record_body">
                                     <div>
