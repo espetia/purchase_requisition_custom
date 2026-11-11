@@ -242,6 +242,7 @@
                     <field name="department_id"/>
                     <field name="rubro_id"/>
                     <field name="expiration_date"/>
+                    <field name="create_date"/>
                     <field name="approval_status" widget="badge" optional="show" decoration-warning="approval_status == 'in_progress'"
                            decoration-success="approval_status == 'approved'" decoration-danger="approval_status == 'rejected'"/>
                     <field name="current_approver_id" optional="show"/>
