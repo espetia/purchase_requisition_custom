@@ -15,6 +15,9 @@ MIN_SIMILAR_TEXT_LENGTH = 4
 # States before quotation: lines may still lack a product (it is only required
 # from 'quote' onwards).
 PRE_QUOTE_STATES = ('draft', 'preauthorized')
+
+# States whose kanban columns are shown folded (closed requisitions pile up there).
+KANBAN_FOLDED_STATES = ('cancel', 'done')
 # Business fields that cannot change while the authorization chain is in
 # progress: what the approvers approve is what gets purchased.
 APPROVAL_LOCKED_FIELDS = (
@@ -423,6 +426,22 @@ class PurchaseRequisitionCustom(models.Model):
         displays a column for every state, even if there are no records in that state.
         """
         return [key for key, val in type(self).state.selection]
+
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        """
+        Folds the kanban columns of KANBAN_FOLDED_STATES. Odoo only sets ``__fold``
+        on groups of a many2one (through the comodel's ``_fold_name``), never on a
+        selection field like ``state``.
+        """
+        result = super().read_group(
+            domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
+        groupby_list = [groupby] if isinstance(groupby, str) else list(groupby or [])
+        if groupby_list and groupby_list[0] == 'state':
+            for group in result:
+                if group.get('state') in KANBAN_FOLDED_STATES:
+                    group['__fold'] = True
+        return result
 
     def action_view_purchase_orders(self):
         """
