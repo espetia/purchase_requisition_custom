@@ -182,7 +182,9 @@ in `security/security.xml` and `security/ir.model.access.csv`:
   non-stored `can_edit_lines` compute driving the `line_ids` `readonly` attrs.
 - **Authorization chain** (`requisition.py`): `action_send_for_approval()` (button "Send for Approval", requires
   write access) copies `rubro_id.approver_ids` into `approval_ids`, sets `approval_status='in_progress'` and
-  notifies the first approver (`email_template_requisition_approval_request` + a to-do activity); with no rubro or
+  notifies the first approver (`email_template_requisition_approval_request` + a to-do activity, scheduled with the
+  `mail_activity_quick_update` context so Odoo does not send its own "assigned to you" notification as a second
+  e-mail); with no rubro or
   an empty chain it pre-authorizes at once. `current_approver_id` (stored compute of the `pending` step) drives the
   **Pending Authorizations** menu (`action_purchase_requisition_pending_approval`, own tree with row
   Approve/Reject buttons). `action_approve()` passes to the next step or calls `_finish_approval()` (state

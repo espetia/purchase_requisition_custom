@@ -311,14 +311,16 @@ class PurchaseRequisitionCustom(models.Model):
     def _notify_current_approver(self):
         """
         Notifies the approver whose turn it is, by e-mail and with a to-do
-        activity.
+        activity. The activity is created with mail_activity_quick_update so
+        Odoo does not send its own "assigned to you" notification on top of
+        the approval request e-mail.
         """
         for rec in self:
             approver = rec.current_approver_id
             if not approver:
                 continue
             rec._send_approval_template('purchase_requisition_custom.email_template_requisition_approval_request')
-            rec.sudo().activity_schedule(
+            rec.sudo().with_context(mail_activity_quick_update=True).activity_schedule(
                 'mail.mail_activity_data_todo',
                 user_id=approver.id,
                 summary=_("Authorize requisition"),
